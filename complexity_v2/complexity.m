@@ -22,7 +22,7 @@ function varargout = complexity(varargin)
 
 % Edit the above text to modify the response to help complexity
 
-% Last Modified by GUIDE v2.5 25-Sep-2020 13:31:52
+% Last Modified by GUIDE v2.5 16-Oct-2020 03:03:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,7 +74,7 @@ set(handles.axes_fractal,'Visible','off');
 guidata(hObject, handles);
 
 % UIWAIT makes complexity wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.complexity);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -93,6 +93,8 @@ function pb_complexityCalculation_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_complexityCalculation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+guidata(hObject,handles);
+disp(handles);
 complexityCalculation % Yeets to complexityCalculation window
 
 % --- Executes on button press in pb_statisticAnalysis.

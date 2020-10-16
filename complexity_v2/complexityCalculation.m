@@ -22,7 +22,7 @@ function varargout = complexityCalculation(varargin)
 
 % Edit the above text to modify the response to help complexityCalculation
 
-% Last Modified by GUIDE v2.5 01-Sep-2020 14:39:55
+% Last Modified by GUIDE v2.5 16-Oct-2020 03:16:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -217,16 +217,20 @@ function pb_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-A = sum(strcmp(fieldnames(handles),'img_4D'));
-B = sum(strcmp(fieldnames(handles),'brainMask'));
-C = sum(strcmp(fieldnames(handles),'opFolder'));
+h = findobj('Tag','complexity');
+disp(h);
+complexity_data=guidata(h);
+disp(fieldnames(complexity_data));
+A = sum(strcmp(fieldnames(complexity_data),'img_4D'));
+B = sum(strcmp(fieldnames(complexity_data),'brainMask'));
+C = sum(strcmp(fieldnames(complexity_data),'opFolder'));
 ipChk =[A B C];
 clear A B C
-if (sum(ipChk)==5)
-    mask = handles.brainMask;
+if (sum(ipChk)==3)
+    mask = complexity_data.brainMask;
     brainVox = find(mask == max(mask(:)));
     
-    if handles.checkBox_fractalDimension.Value
+    if handles.checkbox_fractalDimension.Value
        disp('Calculating higuchi fractal dimension');
        imgSize=size(mask);
        FracDim=zeros(imgSize);
@@ -237,16 +241,16 @@ if (sum(ipChk)==5)
             nFail=0;
             for vox=1:length(brainVox)
                 [row,col,s1]=ind2sub(imgSize,brainVox(vox));
-                TS1=squeeze(handles.img_4D(row,col,s1,:));
+                TS1=squeeze(complexity_data.img_4D(row,col,s1,:));
                 TS2=TS1;
                 r_val=r(j)*std(double(TS1));
-                tmp=higuchi_fractal_dimension(TS1, 4);
+                tmp=higuchi_fractal_dimension(TS1, handles.editText_fractalDim_K_start.Value);
                 FracDim(row,col,s1)=tmp(1);
                 nFail=nFail+tmp(2);
                 waitbar(vox/length(brainVox));
             end
             close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'FracDim',...
+            opFname=[complexity_data.opFolder,filesep,handles.baseName,'FracDim',...
                 num2str(4),'_per','.nii'];
             niiStruct=make_nii(FracDim,handles.imgVoxDim,[],64,[]);
             niiStruct.hdr.hk.data_type='float64';
@@ -268,7 +272,7 @@ if (sum(ipChk)==5)
             nFail=0;
             for vox=1:length(brainVox)
                 [row,col,s1]=ind2sub(imgSize,brainVox(vox));
-                TS1=squeeze(handles.img_4D(row,col,s1,:));
+                TS1=squeeze(complexity_data.img_4D(row,col,s1,:));
                 TS2=TS1;
                 r_val=r(j)*std(double(TS1));
                 tmp=lempel_ziv_complexity(TS1);
@@ -277,7 +281,7 @@ if (sum(ipChk)==5)
                 waitbar(vox/length(brainVox));
             end
             close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'LempelZiv',...
+            opFname=[complexity_data.opFolder,filesep,handles.baseName,'LempelZiv',...
                 '_per','.nii'];
             niiStruct=make_nii(LempelZiv,handles.imgVoxDim,[],64,[]);
             niiStruct.hdr.hk.data_type='float64';
@@ -292,23 +296,28 @@ if (sum(ipChk)==5)
        disp('Calculating permutation entropy');
        imgSize=size(mask);
        PermEn=zeros(imgSize);
-       for i = 1:length(m)
-        for j=1:length(r)
+       m=handles.PE_m;
+       r=handles.PE_r;
+       disp(m);
+       disp(r);
+       for i = 1:m
+        for j=1:r
             msg=['calculating PermEn'];
             h=waitbar(0,msg);
             nFail=0;
             for vox=1:length(brainVox)
                 [row,col,s1]=ind2sub(imgSize,brainVox(vox));
-                TS1=squeeze(handles.img_4D(row,col,s1,:));
+                TS1=squeeze(complexity_data.img_4D(row,col,s1,:));
                 TS2=TS1;
                 r_val=r(j)*std(double(TS1));
-                tmp=permutation_entropy(TS1, 3, 1, 1);
+                tmp=permutation_entropy(TS1, handles.PE_order ,... 
+                                handles.PE_delay, 1);
                 PermEn(row,col,s1)=tmp(1);
                 nFail=nFail+tmp(2);
                 waitbar(vox/length(brainVox));
             end
             close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'PermEn',...
+            opFname=[complexity_data.opFolder,filesep,handles.baseName,'PermEn',...
                 '_per','.nii'];
             niiStruct=make_nii(PermEn,handles.imgVoxDim,[],64,[]);
             niiStruct.hdr.hk.data_type='float64';
@@ -317,7 +326,7 @@ if (sum(ipChk)==5)
        end
        handles.nSlices=imgSize(3);
        guidata(hObject,handles);
-       disp('Done calculating higuchi fractal dimension');
+       disp('Done calculating permutation entropy');
     end
     
 else
@@ -434,7 +443,10 @@ function editText_PE_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editText_PE_m_start as text
 %        str2double(get(hObject,'String')) returns contents of editText_PE_m_start as a double
-
+m = get(hObject,'String');
+m = str2num(m);
+handles.PE_m = m;
+guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
 function editText_PE_m_start_CreateFcn(hObject, eventdata, handles)
@@ -447,6 +459,7 @@ function editText_PE_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
 
 
 
@@ -664,7 +677,10 @@ function editText_PE_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editText_PE_r_start as text
 %        str2double(get(hObject,'String')) returns contents of editText_PE_r_start as a double
-
+r = get(hObject,'String');
+r = str2num(r);
+handles.PE_r = r;
+guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
 function editText_PE_r_start_CreateFcn(hObject, eventdata, handles)
@@ -968,6 +984,104 @@ function editText_PE_scale_end_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function editText_PE_scale_end_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to editText_PE_scale_end (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editText_fractalDim_K_start_Callback(hObject, eventdata, handles)
+% hObject    handle to editText_fractalDim_K_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editText_fractalDim_K_start as text
+%        str2double(get(hObject,'String')) returns contents of editText_fractalDim_K_start as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editText_fractalDim_K_start_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editText_fractalDim_K_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editText_fractalDim_K_end_Callback(hObject, eventdata, handles)
+% hObject    handle to editText_fractalDim_K_end (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editText_fractalDim_K_end as text
+%        str2double(get(hObject,'String')) returns contents of editText_fractalDim_K_end as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editText_fractalDim_K_end_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editText_fractalDim_K_end (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editText_PE_ord_Callback(hObject, eventdata, handles)
+% hObject    handle to editText_PE_ord (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editText_PE_ord as text
+%        str2double(get(hObject,'String')) returns contents of editText_PE_ord as a double
+order = get(hObject,'String');
+order = str2num(order);
+handles.PE_order = order;
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function editText_PE_ord_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editText_PE_ord (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editText_PE_delay_Callback(hObject, eventdata, handles)
+% hObject    handle to editText_PE_delay (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editText_PE_delay as text
+%        str2double(get(hObject,'String')) returns contents of editText_PE_delay as a double
+delay = get(hObject,'String');
+delay = str2num(delay);
+handles.PE_delay = delay;
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function editText_PE_delay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editText_PE_delay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
