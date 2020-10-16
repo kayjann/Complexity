@@ -226,7 +226,7 @@ if (sum(ipChk)==5)
     mask = handles.brainMask;
     brainVox = find(mask == max(mask(:)));
     
-    if handles.checkBox_fractalDimension.Value
+    if handles.checkBox_fractalDimension
        disp('Calculating higuchi fractal dimension');
        imgSize=size(mask);
        FracDim=zeros(imgSize);
@@ -235,91 +235,16 @@ if (sum(ipChk)==5)
             msg=['calculating FracDim'];
             h=waitbar(0,msg);
             nFail=0;
-            for vox=1:length(brainVox)
+            for vox=1:length(brainBox)
                 [row,col,s1]=ind2sub(imgSize,brainVox(vox));
                 TS1=squeeze(handles.img_4D(row,col,s1,:));
                 TS2=TS1;
                 r_val=r(j)*std(double(TS1));
-                tmp=higuchi_fractal_dimension(TS1, 4);
-                FracDim(row,col,s1)=tmp(1);
-                nFail=nFail+tmp(2);
-                waitbar(vox/length(brainVox));
+                tmp=higuc
             end
-            close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'FracDim',...
-                num2str(4),'_per','.nii'];
-            niiStruct=make_nii(FracDim,handles.imgVoxDim,[],64,[]);
-            niiStruct.hdr.hk.data_type='float64';
-            save_nii(niiStruct,opFname,[]);
         end
        end
-       handles.nSlices=imgSize(3);
-       guidata(hObject,handles);
-       disp('Done calculating higuchi fractal dimension');
     end
-    if handles.checkbox_lempelZivComplexity.Value
-       disp('Calculating lempel ziv complexity');
-       imgSize=size(mask);
-       LempelZiv=zeros(imgSize);
-       for i = 1:length(m)
-        for j=1:length(r)
-            msg=['calculating LempelZiv'];
-            h=waitbar(0,msg);
-            nFail=0;
-            for vox=1:length(brainVox)
-                [row,col,s1]=ind2sub(imgSize,brainVox(vox));
-                TS1=squeeze(handles.img_4D(row,col,s1,:));
-                TS2=TS1;
-                r_val=r(j)*std(double(TS1));
-                tmp=lempel_ziv_complexity(TS1);
-                LempelZiv(row,col,s1)=tmp(1);
-                nFail=nFail+tmp(2);
-                waitbar(vox/length(brainVox));
-            end
-            close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'LempelZiv',...
-                '_per','.nii'];
-            niiStruct=make_nii(LempelZiv,handles.imgVoxDim,[],64,[]);
-            niiStruct.hdr.hk.data_type='float64';
-            save_nii(niiStruct,opFname,[]);
-        end
-       end
-       handles.nSlices=imgSize(3);
-       guidata(hObject,handles);
-       disp('Done calculating lempel ziv complexity');
-    end
-    if handles.checkbox_PE.Value
-       disp('Calculating permutation entropy');
-       imgSize=size(mask);
-       PermEn=zeros(imgSize);
-       for i = 1:length(m)
-        for j=1:length(r)
-            msg=['calculating PermEn'];
-            h=waitbar(0,msg);
-            nFail=0;
-            for vox=1:length(brainVox)
-                [row,col,s1]=ind2sub(imgSize,brainVox(vox));
-                TS1=squeeze(handles.img_4D(row,col,s1,:));
-                TS2=TS1;
-                r_val=r(j)*std(double(TS1));
-                tmp=permutation_entropy(TS1, 3, 1, 1);
-                PermEn(row,col,s1)=tmp(1);
-                nFail=nFail+tmp(2);
-                waitbar(vox/length(brainVox));
-            end
-            close(h)
-            opFname=[handles.opFolder,filesep,handles.baseName,'PermEn',...
-                '_per','.nii'];
-            niiStruct=make_nii(PermEn,handles.imgVoxDim,[],64,[]);
-            niiStruct.hdr.hk.data_type='float64';
-            save_nii(niiStruct,opFname,[]);
-        end
-       end
-       handles.nSlices=imgSize(3);
-       guidata(hObject,handles);
-       disp('Done calculating higuchi fractal dimension');
-    end
-    
 else
     ipParam = {'Input Image','Brain Mask','output folder'};
     ind = find(ipChk==0)

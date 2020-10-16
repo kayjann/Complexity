@@ -63,6 +63,13 @@ setbgcolor(handles.pb_complexityCalculation, clBlue);
 setbgcolor(handles.pb_statisticAnalysis, clBlue);
 setbgcolor(handles.pb_visualization, clBlue);
 setbgcolor(handles.pb_batchProcessing, clBlue);
+axes(handles.axes_logo);
+image(imread('LOFT_logo.png'));
+set(handles.axes_logo,'Visible','off');
+axes(handles.axes_fractal);
+image(imread('brain_fractal.png'));
+set(handles.axes_fractal,'Visible','off');
+
 % Update handles structure
 guidata(hObject, handles);
 
