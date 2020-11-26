@@ -1,7 +1,7 @@
 function s = permutation_entropy(x, order, delay, normalize)
 x=x(:)';
+x=x(randperm(length(x)));
 N=length(x);
-disp(N);
 Y=zeros(order, N-(order-1)*delay);
 hash_mult=(ones(order)*order);
 hash_mult=power(hash_mult,[0:order-1]);

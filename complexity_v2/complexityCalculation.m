@@ -317,9 +317,9 @@ if (sum(ipChk)==3)
                 waitbar(vox/length(brainVox));
             end
             close(h)
-            opFname=[complexity_data.opFolder,filesep,handles.baseName,'PermEn',...
+            opFname=[complexity_data.opFolder,filesep,complexity_data.baseName,'PermEn',...
                 '_per','.nii'];
-            niiStruct=make_nii(PermEn,handles.imgVoxDim,[],64,[]);
+            niiStruct=make_nii(PermEn,complexity_data.imgVoxDim,[],64,[]);
             niiStruct.hdr.hk.data_type='float64';
             save_nii(niiStruct,opFname,[]);
         end
