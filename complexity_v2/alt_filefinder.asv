@@ -5,17 +5,29 @@ final_files = [""];
 final_subjects = [""];
 
 for i=1:len
+    disp(files(i).folder);
+    
+    %disp(files(i).name);
     final_files(i+1) = strcat(files(i).folder,"/", files(i).name);
     final_subjects(i)=(files(i).folder);
 end
 if sub_folder~=""
     subject_folders = alt_filefinder(filePath, sub_folder, "");
+    disp(subject_folders);
     filenames = [final_files, subject_folders];
 else
     filenames = [final_files];
 end
 
-A = unique(final_subjects,'stable');
-filenames=A;
+disp('-----------------')
+for k=1:length(final_subjects)
+    disp(final_subjects(k));
+end
+
+disp('*******************************************************');
+A = unique(M,'rows')
+disp(final_subjects();
+disp('**********');
+
 end
 

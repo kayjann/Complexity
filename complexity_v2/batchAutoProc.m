@@ -222,9 +222,14 @@ fmri_subfolder_name = get(handles.edit_fmriSubfolderName,'String');
 fmri_data_name = get(handles.edit_fmriDataName,'String');
 output_dir = get(handles.edit_outputDir,'String');
 disp(append(working_dir, subject_folder_name, fmri_subfolder_name, fmri_data_name));
-files = findfiles(append(subject_folder_name, fmri_subfolder_name, fmri_data_name), working_dir);
-disp(files);
+%files = findfiles(append(subject_folder_name, fmri_subfolder_name, fmri_data_name), working_dir);
+%
+files=alt_filefinder('C:\Users\Niyati\Desktop\on-campus\kni','\sub*\ses*\func\*.nii.gz','\sub*');
+%alt_filefinder('C:\Users\Niyati\Desktop\on-campus\kni','*.nii.gz','');
 disp('Done');
+for i=1:length(files)
+    disp(files(i));
+end
 % --- Executes on button press in pb_next.
 function pb_next_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_next (see GCBO)
