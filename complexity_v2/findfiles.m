@@ -50,7 +50,11 @@ else
         flist = strcat(basedir,filesep,cellstr(f));
     end
 end
+disp(d);
+disp(flist);
 % Recursively go through folders in BASEDIR
 for k = 1:length(d)
     flist = [flist;findfiles(pattern,[basedir,filesep,d{k}])]; %#ok<AGROW>
+    disp(flist); 
+    disp(
 end
