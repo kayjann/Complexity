@@ -22,7 +22,7 @@ function varargout = complexity(varargin)
 
 % Edit the above text to modify the response to help complexity
 
-% Last Modified by GUIDE v2.5 24-Dec-2020 04:37:27
+% Last Modified by GUIDE v2.5 16-Oct-2020 03:03:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,12 +54,15 @@ function complexity_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for complexity
 handles.output = hObject;
-
 clBlue = [30/255 136/255 229/255];
-%setbgcolor(handles.pb_complexityCalculation, clBlue);
-%setbgcolor(handles.pb_statisticAnalysis, clBlue);
-%setbgcolor(handles.pb_visualization, clBlue);
-%setbgcolor(handles.pb_batchProcessing, clBlue);
+setbgcolor(handles.pb_select_ip_dir, clBlue);
+setbgcolor(handles.pb_select_brain_mask, clBlue);
+setbgcolor(handles.pb_select_op_dir, clBlue);
+setbgcolor(handles.pb_verify_orientation, clBlue);
+setbgcolor(handles.pb_complexityCalculation, clBlue);
+setbgcolor(handles.pb_statisticAnalysis, clBlue);
+setbgcolor(handles.pb_visualization, clBlue);
+setbgcolor(handles.pb_batchProcessing, clBlue);
 axes(handles.axes_logo);
 image(imread('LOFT_logo.png'));
 set(handles.axes_logo,'Visible','off');
@@ -67,11 +70,12 @@ axes(handles.axes_fractal);
 image(imread('brain_fractal.png'));
 set(handles.axes_fractal,'Visible','off');
 
-% UIWAIT makes complexity wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 % Update handles structure
 guidata(hObject, handles);
+
+% UIWAIT makes complexity wait for user response (see UIRESUME)
+% uiwait(handles.complexity);
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = complexity_OutputFcn(hObject, eventdata, handles) 
@@ -89,7 +93,9 @@ function pb_complexityCalculation_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_complexityCalculation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-complexityCalculation
+guidata(hObject,handles);
+disp(handles);
+complexityCalculation % Yeets to complexityCalculation window
 
 % --- Executes on button press in pb_statisticAnalysis.
 function pb_statisticAnalysis_Callback(hObject, eventdata, handles)
@@ -124,3 +130,93 @@ function pb_quit_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_quit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pb_select_ip_dir.
+function pb_select_ip_dir_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_select_ip_dir (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ipFormat=cell2mat(inputdlg('Input 3D or 4D','Input selection'));
+clGreen=[0/255,191/255,165/255];
+clRed=[244/255,67/255,54/255];
+if isempty(ipFormat)
+    disp('Please choose the input format: 3D or 4D');
+    setbgcolor(handles.pb_select_ip_dir,clRed);
+else
+    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+        dirName=uigetdir;
+        if (dirName==0)
+            disp('no image input directory selected');
+            setbgcolor(handles.pb_select_ip_dir,clRed);
+        else
+            imgStruct=readImages4D(dirName);
+            handles.img_4D=imgStruct.img_4D;
+            handles.baseName=imgStruct.bName;
+            handles.imgVoxDim=imgStruct.voxDim;
+            setbgcolor(handles.pb_select_ip_dir,clGreen);
+        end
+    else
+        [fname, pname]=uigetfile('*.*','select the 4D image');
+        if (fname==0 & pname==0)
+            disp('4D image file not selected');
+            setbgcolor(handles.pb_select_ip_dir,clRed);
+        else
+            imgName=[pname,fname];
+            imgStruct = load_nii(imgName);
+            handles.img_4D=imgStruct.img;
+            [p,f,e]=fileparts(imgName);
+            handles.baseName=f;
+            handles.imgVoxDim=imgStruct.hdr.dime.pixdim(2:4);
+            setbgcolor(handles.pb_select_ip_dir,clGreen);
+        end
+    end
+end
+guidata(hObject, handles);
+disp('Done reading input images');
+
+% --- Executes on button press in pb_select_brain_mask.
+function pb_select_brain_mask_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_select_brain_mask (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+clGreen=[0/255,191/255,165/255];
+clRed=[244/255,67/255,54/255];
+[fname,pname] = uigetfile('*.*','select the brain mask');
+if (fname==0 & pname==0)
+    disp('Brain mask not selected');
+    setbgcolor(handles.pb_select_brain_mask,clRed);
+else
+    mask_file = [pname,fname];
+    mask = load_nii(mask_file);
+    if (size(mask.img) ~= size(handles.img_4D(:,:,:,1)))
+        msgbox('mask and input image dimensions do not match');
+        setbgcolor(handles.pb_select_brain_mask,clRed);
+    else
+        handles.brainMask = mask.img;
+        guidata(hObject, handles);
+        setbgcolor(handles.pb_select_brain_mask,clGreen);
+    end
+end
+
+% --- Executes on button press in pb_select_op_dir.
+function pb_select_op_dir_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_select_op_dir (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+clGreen=[0/255,191/255,165/255];
+opFolder = uigetdir;
+handles.opFolder = opFolder;
+setbgcolor(handles.pb_select_op_dir,clGreen);
+guidata(hObject, handles);
+
+% --- Executes on button press in pb_verify_orientation.
+function pb_verify_orientation_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_verify_orientation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+mask = verifyImgOri(handles.img_4D(:,:,:,1),handles.brainMask);
+handles.brainMask = mask;
+clGreen=[0/255,191/255,165/255];
+setbgcolor(handles.pb_verify_orientation,clGreen);
+guidata(hObject,handles);

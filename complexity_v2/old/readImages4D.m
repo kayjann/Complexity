@@ -34,6 +34,5 @@ opStruct = struct([]);
 opStruct(1).img_4D = img_4D;
 opStruct(1).bName = f;
 opStruct(1).voxDim = imgStruct.hdr.dime.pixdim(2:4);
-opStruct(1).originator = imgStruct.hdr.hist.originator(1:3);
 return
 
