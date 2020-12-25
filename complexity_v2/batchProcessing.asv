@@ -1763,7 +1763,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-function select_brain_mask(hObject,handles,imgStruct)
+function select_brain_mask(handles,filepath)
  [fname, pname] = uigetfile('*.*','Select the brain mask');
     
 if (fname==0 & pname==0)
@@ -1771,7 +1771,7 @@ if (fname==0 & pname==0)
 else
     mask_file = [pname, fname];
     mask = load_nii(mask_file);
-    if (size(mask.img) ~= size(imgStruct.img_4D(:,:,:,1)))
+    if (size(mask.img) ~= size(handles.img_4D(:,:,:,1)))
         msgbox('Mask and Input image dimensions do not match');
     else
         handles.brainMask = mask.img;
@@ -1786,8 +1786,8 @@ function btn_load_Callback(hObject, eventdata, handles)
     subFolders={'C:\Users\Niyati\Desktop\on-campus\testcases\test2'
         'C:\Users\Niyati\Desktop\on-campus\testcases\test3'};
    
-    imgStruct = readImages4D(subFolders{1});
-    select_brain_mask(hObject,handles,imgStruct);
+        imgStruct = readImages4D(subFolders{0});
+        select_brain_mask(handles,imgSte)
     for k = 1 :  length(subFolders)
         thisSubFolder = subFolders{k};
         fprintf('Found sub: %s.\n', thisSubFolder);
