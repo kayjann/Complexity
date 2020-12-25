@@ -1763,7 +1763,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-function select_brain_mask(hObject,handles,imgStruct)
+function ans=select_brain_mask(hObject,handles,imgStruct)
  [fname, pname] = uigetfile('*.*','Select the brain mask');
     
 if (fname==0 & pname==0)
@@ -1778,6 +1778,7 @@ else
         guidata(hObject, handles);
     end
 end
+ans=mask.img;
 % --- Executes on button press in btn_load.
 function btn_load_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_load (see GCBO)
@@ -1787,7 +1788,7 @@ function btn_load_Callback(hObject, eventdata, handles)
         'C:\Users\Niyati\Desktop\on-campus\testcases\test3'};
    
     imgStruct = readImages4D(subFolders{1});
-    select_brain_mask(hObject,handles,imgStruct);
+    handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
     for k = 1 :  length(subFolders)
         thisSubFolder = subFolders{k};
         fprintf('Found sub: %s.\n', thisSubFolder);
@@ -1795,7 +1796,7 @@ function btn_load_Callback(hObject, eventdata, handles)
         handle(k).img_4D = imgStruct.img_4D;
         handle(k).baseName = imgStruct.bName;
         handle(k).imgVoxDim = imgStruct.voxDim;
-        handle(k).size=length(subFolders);
+        handle(k).size=length(subFolders);   
         handle(k).brainMask=handles.brainMask;
     end
     handles.arr=handle;
@@ -1806,9 +1807,11 @@ function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+disp(length(handles.arr));
 for k=1:length(handles.arr)
     handle=handles.arr(k);
-    samp_en_call(handle, handle.brainMask, 0.35, 0.35, 2, 2, 0,0);
+    disp(handle.baseName)
+    samp_en_call(handle, handle.brainMask, 0.35, 0.36, 2.0, 3.0, 0.01,1.0);
 
 end
 % --- Executes on button press in btn_run.
@@ -1817,7 +1820,32 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
+function samp_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+for m = m_start:m_scale:m_end
+    for r = r_start:r_scale:r_end
+        ApEn = zeros(imgSize);
+        msg = ['calculating self SampEn: m=',num2str(m),',r=',num2str(r)];
+        h = waitbar(0,msg);
+        nFail = 0;
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl, :));
+            r_val = r * std(double(TS1));
+            tmp = sample_entropy(m, r_val, TS1, 1);
+            ApEn(row, col, sl) = tmp(1);
+            nFail = nFail + tmp(2);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.opFolder, filesep, handles.baseName, 'SampEn_m', ...
+            num2str(m), '_r', num2str(r*100), 'per','.nii'];
+        niiStruct = make_nii(ApEn, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        save_nii(niiStruct, opFname, []);
+    end
+end
 % --- Executes on button press in btn_outputDir.
 function btn_outputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_outputDir (see GCBO)
