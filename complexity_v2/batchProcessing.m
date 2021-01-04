@@ -1953,39 +1953,42 @@ function btn_inputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_inputDir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
-if isempty(ipFormat)
-    disp('Please choose the input format: 3D or 4D');
-else
-    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
-        dirName = uigetdir;
-        if (dirName==0)
-            disp('No image input directory selected');
-        else
-            imgStruct = readImages4D(dirName);
-            disp(imgStruct);
-            handles.img_4D = imgStruct.img_4D;
-            handles.baseName = imgStruct.bName;
-            handles.imgVoxDim = imgStruct.voxDim;
-            handles.originator = imgStruct.originator;
-        end
-    else
-        [fname, pname] = uigetfile('*.*','Select the 4D image');
-        if (fname==0 & pname==0)
-            disp('4D image file not selected');
-        else
-            imgName = [pname, fname];
-            imgStruct = load_nii(imgName);
-            handles.img_4D = imgStruct.img;
-            handles.originator = imgStruct.hdr.hist.originator(1:3);
-            [p,f,e] = fileparts(imgName);
-            handles.baseName = f;
-            handles.imgVoxDim = imgStruct.hdr.dime.pixdim(2:4);
-        end
-    end
-end
-guidata(hObject,handles);
-disp('Done reading input images');
+dirName = uigetdir;
+handles.inputDir = dirName;
+guidata(hObject, handles);
+% ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
+% if isempty(ipFormat)
+%     disp('Please choose the input format: 3D or 4D');
+% else
+%     if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+%         dirName = uigetdir;
+%         if (dirName==0)
+%             disp('No image input directory selected');
+%         else
+%             imgStruct = readImages4D(dirName);
+%             disp(imgStruct);
+%             handles.img_4D = imgStruct.img_4D;
+%             handles.baseName = imgStruct.bName;
+%             handles.imgVoxDim = imgStruct.voxDim;
+%             handles.originator = imgStruct.originator;
+%         end
+%     else
+%         [fname, pname] = uigetfile('*.*','Select the 4D image');
+%         if (fname==0 & pname==0)
+%             disp('4D image file not selected');
+%         else
+%             imgName = [pname, fname];
+%             imgStruct = load_nii(imgName);
+%             handles.img_4D = imgStruct.img;
+%             handles.originator = imgStruct.hdr.hist.originator(1:3);
+%             [p,f,e] = fileparts(imgName);
+%             handles.baseName = f;
+%             handles.imgVoxDim = imgStruct.hdr.dime.pixdim(2:4);
+%         end
+%     end
+% end
+% guidata(hObject,handles);
+% disp('Done reading input images');
 
 
 
@@ -2107,24 +2110,43 @@ function btn_load_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_load (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    subFolders={'C:\Users\Niyati\Desktop\on-campus\testcases\test2'
-        'C:\Users\Niyati\Desktop\on-campus\testcases\test3'};
-   
-    imgStruct = readImages4D(subFolders{1});
-    handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
-    for k = 1 :  length(subFolders)
-        thisSubFolder = subFolders{k};
-        fprintf('Found sub: %s.\n', thisSubFolder);
-        imgStruct = readImages4D(thisSubFolder);
-        handle(k).img_4D = imgStruct.img_4D;
-        handle(k).baseName = imgStruct.bName;
-        handle(k).imgVoxDim = imgStruct.voxDim;
-        handle(k).size=length(subFolders);   
-        handle(k).brainMask=handles.brainMask;
-    end
-    handles.arr=handle;
-    guidata(hObject,handles);
-    disp('done reading input images');
+%     subFolders={'C:\Users\Niyati\Desktop\on-campus\testcases\test2'
+%         'C:\Users\Niyati\Desktop\on-campus\testcases\test3'};
+%    
+%     imgStruct = readImages4D(subFolders{1});
+%     handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
+%     for k = 1 :  length(subFolders)
+%         thisSubFolder = subFolders{k};
+%         fprintf('Found sub: %s.\n', thisSubFolder);
+%         imgStruct = readImages4D(thisSubFolder);
+%         handle(k).img_4D = imgStruct.img_4D;
+%         handle(k).baseName = imgStruct.bName;
+%         handle(k).imgVoxDim = imgStruct.voxDim;
+%         handle(k).size=length(subFolders);   
+%         handle(k).brainMask=handles.brainMask;
+%     end
+%     handles.arr=handle;
+%     guidata(hObject,handles);
+%     disp('done reading input images');
+A = sum(strcmp(fieldnames(handles),'inputDir'));
+B = sum(strcmp(fieldnames(handles),'outputDir'));
+ipChk = [A B];
+clear A B;
+subjectPattern = get(handles.edit_subjectPattern, 'String');
+fmriPattern = get(handles.edit_fmriPattern, 'String');
+filePattern = get(handles.edit_filePattern, 'String');
+subject_search = strcat(handles.inputDir,filesep,subjectPattern);
+file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern,filesep,filePattern);
+subjects = dir(subject_search);
+files = dir(file_search);
+set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
+disp(length(subjects));
+disp([files(:).name]);
+for i=1:length(files)
+    disp([files(i).name, files(i).folder]);
+    disp(niftiinfo([files(i).folder, filesep, files(i).name]));
+end
+
     
 function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
@@ -2174,6 +2196,9 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_outputDir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-opFolder = uigetdir;
-handles.opFolder = opFolder;
+% opFolder = uigetdir;
+% handles.opFolder = opFolder;
+% guidata(hObject, handles);
+dirName = uigetdir;
+handles.outputDir = dirName;
 guidata(hObject, handles);
