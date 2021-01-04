@@ -54,6 +54,16 @@ function batchProcessing_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for batchProcessing
 handles.output = hObject;
+handles.lempelZiv = 0;
+handles.hurstExp = 0;
+handles.LLExp = 0;
+handles.fracDim = 0;
+handles.apEn = 0;
+handles.sampEn = 0;
+handles.waveletMSE = 0; 
+handles.fuzzyEn = 0;
+handles.permEn = 0;
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -80,6 +90,9 @@ function checkbox_lempelZiv_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_lempelZiv
+value = get(hObject,'Value');
+handles.lempelZiv = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_hurstExp.
@@ -89,6 +102,9 @@ function checkbox_hurstExp_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_hurstExp
+value = get(hObject,'Value');
+handles.hurstExp = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_LLExp.
@@ -98,6 +114,9 @@ function checkbox_LLExp_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_LLExp
+value = get(hObject,'Value');
+handles.LLExp = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_fracDim.
@@ -107,6 +126,9 @@ function checkbox_fracDim_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_fracDim
+value = get(hObject,'Value');
+handles.fracDim = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_apEn.
@@ -116,6 +138,9 @@ function checkbox_apEn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_apEn
+value = get(hObject,'Value');
+handles.apEn = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_sampEn.
@@ -125,6 +150,9 @@ function checkbox_sampEn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_sampEn
+value = get(hObject,'Value');
+handles.sampEn = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_waveletMSE.
@@ -134,6 +162,9 @@ function checkbox_waveletMSE_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_waveletMSE
+value = get(hObject,'Value');
+handles.waveletMSE = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_fuzzyEn.
@@ -143,6 +174,9 @@ function checkbox_fuzzyEn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_fuzzyEn
+value = get(hObject,'Value');
+handles.fuzzyEn = value;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in checkbox_permEn.
@@ -152,6 +186,10 @@ function checkbox_permEn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_permEn
+value = get(hObject,'Value');
+handles.permEn = value;
+guidata(hObject, handles);
+
 
 
 
@@ -162,6 +200,10 @@ function edit_lempelZiv_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.lempelZiv_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -185,6 +227,10 @@ function edit_hurstExp_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.hurstExp_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -208,6 +254,10 @@ function edit_LLExp_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.LLExp_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -254,6 +304,10 @@ function edit_apEn_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.apEn_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -277,6 +331,10 @@ function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.sampEn_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -300,6 +358,10 @@ function edit_waveletMSE_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.waveletMSE_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -323,6 +385,10 @@ function edit_fuzzyEn_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.fuzzyEn_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -346,6 +412,10 @@ function edit_permEn_m_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.permEn_m_start = m_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -369,6 +439,10 @@ function edit_lempelZiv_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.lempelZiv_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -392,6 +466,10 @@ function edit_hurstExp_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.hurstExp_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -415,6 +493,10 @@ function edit_LLExp_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.LLExp_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -438,6 +520,10 @@ function edit_fracDim_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.fracDim_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -461,6 +547,10 @@ function edit_apEn_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.apEn_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -484,6 +574,10 @@ function edit_sampEn_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.sampEn_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -507,6 +601,10 @@ function edit_waveletMSE_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.waveletMSE_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -530,6 +628,10 @@ function edit_fuzzyEn_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.fuzzyEn_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -553,6 +655,10 @@ function edit_permEn_m_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_m_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_m_end as a double
+m_end = get(hObject,'String');
+m_end = str2num(m_end);
+handles.permEn_m_end = m_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -576,6 +682,10 @@ function edit_lempelZiv_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.lempelZiv_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -599,6 +709,10 @@ function edit_hurstExp_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.hurstExp_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -622,6 +736,10 @@ function edit_LLExp_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.LLExp_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -645,6 +763,10 @@ function edit_fracDim_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.fracDim_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -668,6 +790,10 @@ function edit_apEn_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.apEn_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -691,6 +817,10 @@ function edit_sampEn_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.sampEn_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -714,6 +844,10 @@ function edit_waveletMSE_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.waveletMSE_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -737,6 +871,10 @@ function edit_fuzzyEn_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.fuzzyEn_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -760,6 +898,10 @@ function edit_permEn_r_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_r_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_r_start as a double
+r_start = get(hObject,'String');
+r_start = str2num(r_start);
+handles.permEn_r_start = r_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -783,6 +925,10 @@ function edit_lempelZiv_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.lempelZiv_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -806,6 +952,10 @@ function edit_hurstExp_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.hurstExp_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -829,6 +979,10 @@ function edit_LLExp_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.LLExp_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -852,6 +1006,10 @@ function edit_fracDim_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.fracDim_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -875,6 +1033,10 @@ function edit_apEn_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.apEn_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -898,6 +1060,11 @@ function edit_waveletMSE_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.waveletMSE_r_end = r_end;
+guidata(hObject, handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -921,7 +1088,10 @@ function edit_fuzzyEn_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_r_end as a double
-
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.fuzzyEn_r_end = r_end;
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
@@ -944,6 +1114,10 @@ function edit_permEn_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.permEn_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -967,6 +1141,10 @@ function edit_lempelZiv_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.lempelZiv_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -990,6 +1168,10 @@ function edit_hurstExp_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.hurstExp_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1013,6 +1195,10 @@ function edit_LLExp_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.LLExp_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1036,6 +1222,10 @@ function edit_fracDim_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.fracDim_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1059,6 +1249,10 @@ function edit_apEn_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.apEn_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1082,6 +1276,10 @@ function edit_waveletMSE_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.waveletMSE_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1105,6 +1303,10 @@ function edit_fuzzyEn_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.fuzzyEn_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1128,6 +1330,10 @@ function edit_permEn_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.permEn_scale_start = scale_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1151,6 +1357,10 @@ function edit_lempelZiv_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_lempelZiv_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_lempelZiv_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.lempelZiv_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1174,6 +1384,10 @@ function edit_hurstExp_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_hurstExp_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_hurstExp_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.hurstExp_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1197,6 +1411,10 @@ function edit_LLExp_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_LLExp_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_LLExp_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.LLExp_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1220,6 +1438,10 @@ function edit_fracDim_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.fracDim_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1243,6 +1465,11 @@ function edit_apEn_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_apEn_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_apEn_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.apEn_scale_end = scale_end;
+guidata(hObject, handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1266,6 +1493,11 @@ function edit_sampEn_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.sampEn_scale_end = scale_end;
+guidata(hObject, handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1289,6 +1521,10 @@ function edit_waveletMSE_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_waveletMSE_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_waveletMSE_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.waveletMSE_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1312,6 +1548,10 @@ function edit_fuzzyEn_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.fuzzyEn_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1335,6 +1575,10 @@ function edit_permEn_scale_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_scale_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_scale_end as a double
+scale_end = get(hObject,'String');
+scale_end = str2num(scale_end);
+handles.permEn_scale_end = scale_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1358,6 +1602,10 @@ function edit_fracDim_k_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_k_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_k_start as a double
+k_start = get(hObject,'String');
+k_start = str2num(k_start);
+handles.fracDim_k_start = k_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1381,6 +1629,10 @@ function edit_fracDim_k_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fracDim_k_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fracDim_k_end as a double
+k_end = get(hObject,'String');
+k_end = str2num(k_end);
+handles.fracDim_k_end = k_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1404,6 +1656,10 @@ function edit_fuzzyEn_n_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_n_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_n_start as a double
+n_start = get(hObject,'String');
+n_start = str2num(n_start);
+handles.fuzzyEn_n_start = n_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1427,6 +1683,10 @@ function edit_fuzzyEn_n_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_n_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_n_end as a double
+n_end = get(hObject,'String');
+n_end = str2num(n_end);
+handles.fuzzyEn_n_end = n_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1450,6 +1710,10 @@ function edit_fuzzyEn_tau_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_tau_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_tau_start as a double
+tau_start = get(hObject,'String');
+tau_start = str2num(tau_start);
+handles.fuzzyEn_tau_start = tau_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1473,6 +1737,10 @@ function edit_fuzzyEn_tau_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_fuzzyEn_tau_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_fuzzyEn_tau_end as a double
+tau_end = get(hObject,'String');
+tau_end = str2num(tau_end);
+handles.fuzzyEn_tau_end = tau_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1496,6 +1764,10 @@ function edit_permEn_delay_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_delay_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_delay_start as a double
+delay_start = get(hObject,'String');
+delay_start = str2num(delay_start);
+handles.permEn_delay_start = delay_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1519,6 +1791,10 @@ function edit_permEn_delay_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_delay_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_delay_end as a double
+delay_end = get(hObject,'String');
+delay_end = str2num(delay_end);
+handles.permEn_delay_end = delay_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1542,6 +1818,10 @@ function edit_permEn_order_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_order_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_order_start as a double
+ord_start = get(hObject,'String');
+ord_start = str2num(ord_start);
+handles.permEn_ord_start = ord_start;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1597,6 +1877,10 @@ function edit_sampEn_r_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_r_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_r_end as a double
+r_end = get(hObject,'String');
+r_end = str2num(r_end);
+handles.sampEn_r_end = r_end;
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1620,6 +1904,11 @@ function edit_sampEn_scale_start_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_sampEn_scale_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_scale_start as a double
+scale_start = get(hObject,'String');
+scale_start = str2num(scale_start);
+handles.sampEn_scale_start = scale_start;
+guidata(hObject, handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1645,6 +1934,7 @@ function edit_inputDir_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit_inputDir as a double
 
 
+
 % --- Executes during object creation, after setting all properties.
 function edit_inputDir_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit_inputDir (see GCBO)
@@ -1663,6 +1953,39 @@ function btn_inputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_inputDir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
+if isempty(ipFormat)
+    disp('Please choose the input format: 3D or 4D');
+else
+    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+        dirName = uigetdir;
+        if (dirName==0)
+            disp('No image input directory selected');
+        else
+            imgStruct = readImages4D(dirName);
+            disp(imgStruct);
+            handles.img_4D = imgStruct.img_4D;
+            handles.baseName = imgStruct.bName;
+            handles.imgVoxDim = imgStruct.voxDim;
+            handles.originator = imgStruct.originator;
+        end
+    else
+        [fname, pname] = uigetfile('*.*','Select the 4D image');
+        if (fname==0 & pname==0)
+            disp('4D image file not selected');
+        else
+            imgName = [pname, fname];
+            imgStruct = load_nii(imgName);
+            handles.img_4D = imgStruct.img;
+            handles.originator = imgStruct.hdr.hist.originator(1:3);
+            [p,f,e] = fileparts(imgName);
+            handles.baseName = f;
+            handles.imgVoxDim = imgStruct.hdr.dime.pixdim(2:4);
+        end
+    end
+end
+guidata(hObject,handles);
+disp('Done reading input images');
 
 
 
@@ -1811,7 +2134,7 @@ disp(length(handles.arr));
 for k=1:length(handles.arr)
     handle=handles.arr(k);
     disp(handle.baseName)
-    samp_en_call(handle, handle.brainMask, 0.35, 0.36, 2.0, 3.0, 0.01,1.0);
+    samp_en_call(handle, handle.brainMask, 0.35, 0.45, 2, 3, 0.1,1);
 
 end
 % --- Executes on button press in btn_run.
@@ -1851,3 +2174,6 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_outputDir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+opFolder = uigetdir;
+handles.opFolder = opFolder;
+guidata(hObject, handles);
