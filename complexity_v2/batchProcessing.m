@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 24-Dec-2020 11:26:15
+% Last Modified by GUIDE v2.5 10-Jan-2021 23:37:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -2124,34 +2124,41 @@ file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
-disp(length(subjects));
 
-%     subFolders={'C:\Users\Niyati\Desktop\on-campus\testcases\batchtest\btest1'
-%          'C:\Users\Niyati\Desktop\on-campus\testcases\batchtest\btest2'};
 
-    for i=1:length(files)
-     folders{i}=[files(i).folder];
+
+for i=1:length(files)
+    fullpath = [files(i).folder,filesep,files(i).name];
+    disp(fullpath);
+    imgStruct = niftiread(fullpath);
+    opStruct = struct([]);
+    opStruct(i).img_4D = imgStruct;
+    opStruct(i).bName = files(i).name;
+    %opStruct(i).voxDim = size(imgStruct,3);
+    %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
+    %    msgbox('Mask and Input image dimensions do not match');
+    %end
+    folder = [handles.outputDir,filesep,'tmp'];
+    gunzip(fullpath,folder);
+    tmp_files = dir(folder);
+    for i=1:length(tmp_files)
+        disp(tmp_files(i).name);
+        if strcmp(tmp_files(i).name,'.')
+            continue
+        elseif strcmp(tmp_files(i).name,'..')
+            continue
+        end
+        disp('Loading nii');
+        imgStruct = load_nii_hdr([folder, filesep, tmp_files(i).name]);
+        delete([folder, filesep, tmp_files(i).name]);
+        disp(imgStruct);
+        opStruct(i).originator = imgStruct.hist.originator(1:3);
+        opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
     end
-
-    temp = unique(folders,'stable');
-    subFolders=temp;
-    disp(subFolders); 
-    imgStruct = readImages4D(subFolders{1});
-    handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
-    for k = 1 :  length(subFolders)
-        thisSubFolder = subFolders{k};
-        fprintf('Found sub: %s.\n', thisSubFolder);
-        imgStruct = readImages4D(thisSubFolder);
-        handle(k).img_4D = imgStruct.img_4D;
-        handle(k).baseName = imgStruct.bName;
-        handle(k).imgVoxDim = imgStruct.voxDim;
-        handle(k).size=length(subFolders);   
-        handle(k).brainMask=handles.brainMask;
-    end
-    handles.arr=handle;
-    guidata(hObject,handles);
-    disp('done reading input images');
-
+end
+handles.scans = opStruct;
+guidata(hObject, handles);
+disp('Done reading input images');
 
 
     
@@ -2209,4 +2216,22 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
 % guidata(hObject, handles);
 dirName = uigetdir;
 handles.outputDir = dirName;
+mkdir([handles.outputDir,filesep,'tmp']);
 guidata(hObject, handles);
+
+
+% --- Executes on button press in pb_brainMask.
+function pb_brainMask_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_brainMask (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[fname, pname] = uigetfile('*.*','Select the brain mask');
+if (fname==0 & pname==0)
+    disp('Brain mask not selected');
+else
+    mask_file = [pname, fname];
+    mask = load_nii(mask_file);
+    handles.mask = mask.img;
+    
+    guidata(hObject, handles);
+end
