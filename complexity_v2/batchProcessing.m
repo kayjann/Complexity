@@ -2133,8 +2133,9 @@ for i=1:length(files)
     imgStruct = niftiread(fullpath);
     opStruct = struct([]);
     opStruct(i).img_4D = imgStruct;
-    opStruct(i).bName = files(i).name;
-    %opStruct(i).voxDim = size(imgStruct,3);
+    [p,f,e] = fileparts(files(i).name);
+    [p,f,e] = fileparts(f);
+    opStruct(i).bName = f;
     %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
     %    msgbox('Mask and Input image dimensions do not match');
     %end
@@ -2142,7 +2143,6 @@ for i=1:length(files)
     gunzip(fullpath,folder);
     tmp_files = dir(folder);
     for i=1:length(tmp_files)
-        disp(tmp_files(i).name);
         if strcmp(tmp_files(i).name,'.')
             continue
         elseif strcmp(tmp_files(i).name,'..')
@@ -2151,7 +2151,6 @@ for i=1:length(files)
         disp('Loading nii');
         imgStruct = load_nii_hdr([folder, filesep, tmp_files(i).name]);
         delete([folder, filesep, tmp_files(i).name]);
-        disp(imgStruct);
         opStruct(i).originator = imgStruct.hist.originator(1:3);
         opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
     end
@@ -2159,8 +2158,6 @@ end
 handles.scans = opStruct;
 guidata(hObject, handles);
 disp('Done reading input images');
-
-
     
 function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
@@ -2171,7 +2168,6 @@ for k=1:length(handles.arr)
     handle=handles.arr(k);
     disp(handle.baseName)
     ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
-
 end
 % --- Executes on button press in btn_run.
 %function btn_run_Callback(hObject, eventdata, handles)
@@ -2233,6 +2229,5 @@ else
     mask_file = [pname, fname];
     mask = load_nii(mask_file);
     handles.mask = mask.img;
-    
     guidata(hObject, handles);
 end
