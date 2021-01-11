@@ -2125,8 +2125,31 @@ subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
 
+% %if 3d:
+% for i=1:length(files)
+%      folders{i}=[files(i).folder];
+%     end
+% 
+%     temp = unique(folders,'stable');
+%     subFolders=temp;
+%     disp(subFolders); 
+%     imgStruct = readImages4D(subFolders{1});
+%     handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
+%     for k = 1 :  length(subFolders)
+%         thisSubFolder = subFolders{k};
+%         fprintf('Found sub: %s.\n', thisSubFolder);
+%         imgStruct = readImages4D(thisSubFolder);
+%         handle(k).img_4D = imgStruct.img_4D;
+%         handle(k).baseName = imgStruct.bName;
+%         handle(k).imgVoxDim = imgStruct.voxDim;
+%         handle(k).size=length(subFolders);   
+%         handle(k).brainMask=handles.brainMask;
+%     end
+%     handles.arr=handle;
+%     guidata(hObject,handles);
+%     disp('done reading input images');
 
-
+% else if 4d
 for i=1:length(files)
     fullpath = [files(i).folder,filesep,files(i).name];
     disp(fullpath);
@@ -2164,11 +2187,226 @@ function btn_run_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 disp(length(handles.arr));
-for k=1:length(handles.arr)
+if handles.lempelZiv
+    C = sum(strcmp(fieldnames(handles),'lempelZiv_m_start'));
+    D = sum(strcmp(fieldnames(handles),'lempelZiv_m_end'));
+    E = sum(strcmp(fieldnames(handles),'lempelZiv_r_start'));
+    F = sum(strcmp(fieldnames(handles),'lempelZiv_r_end'));
+    G = sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'lempelZiv_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
+    set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
+    set(handles.edit_lempelZiv_r_start, 'Enable', 'off');
+    set(handles.edit_lempelZiv_r_end, 'Enable', 'off');
+    set(handles.edit_lempelZiv_scale_start, 'Enable', 'off');
+    set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        lempel_ziv_call(handles, handles.brainMask, handles.lempelZiv_m_start, handles.lempelZiv_m_end, handles.lempelZiv_r_start, handles.lempelZiv_r_end, handles.lempelZiv_scale_start, handles.lempelZiv_scale_end);
+    end
+    
+end
+
+if handles.hurstExp
+    C = sum(strcmp(fieldnames(handles),'hurstExp_m_start'));
+    D = sum(strcmp(fieldnames(handles),'hurstExp_m_end'));
+    E = sum(strcmp(fieldnames(handles),'hurstExp_r_start'));
+    F = sum(strcmp(fieldnames(handles),'hurstExp_r_end'));
+    G = sum(strcmp(fieldnames(handles),'hurstExp_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'hurstExp_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_hurstExp_m_start, 'Enable', 'off');
+    set(handles.edit_hurstExp_m_end, 'Enable', 'off');
+    set(handles.edit_hurstExp_r_start, 'Enable', 'off');
+    set(handles.edit_hurstExp_r_end, 'Enable', 'off');
+    set(handles.edit_hurstExp_scale_start, 'Enable', 'off');
+    set(handles.edit_hurstExp_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        %call or hurst
+    end
+end
+if handles.LLExp
+    C = sum(strcmp(fieldnames(handles),'LLExp_m_start'));
+    D = sum(strcmp(fieldnames(handles),'LLExp_m_end'));
+    E = sum(strcmp(fieldnames(handles),'LLExp_r_start'));
+    F = sum(strcmp(fieldnames(handles),'LLExp_r_end'));
+    G = sum(strcmp(fieldnames(handles),'LLExp_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'LLExp_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_LLExp_m_start, 'Enable', 'off');
+    set(handles.edit_LLExp_m_end, 'Enable', 'off');
+    set(handles.edit_LLExp_r_start, 'Enable', 'off');
+    set(handles.edit_LLExp_r_end, 'Enable', 'off');
+    set(handles.edit_LLExp_scale_start, 'Enable', 'off');
+    set(handles.edit_LLExp_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        %ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+        %call for llexp
+    end
+end
+if handles.fracDim
+    C = sum(strcmp(fieldnames(handles),'fracDim_m_start'));
+    D = sum(strcmp(fieldnames(handles),'fracDim_m_end'));
+    E = sum(strcmp(fieldnames(handles),'fracDim_r_start'));
+    F = sum(strcmp(fieldnames(handles),'fracDim_r_end'));
+    G = sum(strcmp(fieldnames(handles),'fracDim_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'fracDim_scale_end'));
+    I = sum(strcmp(fieldnames(handles),'fracDim_k_start'));
+    J = sum(strcmp(fieldnames(handles),'fracDim_k_end'));
+    ipChk = [A B C D E F G H I J];
+    clear C D E F G H I J
+    set(handles.edit_fracDim_m_start, 'Enable', 'off');
+    set(handles.edit_fracDim_m_end, 'Enable', 'off');
+    set(handles.edit_fracDim_r_start, 'Enable', 'off');
+    set(handles.edit_fracDim_r_end, 'Enable', 'off');
+    set(handles.edit_fracDim_scale_start, 'Enable', 'off');
+    set(handles.edit_fracDim_scale_end, 'Enable', 'off');
+    set(handles.edit_fracDim_k_start, 'Enable', 'off');
+    set(handles.edit_fracDim_k_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
     handle=handles.arr(k);
     disp(handle.baseName)
-    ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+    frac_dim_call(handles, handles.brainMask, handles.fracDim_k_start, handles.fracDim_k_end, handles.fracDim_scale_start);
+    end
+    
 end
+
+if handles.apEn
+    C = sum(strcmp(fieldnames(handles),'apEn_m_start'));
+    D = sum(strcmp(fieldnames(handles),'apEn_m_end'));
+    E = sum(strcmp(fieldnames(handles),'apEn_r_start'));
+    F = sum(strcmp(fieldnames(handles),'apEn_r_end'));
+    G = sum(strcmp(fieldnames(handles),'apEn_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'apEn_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_apEn_m_start, 'Enable', 'off');
+    set(handles.edit_apEn_m_end, 'Enable', 'off');
+    set(handles.edit_apEn_r_start, 'Enable', 'off');
+    set(handles.edit_apEn_r_end, 'Enable', 'off');
+    set(handles.edit_apEn_scale_start, 'Enable', 'off');
+    set(handles.edit_apEn_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        ap_en_call(handles, handles.brainMask, handles.apEn_m_start, handles.apEn_m_end, handles.apEn_r_start, handles.apEn_r_end, handles.apEn_scale_start, handles.apEn_scale_end);
+        %ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+    end
+    
+end
+if handles.sampEn
+    C = sum(strcmp(fieldnames(handles),'sampEn_m_start'));
+    D = sum(strcmp(fieldnames(handles),'sampEn_m_end'));
+    E = sum(strcmp(fieldnames(handles),'sampEn_r_start'));
+    F = sum(strcmp(fieldnames(handles),'sampEn_r_end'));
+    G = sum(strcmp(fieldnames(handles),'sampEn_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'sampEn_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_sampEn_m_start, 'Enable', 'off');
+    set(handles.edit_sampEn_m_end, 'Enable', 'off');
+    set(handles.edit_sampEn_r_start, 'Enable', 'off');
+    set(handles.edit_sampEn_r_end, 'Enable', 'off');
+    set(handles.edit_sampEn_scale_start, 'Enable', 'off');
+    set(handles.edit_sampEn_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        samp_en_call(handles, handles.brainMask, handles.sampEn_m_start, handles.sampEn_m_end, handles.sampEn_r_start, handles.sampEn_r_end, handles.sampEn_scale_start, handles.sampEn_scale_end);
+    end
+    
+end
+if handles.waveletMSE
+    C = sum(strcmp(fieldnames(handles),'waveletMSE_m_start'));
+    D = sum(strcmp(fieldnames(handles),'waveletMSE_m_end'));
+    E = sum(strcmp(fieldnames(handles),'waveletMSE_r_start'));
+    F = sum(strcmp(fieldnames(handles),'waveletMSE_r_end'));
+    G = sum(strcmp(fieldnames(handles),'waveletMSE_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'waveletMSE_scale_end'));
+    ipChk = [A B C D E F G H];
+    clear C D E F G H 
+    set(handles.edit_waveletMSE_m_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_m_end, 'Enable', 'off');
+    set(handles.edit_waveletMSE_r_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_r_end, 'Enable', 'off');
+    set(handles.edit_waveletMSE_scale_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_scale_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        %call for wavelength mse
+    end
+    
+end
+if handles.fuzzyEn
+    C = sum(strcmp(fieldnames(handles),'fuzzyEn_m_start'));
+    D = sum(strcmp(fieldnames(handles),'fuzzyEn_m_end'));
+    E = sum(strcmp(fieldnames(handles),'fuzzyEn_r_start'));
+    F = sum(strcmp(fieldnames(handles),'fuzzyEn_r_end'));
+    G = sum(strcmp(fieldnames(handles),'fuzzyEn_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'fuzzyEn_scale_end'));
+    I = sum(strcmp(fieldnames(handles),'fuzzyEn_n_start'));
+    J = sum(strcmp(fieldnames(handles),'fuzzyEn_n_end'));
+    K = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_start'));
+    L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
+    ipChk = [A B C D E F G H I J K L];
+    clear C D E F G H I J K L
+    set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_r_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_r_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_scale_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_scale_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');    
+end
+if handles.permEn
+    C = sum(strcmp(fieldnames(handles),'permEn_m_start'));
+    D = sum(strcmp(fieldnames(handles),'permEn_m_end'));
+    E = sum(strcmp(fieldnames(handles),'permEn_r_start'));
+    F = sum(strcmp(fieldnames(handles),'permEn_r_end'));
+    G = sum(strcmp(fieldnames(handles),'permEn_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'permEn_scale_end'));
+    I = sum(strcmp(fieldnames(handles),'permEn_ord_start'));
+    J = sum(strcmp(fieldnames(handles),'permEn_ord_end'));
+    K = sum(strcmp(fieldnames(handles),'permEn_delay_start'));
+    L = sum(strcmp(fieldnames(handles),'permEn_delay_end'));
+    ipChk = [A B C D E F G H I J K L];
+    clear C D E F G H I J K L
+    set(handles.edit_permEn_m_start, 'Enable', 'off');
+    set(handles.edit_permEn_m_end, 'Enable', 'off');
+    set(handles.edit_permEn_r_start, 'Enable', 'off');
+    set(handles.edit_permEn_r_end, 'Enable', 'off');
+    set(handles.edit_permEn_scale_start, 'Enable', 'off');
+    set(handles.edit_permEn_scale_end, 'Enable', 'off');
+    set(handles.edit_permEn_n_start, 'Enable', 'off');
+    set(handles.edit_permEn_n_end, 'Enable', 'off');
+    set(handles.edit_permEn_tau_start, 'Enable', 'off');
+    set(handles.edit_permEn_tau_end, 'Enable', 'off');
+    for k=1:length(handles.arr)
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        %call for perm en
+    end
+end
+% for k=1:length(handles.arr)
+%     handle=handles.arr(k);
+%     disp(handle.baseName)
+%     ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+% end
+
+
 % --- Executes on button press in btn_run.
 %function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_run (see GCBO)
