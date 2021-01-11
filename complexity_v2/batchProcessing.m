@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 10-Jan-2021 23:37:05
+% Last Modified by GUIDE v2.5 11-Jan-2021 01:23:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -2216,6 +2216,7 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
 % guidata(hObject, handles);
 dirName = uigetdir;
 handles.outputDir = dirName;
+set(handles.edit_outputDir, 'string', handles.outputDir);
 mkdir([handles.outputDir,filesep,'tmp']);
 guidata(hObject, handles);
 
