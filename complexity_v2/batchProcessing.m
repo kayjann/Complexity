@@ -1955,6 +1955,7 @@ function btn_inputDir_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 dirName = uigetdir;
 handles.inputDir = dirName;
+set(handles.edit_inputDir, 'string', handles.inputDir);
 guidata(hObject, handles);
 % ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
 % if isempty(ipFormat)
