@@ -2124,69 +2124,76 @@ file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
+disp(filePattern)
+switch lower(filePattern)
+    case '*.nii'
+        disp('inside 3d case');
+        for i=1:length(files)
+             folders{i}=[files(i).folder];
+        end
 
-% %if 3d:
-for i=1:length(files)
-     folders{i}=[files(i).folder];
-    end
+        temp = unique(folders,'stable');
+        subFolders=temp;
+        disp(subFolders); 
+        imgStruct = readImages4D(subFolders{1});
+        %handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
+        for k = 1 :  length(subFolders)
+            thisSubFolder = subFolders{k};
+            fprintf('Found sub: %s.\n', thisSubFolder);
+            imgStruct = readImages4D(thisSubFolder);
+            handle(k).img_4D = imgStruct.img_4D;
+            handle(k).baseName = imgStruct.bName;
+            handle(k).imgVoxDim = imgStruct.voxDim;
+            handle(k).size=length(subFolders);   
+            handle(k).brainMask=handles.mask;
+        end
+        handles.scans=handle;
+        guidata(hObject,handles);
 
-    temp = unique(folders,'stable');
-    subFolders=temp;
-    disp(subFolders); 
-    imgStruct = readImages4D(subFolders{1});
-    %handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
-    for k = 1 :  length(subFolders)
-        thisSubFolder = subFolders{k};
-        fprintf('Found sub: %s.\n', thisSubFolder);
-        imgStruct = readImages4D(thisSubFolder);
-        handle(k).img_4D = imgStruct.img_4D;
-        handle(k).baseName = imgStruct.bName;
-        handle(k).imgVoxDim = imgStruct.voxDim;
-        handle(k).size=length(subFolders);   
-        handle(k).brainMask=handles.brainMask;
-    end
-    handles.arr=handle;
-    guidata(hObject,handles);
-    disp('done reading input images');
+    case '*.nii.gz'
+        disp('inside 4d case');
+        opStruct = struct([]);
+        for i=1:length(files)
+            fullpath = [files(i).folder,filesep,files(i).name];
+            disp(fullpath);
+            imgStruct = niftiread(fullpath);
+            opStruct(i).img_4D = imgStruct;
+            [p,f,e] = fileparts(files(i).name);
+            [p,f,e] = fileparts(f);
+            opStruct(i).bName = f;
+            %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
+            %    msgbox('Mask and Input image dimensions do not match');
+            %end
+            folder = [handles.outputDir,filesep,'tmp'];
+            gunzip(fullpath,folder);
+            tmp_files = dir(folder);
+            for j=1:length(tmp_files)
+                if strcmp(tmp_files(j).name,'.')
+                    continue
+                elseif strcmp(tmp_files(j).name,'..')
+                    continue
+                end
+                disp('Loading nii');
+                imgStruct = load_nii_hdr([folder, filesep, tmp_files(j).name]);
+                delete([folder, filesep, tmp_files(j).name]);
+                opStruct(i).originator = imgStruct.hist.originator(1:3);
+                opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
+            end
+        end
+        handles.scans = opStruct;
+        %disp(handles.scans(1));
+        %disp(handles.scans(2));
+        %disp(handles.scans(3));
+        guidata(hObject, handles);
+        
+end
+disp('Done reading input images');
 
-% else if 4d
-% for i=1:length(files)
-%     fullpath = [files(i).folder,filesep,files(i).name];
-%     disp(fullpath);
-%     imgStruct = niftiread(fullpath);
-%     opStruct = struct([]);
-%     opStruct(i).img_4D = imgStruct;
-%     [p,f,e] = fileparts(files(i).name);
-%     [p,f,e] = fileparts(f);
-%     opStruct(i).bName = f;
-%     %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
-%     %    msgbox('Mask and Input image dimensions do not match');
-%     %end
-%     folder = [handles.outputDir,filesep,'tmp'];
-%     gunzip(fullpath,folder);
-%     tmp_files = dir(folder);
-%     for i=1:length(tmp_files)
-%         if strcmp(tmp_files(i).name,'.')
-%             continue
-%         elseif strcmp(tmp_files(i).name,'..')
-%             continue
-%         end
-%         disp('Loading nii');
-%         imgStruct = load_nii_hdr([folder, filesep, tmp_files(i).name]);
-%         delete([folder, filesep, tmp_files(i).name]);
-%         opStruct(i).originator = imgStruct.hist.originator(1:3);
-%         opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
-%     end
-% end
-% handles.scans = opStruct;
-% guidata(hObject, handles);
-% disp('Done reading input images');
-    
 function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp(length(handles.arr));
+
 if handles.lempelZiv
     C = sum(strcmp(fieldnames(handles),'lempelZiv_m_start'));
     D = sum(strcmp(fieldnames(handles),'lempelZiv_m_end'));
@@ -2194,7 +2201,7 @@ if handles.lempelZiv
     F = sum(strcmp(fieldnames(handles),'lempelZiv_r_end'));
     G = sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'));
     H = sum(strcmp(fieldnames(handles),'lempelZiv_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
     set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
@@ -2217,7 +2224,7 @@ if handles.hurstExp
     F = sum(strcmp(fieldnames(handles),'hurstExp_r_end'));
     G = sum(strcmp(fieldnames(handles),'hurstExp_scale_start'));
     H = sum(strcmp(fieldnames(handles),'hurstExp_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_hurstExp_m_start, 'Enable', 'off');
     set(handles.edit_hurstExp_m_end, 'Enable', 'off');
@@ -2238,7 +2245,7 @@ if handles.LLExp
     F = sum(strcmp(fieldnames(handles),'LLExp_r_end'));
     G = sum(strcmp(fieldnames(handles),'LLExp_scale_start'));
     H = sum(strcmp(fieldnames(handles),'LLExp_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_LLExp_m_start, 'Enable', 'off');
     set(handles.edit_LLExp_m_end, 'Enable', 'off');
@@ -2262,7 +2269,7 @@ if handles.fracDim
     H = sum(strcmp(fieldnames(handles),'fracDim_scale_end'));
     I = sum(strcmp(fieldnames(handles),'fracDim_k_start'));
     J = sum(strcmp(fieldnames(handles),'fracDim_k_end'));
-    ipChk = [A B C D E F G H I J];
+    ipChk = [C D E F G H I J];
     clear C D E F G H I J
     set(handles.edit_fracDim_m_start, 'Enable', 'off');
     set(handles.edit_fracDim_m_end, 'Enable', 'off');
@@ -2287,7 +2294,7 @@ if handles.apEn
     F = sum(strcmp(fieldnames(handles),'apEn_r_end'));
     G = sum(strcmp(fieldnames(handles),'apEn_scale_start'));
     H = sum(strcmp(fieldnames(handles),'apEn_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_apEn_m_start, 'Enable', 'off');
     set(handles.edit_apEn_m_end, 'Enable', 'off');
@@ -2295,13 +2302,23 @@ if handles.apEn
     set(handles.edit_apEn_r_end, 'Enable', 'off');
     set(handles.edit_apEn_scale_start, 'Enable', 'off');
     set(handles.edit_apEn_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
-        disp(handle.baseName)
-        ap_en_call(handles, handles.brainMask, handles.apEn_m_start, handles.apEn_m_end, handles.apEn_r_start, handles.apEn_r_end, handles.apEn_scale_start, handles.apEn_scale_end);
-        %ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
-    end
-    
+    disp(length(handles.scans));
+    for i = 1:length(handles.scans)
+        %<----for 3d testing--->
+%           handle=handles.scans(i);
+%           ap_en_call(handle, handles.mask, handles.apEn_m_start, handles.apEn_m_end, handles.apEn_r_start, handles.apEn_r_end, handles.apEn_scale_start, handles.apEn_scale_end);
+        %<--------------------->    
+        scan_data = struct();
+        scan_data.img_4D = handles.scans(i).img_4D;
+        disp(size(handles.scans(i).img_4D));
+        scan_data.outputDir = handles.outputDir;
+        scan_data.baseName = handles.scans(i).bName;
+        scan_data.imgVoxDim = handles.scans(i).voxDim;
+        scan_data.originator = handles.scans(i).originator;
+        disp(['Computing ApEn for ',scan_data.baseName]);
+        ap_en_call(scan_data, handles.mask, handles.apEn_m_start, handles.apEn_m_end, handles.apEn_r_start, handles.apEn_r_end, handles.apEn_scale_start, handles.apEn_scale_end);
+        
+    end    
 end
 if handles.sampEn
     C = sum(strcmp(fieldnames(handles),'sampEn_m_start'));
@@ -2310,7 +2327,7 @@ if handles.sampEn
     F = sum(strcmp(fieldnames(handles),'sampEn_r_end'));
     G = sum(strcmp(fieldnames(handles),'sampEn_scale_start'));
     H = sum(strcmp(fieldnames(handles),'sampEn_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_sampEn_m_start, 'Enable', 'off');
     set(handles.edit_sampEn_m_end, 'Enable', 'off');
@@ -2332,7 +2349,7 @@ if handles.waveletMSE
     F = sum(strcmp(fieldnames(handles),'waveletMSE_r_end'));
     G = sum(strcmp(fieldnames(handles),'waveletMSE_scale_start'));
     H = sum(strcmp(fieldnames(handles),'waveletMSE_scale_end'));
-    ipChk = [A B C D E F G H];
+    ipChk = [C D E F G H];
     clear C D E F G H 
     set(handles.edit_waveletMSE_m_start, 'Enable', 'off');
     set(handles.edit_waveletMSE_m_end, 'Enable', 'off');
@@ -2358,7 +2375,7 @@ if handles.fuzzyEn
     J = sum(strcmp(fieldnames(handles),'fuzzyEn_n_end'));
     K = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_start'));
     L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
-    ipChk = [A B C D E F G H I J K L];
+    ipChk = [C D E F G H I J K L];
     clear C D E F G H I J K L
     set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
     set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
@@ -2382,7 +2399,7 @@ if handles.permEn
     J = sum(strcmp(fieldnames(handles),'permEn_ord_end'));
     K = sum(strcmp(fieldnames(handles),'permEn_delay_start'));
     L = sum(strcmp(fieldnames(handles),'permEn_delay_end'));
-    ipChk = [A B C D E F G H I J K L];
+    ipChk = [C D E F G H I J K L];
     clear C D E F G H I J K L
     set(handles.edit_permEn_m_start, 'Enable', 'off');
     set(handles.edit_permEn_m_end, 'Enable', 'off');
@@ -2465,7 +2482,7 @@ if (fname==0 & pname==0)
     disp('Brain mask not selected');
 else
     mask_file = [pname, fname];
-    mask = load_nii(mask_file);
+    mask = load_untouch_nii(mask_file);
     handles.mask = mask.img;
     guidata(hObject, handles);
 end
