@@ -2125,39 +2125,62 @@ subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
 
-
-
+% %if 3d:
 for i=1:length(files)
-    fullpath = [files(i).folder,filesep,files(i).name];
-    disp(fullpath);
-    imgStruct = niftiread(fullpath);
-    opStruct = struct([]);
-    opStruct(i).img_4D = imgStruct;
-    [p,f,e] = fileparts(files(i).name);
-    [p,f,e] = fileparts(f);
-    opStruct(i).bName = f;
-    %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
-    %    msgbox('Mask and Input image dimensions do not match');
-    %end
-    folder = [handles.outputDir,filesep,'tmp'];
-    gunzip(fullpath,folder);
-    tmp_files = dir(folder);
-    for i=1:length(tmp_files)
-        if strcmp(tmp_files(i).name,'.')
-            continue
-        elseif strcmp(tmp_files(i).name,'..')
-            continue
-        end
-        disp('Loading nii');
-        imgStruct = load_nii_hdr([folder, filesep, tmp_files(i).name]);
-        delete([folder, filesep, tmp_files(i).name]);
-        opStruct(i).originator = imgStruct.hist.originator(1:3);
-        opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
+     folders{i}=[files(i).folder];
     end
-end
-handles.scans = opStruct;
-guidata(hObject, handles);
-disp('Done reading input images');
+
+    temp = unique(folders,'stable');
+    subFolders=temp;
+    disp(subFolders); 
+    imgStruct = readImages4D(subFolders{1});
+    handles.brainMask=select_brain_mask(hObject,handles,imgStruct);
+    for k = 1 :  length(subFolders)
+        thisSubFolder = subFolders{k};
+        fprintf('Found sub: %s.\n', thisSubFolder);
+        imgStruct = readImages4D(thisSubFolder);
+        handle(k).img_4D = imgStruct.img_4D;
+        handle(k).baseName = imgStruct.bName;
+        handle(k).imgVoxDim = imgStruct.voxDim;
+        handle(k).size=length(subFolders);   
+        handle(k).brainMask=handles.brainMask;
+    end
+    handles.arr=handle;
+    guidata(hObject,handles);
+    disp('done reading input images');
+
+% else if 4d
+% for i=1:length(files)
+%     fullpath = [files(i).folder,filesep,files(i).name];
+%     disp(fullpath);
+%     imgStruct = niftiread(fullpath);
+%     opStruct = struct([]);
+%     opStruct(i).img_4D = imgStruct;
+%     [p,f,e] = fileparts(files(i).name);
+%     [p,f,e] = fileparts(f);
+%     opStruct(i).bName = f;
+%     %if (size(handles.mask) ~= size(opStruct(i).img_4D(:,:,:,1)))
+%     %    msgbox('Mask and Input image dimensions do not match');
+%     %end
+%     folder = [handles.outputDir,filesep,'tmp'];
+%     gunzip(fullpath,folder);
+%     tmp_files = dir(folder);
+%     for i=1:length(tmp_files)
+%         if strcmp(tmp_files(i).name,'.')
+%             continue
+%         elseif strcmp(tmp_files(i).name,'..')
+%             continue
+%         end
+%         disp('Loading nii');
+%         imgStruct = load_nii_hdr([folder, filesep, tmp_files(i).name]);
+%         delete([folder, filesep, tmp_files(i).name]);
+%         opStruct(i).originator = imgStruct.hist.originator(1:3);
+%         opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
+%     end
+% end
+% handles.scans = opStruct;
+% guidata(hObject, handles);
+% disp('Done reading input images');
     
 function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
@@ -2226,7 +2249,7 @@ if handles.LLExp
     for k=1:length(handles.arr)
         handle=handles.arr(k);
         disp(handle.baseName)
-        ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+        %ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
         %call for llexp
     end
 end
@@ -2372,17 +2395,18 @@ if handles.permEn
     set(handles.edit_permEn_tau_start, 'Enable', 'off');
     set(handles.edit_permEn_tau_end, 'Enable', 'off');
     for k=1:length(handles.arr)
-    handle=handles.arr(k);
-     disp(handle.baseName)
-    ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+        handle=handles.arr(k);
+        disp(handle.baseName)
+        %call for perm en
+    end
 end
-end
+% for k=1:length(handles.arr)
+%     handle=handles.arr(k);
+%     disp(handle.baseName)
+%     ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
+% end
 
-for k=1:length(handles.arr)
-    handle=handles.arr(k);
-    disp(handle.baseName)
-    ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
-end
+
 % --- Executes on button press in btn_run.
 %function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_run (see GCBO)

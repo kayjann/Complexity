@@ -291,33 +291,6 @@ for order = ord_start:ord_scale:ord_end
         save_nii(niiStruct, opFname, []);
     end
 end
-
-function fuzzy_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
-imgSize = size(mask);
-brainVox = find(mask == max(mask(:)));
-for m = m_start:m_scale:m_end
-    for r = r_start:r_scale:r_end
-        FuzzEn = zeros(imgSize);
-        msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
-        h = waitbar(0,msg);
-        nFail = 0;
-        for vox = 1:length(brainVox)
-            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-            TS1 = squeeze(handles.img_4D(row, col, sl, :));
-            r_val = r * std(double(TS1));
-            tmp = FuzEn(TS1,m, r_val,1);
-            FuzzEn(row, col, sl) = tmp(1);
-            nFail = nFail + tmp(1);
-            waitbar(vox/length(brainVox));
-        end
-        close(h);
-        opFname = [handles.opFolder, filesep, handles.baseName, 'FuzzyEn_m', ...
-            num2str(m), '_r', num2str(r*100), 'per','.nii'];
-        niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
-        niiStruct.hdr.hk.data_type = 'float64';
-        save_nii(niiStruct, opFname, []);
-    end
-end
 % --- Executes on button press in pb_run.
 function pb_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
@@ -468,7 +441,6 @@ if handles.fuzzyEn
     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
     %set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
     %set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');
-    fuzzy_en_call(handles, handles.brainMask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end);
     
 end
 if handles.permEn
