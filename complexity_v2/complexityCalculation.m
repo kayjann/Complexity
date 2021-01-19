@@ -134,6 +134,7 @@ function pb_brainMask_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_brainMask (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 [fname, pname] = uigetfile('*.*','Select the brain mask');
 if (fname==0 & pname==0)
     disp('Brain mask not selected');

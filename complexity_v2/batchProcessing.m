@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 11-Jan-2021 01:23:59
+% Last Modified by GUIDE v2.5 12-Jan-2021 23:25:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -2477,12 +2477,46 @@ function pb_brainMask_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_brainMask (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[fname, pname] = uigetfile('*.*','Select the brain mask');
-if (fname==0 & pname==0)
-    disp('Brain mask not selected');
+ipFormat = questdlg('How many brain mask would you like to select?', ...
+    'Brain Mask Selection','Single','Multiple','Single');
+if isempty(ipFormat)
+    disp('Please choose brain mask/s');
 else
-    mask_file = [pname, fname];
-    mask = load_untouch_nii(mask_file);
-    handles.mask = mask.img;
-    guidata(hObject, handles);
+    if (strcmp(ipFormat,'Single')==1)  
+        [fname, pname] = uigetfile('*.*','Select the brain mask');
+        if (fname==0 & pname==0)
+            disp('Brain mask not selected');
+        else
+            mask_file = [pname, fname];
+            mask = load_untouch_nii(mask_file);
+            handles.mask = mask.img;
+            handles.batchmask_flag=0;
+            guidata(hObject, handles);
+        end
+    else
+        
+                [fname, pname]=uigetfile('*','Select the Masks(s)','MultiSelect','on');
+                if (length(fname)==0)
+                    disp('No image input selected');
+                else
+                    
+                    for i=1:length(fname)
+                        mask_file=strcat(pname,fname{i});
+                        disp(mask_file)
+                        mask_arr(i)=load_untouch_nii(mask_file);
+                    end
+                    handles.mask_arr=mask_arr;
+                    handles.batchmask_flag=1;
+                    guidata(hObject, handles);
+                end
+                  
+       
+    end
 end
+
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
