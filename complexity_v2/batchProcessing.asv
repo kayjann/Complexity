@@ -2305,12 +2305,10 @@ if handles.apEn
     set(handles.edit_apEn_scale_start, 'Enable', 'off');
     set(handles.edit_apEn_scale_end, 'Enable', 'off');
     disp(length(handles.scans));
-    
+    handle.output
     for i = 1:length(handles.scans)
         %<----for 3d testing--->
            handle=handles.scans(i);
-           handle.outputDir=handles.outputDir;
-           disp(handles.outputDir);
             if(handles.batchmask_flag==1)
                 handles.mask=handles.mask_arr(i).img;
             end
