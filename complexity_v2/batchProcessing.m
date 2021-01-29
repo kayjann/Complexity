@@ -2312,7 +2312,7 @@ if handles.apEn
            handle.outputDir=handles.outputDir;
            disp(handles.outputDir);
             if(handles.batchmask_flag==1)
-                handles.mask=handles.mask_arr(i).img;
+                handles.mask=load_untouch_nii(handles.mask_arr(i)).img;
             end
            ap_en_call(handle, handles.mask, handles.apEn_m_start, handles.apEn_m_end, handles.apEn_r_start, handles.apEn_r_end, handles.apEn_scale_start, handles.apEn_scale_end);
         %<--------------------->    
@@ -2514,7 +2514,8 @@ else
                     for i=1:length(fname)
                         mask_file=strcat(pname,fname{i});
                         disp(mask_file)
-                        mask_arr(i)=load_untouch_nii(mask_file);
+                        %mask_arr(i)=load_untouch_nii(mask_file);
+                        mask_arr(i)=mask_file;
                     end
                     handles.mask_arr=mask_arr;
                     handles.batchmask_flag=1;
@@ -2523,6 +2524,8 @@ else
     
     elseif(strcmp(ipFormat,'Batch')==1)
            handles.mask_arr=maskbatchProcessing(handles);
+           handles.batchmask_flag=1;
+           guidata(hObject, handles);
            disp(handles.mask_arr);
     end
    
