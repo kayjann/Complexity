@@ -22,7 +22,7 @@ function varargout = complexity(varargin)
 
 % Edit the above text to modify the response to help complexity
 
-% Last Modified by GUIDE v2.5 24-Dec-2020 04:37:27
+% Last Modified by GUIDE v2.5 03-Feb-2021 22:05:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,7 @@ clBlue = [30/255 136/255 229/255];
 %setbgcolor(handles.pb_visualization, clBlue);
 %setbgcolor(handles.pb_batchProcessing, clBlue);
 axes(handles.axes_logo);
-image(imread('LOFT_logo.png'));
+image(imread('LOFTlogo.png'));
 set(handles.axes_logo,'Visible','off');
 axes(handles.axes_fractal);
 image(imread('brain_fractal.png'));
@@ -122,5 +122,12 @@ function pb_help_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pb_quit.
 function pb_quit_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_quit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
