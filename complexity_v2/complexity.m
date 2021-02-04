@@ -110,7 +110,7 @@ function pb_batchProcessing_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_batchProcessing (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+batchProcessing(handles);
 
 % --- Executes on button press in pb_help.
 function pb_help_Callback(hObject, eventdata, handles)
