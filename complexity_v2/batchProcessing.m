@@ -2013,6 +2013,9 @@ function edit_subjectPattern_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'TooltipString','For Example: enter btest*/ for selecting test case folders starting with the phrase btest')
+guidata(hObject,handles);
+
 
 
 
@@ -2036,7 +2039,8 @@ function edit_fmriPattern_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Example: enter *.nii to select all files with .nii extension in the subject folder')
+guidata(hObject,handles);
 
 
 function edit_filePattern_Callback(hObject, eventdata, handles)
@@ -2059,6 +2063,8 @@ function edit_filePattern_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
 
 
 

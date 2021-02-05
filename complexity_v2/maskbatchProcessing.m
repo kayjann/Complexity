@@ -201,28 +201,6 @@ end
 
 
 
-function edit_outputDir_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_outputDir (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_outputDir as text
-%        str2double(get(hObject,'String')) returns contents of edit_outputDir as a double
-
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_outputDir_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_outputDir (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
@@ -237,29 +215,33 @@ function btn_load_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 A = sum(strcmp(fieldnames(handles),'inputDir'));
-B = sum(strcmp(fieldnames(handles),'outputDir'));
-ipChk = [A B];
-clear A B;
+%B = sum(strcmp(fieldnames(handles),'outputDir'));
+ipChk = [A];
+clear A;
 subjectPattern = get(handles.edit_subjectPattern, 'String');
 fmriPattern = get(handles.edit_fmriPattern, 'String');
 filePattern = get(handles.edit_filePattern, 'String');
 subject_search = strcat(handles.inputDir,filesep,subjectPattern);
-file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern,filesep,filePattern);
+file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern,filePattern);
+disp(file_search)
+%file_search='C:\Users\Niyati\Desktop\on-campus\testcases\batchtest\btest*\rrBrainMASK*.nii';
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
 
-%switch lower(filePattern)
+disp(subjects)
     if contains(filePattern, '.nii')
   
         disp('inside 3d case');
         for i=1:length(files)
              masks{i}=strcat(files(i).folder,filesep,files(i).name);
         end
-    
+        
+        
         handles.mask_arr=masks;
         handles.batchmask_flag=1;
         maskBatch=masks
+        
         guidata(hObject, handles);
     end        
 
