@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 19-Jan-2021 17:31:48
+% Last Modified by GUIDE v2.5 09-Feb-2021 12:00:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -2549,3 +2549,17 @@ for i=1:length(files)
     final_files{i} = [files(i).folder, filesep, files(i).name];
 end
 displayImage(final_files);
+
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton12.
+function pushbutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

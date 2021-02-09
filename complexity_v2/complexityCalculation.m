@@ -187,6 +187,9 @@ save_nii(niiStruct, opFname, []);
 function frac_dim_call(handles, mask, k_start, k_end, scale)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
+if isEmpty(k_end)
+    disp('k_end empty')
+end
 for k = k_start:scale:k_end
     msg = ['calculating FracDim: k=', num2str(k)];
     h = waitbar(0,msg);

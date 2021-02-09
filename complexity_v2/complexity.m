@@ -63,9 +63,9 @@ clBlue = [30/255 136/255 229/255];
 axes(handles.axes_logo);
 image(imread('LOFTlogo.png'));
 set(handles.axes_logo,'Visible','off');
-axes(handles.axes_fractal);
-image(imread('brain_fractal.png'));
-set(handles.axes_fractal,'Visible','off');
+% axes(handles.axes_fractal);
+% image(imread('brain_fractal.png'));
+% set(handles.axes_fractal,'Visible','off');
 
 % UIWAIT makes complexity wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
