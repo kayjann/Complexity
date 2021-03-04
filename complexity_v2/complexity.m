@@ -22,7 +22,7 @@ function varargout = complexity(varargin)
 
 % Edit the above text to modify the response to help complexity
 
-% Last Modified by GUIDE v2.5 03-Feb-2021 22:05:08
+% Last Modified by GUIDE v2.5 03-Mar-2021 21:00:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -126,8 +126,14 @@ function pb_quit_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in pushbutton8.
-function pushbutton8_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton8 (see GCBO)
+% --- Executes on button press in btn_viewOutput.
+function btn_viewOutput_Callback(hObject, eventdata, handles)
+% hObject    handle to btn_viewOutput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+dirName = uigetdir;
+files = dir([dirName, filesep, '*.nii']);
+for i=1:length(files)
+    final_files{i} = [files(i).folder, filesep, files(i).name];
+end
+displayImage(final_files);
