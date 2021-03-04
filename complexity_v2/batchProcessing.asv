@@ -2507,7 +2507,6 @@ else
             mask_file = [pname, fname];
             mask = load_untouch_nii(mask_file);
             handles.mask = mask.img;
-            handles.mask_arr = [mask_file];
             handles.batchmask_flag=0;
             guidata(hObject, handles);
         end
@@ -2570,4 +2569,4 @@ function btn_viewInput_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_viewInput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-inputViewer(handles.scans, handles.mask_arr);
+inputViewer(handles., handles.mask_arr);
