@@ -164,11 +164,11 @@ mask = verifyImgOri(handles.img_4D(:,:,:,1),handles.brainMask);
 handles.brainMask = mask;
 guidata(hObject,handles);
 
-function lempel_ziv_call(handles, mask, m_start, m_end, r_start)
+function lempel_ziv_call(handles, mask, m_start, m_end, r_start, r_end, scale_start, scale_end)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 LempelZiv = zeros(imgSize);
-msg = ['calculating Lempel Ziv: r=', num2str(r)];
+msg = ['calculating Lempel Ziv: m=', num2str(m), ', r=', num2str(r)];
 h = waitbar(0,msg);
 nFail = 0; 
 for vox = 1:length(brainVox)
@@ -353,11 +353,7 @@ if handles.lempelZiv
     G = sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'));
     H = sum(strcmp(fieldnames(handles),'lempelZiv_scale_end'));
     ipChk = [A B C D E F G H];
-    if E==0
-        disp('r not selected');
-        msgbox('Please enter the value of r for Lempel-Ziv','Error Message');
-        return
-    end
+    
     clear C D E F G H 
 %     set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
 %     set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
@@ -367,7 +363,7 @@ if handles.lempelZiv
 %     set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
     
     
-    lempel_ziv_call(handles, handles.brainMask,handles.lempelZiv_r_start);
+    lempel_ziv_call(handles, handles.brainMask, handles.lempelZiv_m_start, handles.lempelZiv_m_end, handles.lempelZiv_r_start, handles.lempelZiv_r_end, handles.lempelZiv_scale_start, handles.lempelZiv_scale_end);
 end
 if handles.hurstExp
     C = sum(strcmp(fieldnames(handles),'hurstExp_m_start'));
@@ -523,12 +519,12 @@ if handles.waveletMSE
     H = sum(strcmp(fieldnames(handles),'waveletMSE_scale_end'));
     ipChk = [A B C D E F G H];
     clear C D E F G H 
-%     set(handles.edit_waveletMSE_m_start, 'Enable', 'off');
-%     set(handles.edit_waveletMSE_m_end, 'Enable', 'off');
-%     set(handles.edit_waveletMSE_r_start, 'Enable', 'off');
-%     set(handles.edit_waveletMSE_r_end, 'Enable', 'off');
-%     set(handles.edit_waveletMSE_scale_start, 'Enable', 'off');
-%     set(handles.edit_waveletMSE_scale_end, 'Enable', 'off');
+    set(handles.edit_waveletMSE_m_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_m_end, 'Enable', 'off');
+    set(handles.edit_waveletMSE_r_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_r_end, 'Enable', 'off');
+    set(handles.edit_waveletMSE_scale_start, 'Enable', 'off');
+    set(handles.edit_waveletMSE_scale_end, 'Enable', 'off');
 end
 if handles.fuzzyEn
     C = sum(strcmp(fieldnames(handles),'fuzzyEn_m_start'));
@@ -543,15 +539,15 @@ if handles.fuzzyEn
     %L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
     ipChk = [A B C D E F G H I J K];
     clear C D E F G H I J K
-%     set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_r_start, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_r_end, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_scale_start, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_scale_end, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_r_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_r_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_scale_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_scale_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
+    set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
     %set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');
     fuzzy_en_call(handles, handles.brainMask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end, handles.fuzzyEn_tau_start);
     
@@ -569,16 +565,16 @@ if handles.permEn
     L = sum(strcmp(fieldnames(handles),'permEn_delay_end'));
     ipChk = [A B C D E F G H I J K L];
     clear C D E F G H I J K L
-%     set(handles.edit_permEn_m_start, 'Enable', 'off');
-%     set(handles.edit_permEn_m_end, 'Enable', 'off');
-%     set(handles.edit_permEn_r_start, 'Enable', 'off');
-%     set(handles.edit_permEn_r_end, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_start, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_end, 'Enable', 'off');
-%     set(handles.edit_permEn_n_start, 'Enable', 'off');
-%     set(handles.edit_permEn_n_end, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_start, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_end, 'Enable', 'off');
+    set(handles.edit_permEn_m_start, 'Enable', 'off');
+    set(handles.edit_permEn_m_end, 'Enable', 'off');
+    set(handles.edit_permEn_r_start, 'Enable', 'off');
+    set(handles.edit_permEn_r_end, 'Enable', 'off');
+    set(handles.edit_permEn_scale_start, 'Enable', 'off');
+    set(handles.edit_permEn_scale_end, 'Enable', 'off');
+    set(handles.edit_permEn_n_start, 'Enable', 'off');
+    set(handles.edit_permEn_n_end, 'Enable', 'off');
+    set(handles.edit_permEn_tau_start, 'Enable', 'off');
+    set(handles.edit_permEn_tau_end, 'Enable', 'off');
 end
 % --- Executes on button press in checkbox_lempelZiv.
 function checkbox_lempelZiv_Callback(hObject, eventdata, handles)
