@@ -164,7 +164,7 @@ mask = verifyImgOri(handles.img_4D(:,:,:,1),handles.brainMask);
 handles.brainMask = mask;
 guidata(hObject,handles);
 
-function lempel_ziv_call(handles, mask, m_start, m_end, r_start)
+function lempel_ziv_call(handles, mask, r_start)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 LempelZiv = zeros(imgSize);
@@ -188,6 +188,33 @@ niiStruct.hdr.hk.data_type = 'float64';
 niiStruct.hdr.hist.originator(1:3) = handles.originator;
 save_nii(niiStruct, opFname, []);
 
+function hurst_ex_call(handles, mask,r_start,r_end,scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+
+
+for r=r_start:scale:r_end
+    Hurst_Ex = zeros(imgSize);
+    msg = ['calculating Hurst Exponent: r=', num2str(r)];
+    h = waitbar(0,msg);
+    nFail = 0; 
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        r_val = r * std(double(TS1));
+        tmp = hurst_exponent(TS2);
+        Hurst_Ex(row,col,sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
+    close(h);
+    opFname = [handles.opFolder, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
+    niiStruct = make_nii(Hurst_Ex, handles.imgVoxDim, [], 64, []);
+    niiStruct.hdr.hk.data_type = 'float64';
+    niiStruct.hdr.hist.originator(1:3) = handles.originator;
+    save_nii(niiStruct, opFname, []);
+end
 
 function frac_dim_call(handles, mask, k_start, k_end, scale)
 imgSize = size(mask);
@@ -301,7 +328,7 @@ for order = ord_start:ord_scale:ord_end
     end
 end
 
-function fuzzy_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale,t)
+function fuzzy_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale,n,t)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 for m = m_start:m_scale:m_end
@@ -314,7 +341,7 @@ for m = m_start:m_scale:m_end
             [row, col, sl] = ind2sub(imgSize, brainVox(vox));
             TS1 = squeeze(handles.img_4D(row, col, sl, :));
             r_val = r * std(double(TS1));
-            tmp = FuzEn(TS1,m, r_val,t);
+            tmp = FuzEn(TS1,m, r_val,n,t);
             FuzzEn(row, col, sl) = tmp(1);
             nFail = nFail + tmp(1);
             waitbar(vox/length(brainVox));
@@ -334,6 +361,7 @@ function pb_run_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 A = sum(strcmp(fieldnames(handles),'img_4D'));
 B = sum(strcmp(fieldnames(handles),'brainMask'));
+O = sum(strcmp(fieldnames(handles),'opFolder'));
 if A==0
    disp('Input not selected');
    msgbox('Input Directory was not selected','Error Message');
@@ -342,6 +370,12 @@ end
 if B==0
     disp('Brain mask not selected');
     msgbox('Brain Mask was not selected','Error Message');
+    return
+end
+
+if O==0
+    disp('Output Folder not selected');
+    msgbox('Please select an Output Directory','Error Message');
     return
 end
 if handles.lempelZiv
@@ -365,8 +399,6 @@ if handles.lempelZiv
 %     set(handles.edit_lempelZiv_r_end, 'Enable', 'off');
 %     set(handles.edit_lempelZiv_scale_start, 'Enable', 'off');
 %     set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
-    
-    
     lempel_ziv_call(handles, handles.brainMask,handles.lempelZiv_r_start);
 end
 if handles.hurstExp
@@ -377,6 +409,18 @@ if handles.hurstExp
     G = sum(strcmp(fieldnames(handles),'hurstExp_scale_start'));
     H = sum(strcmp(fieldnames(handles),'hurstExp_scale_end'));
     ipChk = [A B C D E F G H];
+    if E==0
+        disp('r not selected');
+        msgbox('r not selected for Hurst Exponent');
+        return 
+    end
+    if G==0
+       handles.hurstExp_scale_start=1
+       G=1
+    end
+    if F==0
+        handles.hurstExp_r_end=handles.hurstExp_r_start + handles.hurstExp_scale_start/2
+    end
     clear C D E F G H 
 %     set(handles.edit_hurstExp_m_start, 'Enable', 'off');
 %     set(handles.edit_hurstExp_m_end, 'Enable', 'off');
@@ -384,6 +428,7 @@ if handles.hurstExp
 %     set(handles.edit_hurstExp_r_end, 'Enable', 'off');
 %     set(handles.edit_hurstExp_scale_start, 'Enable', 'off');
 %     set(handles.edit_hurstExp_scale_end, 'Enable', 'off');
+    hurst_ex_call(handles, handles.brainMask,handles.hurstExp_r_start,handles.hurstExp_r_end,handles.hurstExp_scale_start);
 end
 if handles.LLExp
     C = sum(strcmp(fieldnames(handles),'LLExp_m_start'));
@@ -417,7 +462,7 @@ if handles.fracDim
        guidata(hObject, handles);
     end
     if J==0
-       handles.fracDim_k_end=handles.fracDim_scale_start+(K)/2;
+       handles.fracDim_k_end=handles.fracDim_scale_start+(handles.fracDim_scale_start)/2;
        guidata(hObject, handles);
     end
     
@@ -457,11 +502,11 @@ if handles.apEn
     end
     
     if D==0
-        handles.apEn_r_end=C+(G)/2;
+        handles.apEn_m_end=C+(handles.apEn_scale_start)/2;
         guidata(hObject, handles);
     end
     if F==0
-        handles.apEn_m_end=E+(H)/2;
+        handles.apEn_r_end=E+(handles.apEn_scale_end)/2;
         guidata(hObject, handles);
     end
     clear C D E F G H 
@@ -498,11 +543,11 @@ if handles.sampEn
     end
     
     if D==0
-        handles.sampEn_r_end=C+(G)/2;
+        handles.sampEn_m_end=sampEn_m_start+(handles.sampEn_scale_start)/2;
         guidata(hObject, handles);
     end
     if F==0
-        handles.sampEn_m_end=E+(H)/2;
+        handles.sampEn_r_end=handles.sampEn_r_start+(handles.sampEn_scale_end)/2;
         guidata(hObject, handles);
     end
     clear C D E F G H 
@@ -542,6 +587,40 @@ if handles.fuzzyEn
     K = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_start'));
     %L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
     ipChk = [A B C D E F G H I J K];
+    if C==0 || E==0
+        msgbox('Please select m and r for SampEn','Error Message')
+        return
+    end
+    if I==0
+        I=2;
+        handles.fuzzyEn_n_start=2;
+        guidata(hObject, handles); 
+    end
+    if K==0
+        K=1;
+        handles.fuzzyEn_tau_start=1;
+        guidata(hObject, handles); 
+    end
+    if G==0
+        G=1;
+        handles.fuzzyEn_scale_start=1;
+        guidata(hObject, handles);  
+    end
+    
+    if H==0
+        H=1;
+        handles.fuzzyEn_scale_end=1;
+        guidata(hObject, handles); 
+    end
+    
+    if D==0
+        handles.fuzzyEn_m_end=handles.fuzzyEn_m_start+(handles.fuzzyEn_scale_start/2);
+        guidata(hObject, handles);
+    end
+    if F==0
+        handles.fuzzyEn_r_end=handles.fuzzyEn_r_start+(handles.fuzzyEn_scale_end/2);
+        guidata(hObject, handles);
+    end
     clear C D E F G H I J K
 %     set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
@@ -553,7 +632,7 @@ if handles.fuzzyEn
 %     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
     %set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');
-    fuzzy_en_call(handles, handles.brainMask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end, handles.fuzzyEn_tau_start);
+    fuzzy_en_call(handles, handles.brainMask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end,handles.fuzzyEn_n_start, handles.fuzzyEn_tau_start);
     
 end
 if handles.permEn

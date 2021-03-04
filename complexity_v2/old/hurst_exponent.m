@@ -63,5 +63,5 @@ logy=log(yvals);
 
 p2=polyfit(logx,logy,1);
 hurst=[p2(1),1]; % Hurst exponent is the slope of the linear fit of log-log plot
-[s,err]=sprintf('Hurst exponent = %.2f',hurst(1));disp(s);
+%[s,err]=sprintf('Hurst exponent = %.2f',hurst(1));disp(s);
 return;
