@@ -2130,9 +2130,7 @@ file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
-disp(filePattern)
-switch lower(filePattern)
-    case '*.nii'
+if(endsWith(filePattern, '.nii')==1)
         disp('inside 3d case');
         for i=1:length(files)
              folders{i}=[files(i).folder];
@@ -2157,13 +2155,15 @@ switch lower(filePattern)
         end
         handles.scans=handle;
         guidata(hObject,handles);
-
-    case '*.nii.gz'
+        disp(handles.scans);
+elseif(endsWith(filePattern, '.nii.gz')==1)
         disp('inside 4d case');
         opStruct = struct([]);
+        files_master = {};
         for i=1:length(files)
             fullpath = [files(i).folder,filesep,files(i).name];
             disp(fullpath);
+            files_master{i} = {fullpath};
             imgStruct = niftiread(fullpath);
             opStruct(i).img_4D = imgStruct;
             [p,f,e] = fileparts(files(i).name);
@@ -2189,6 +2189,7 @@ switch lower(filePattern)
             end
         end
         handles.scans = opStruct;
+        handles.files_master = files_master;
         %disp(handles.scans(1));
         %disp(handles.scans(2));
         %disp(handles.scans(3));
@@ -2570,4 +2571,8 @@ function btn_viewInput_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_viewInput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-inputViewer(handles.scans, handles.mask_arr);
+if(class(handles.mask_arr)=='char')
+    inputViewer(handles.files_master, {{handles.mask_arr}});
+else
+    inputViewer(handles.files_master, handles.mask_arr);
+end

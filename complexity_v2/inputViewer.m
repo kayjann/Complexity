@@ -58,8 +58,13 @@ maskFiles = maskFiles{1};
 set(handles.listbox_scans, 'String', string(imgFiles));
 global opRCSL;
 handles.output = hObject;
-data = load_untouch_nii(handles.listbox_scans.String(handles.listbox_scans.Value));
-img = data.img;
+disp(handles.listbox_scans.String(handles.listbox_scans.Value));
+if(endsWith(handles.listbox_scans.String(handles.listbox_scans.Value),'.nii.gz')==1)
+    img = niftiread(char(handles.listbox_scans.String(handles.listbox_scans.Value)));
+else
+    data = load_untouch_nii(handles.listbox_scans.String(handles.listbox_scans.Value));
+    img = data.img;
+end
 nSlices = size(img, 3);
 axes(handles.axes_image);
 imshow(img(:,:,ceil(nSlices/2)), []);
@@ -69,8 +74,9 @@ set(handles.sl_image, 'Value', 0.5);
 handles.img = img;
 handles.nSlices = nSlices;
 opRCSL = 0;
+disp(maskFiles);
 set(handles.listbox_masks, 'String', string(maskFiles));
-data = load_untouch_nii(handles.listbox_masks.String(handles.listbox_masks.Value));
+data = load_untouch_nii(char(handles.listbox_masks.String));
 img = data.img;
 nSlices = size(img,3);
 axes(handles.axes_brainMask);
@@ -83,6 +89,8 @@ handles.maskSlices = nSlices;
 % Choose default command line output for inputViewer
 
 handles.output = hObject;
+set(handles.txt_scanTitle, 'String', handles.listbox_scans.String(handles.listbox_scans.Value));
+set(handles.txt_maskTitle, 'String', handles.listbox_masks.String);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -111,8 +119,12 @@ function listbox_scans_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox_scans contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox_scans
 set(handles.txt_scanTitle, 'String', handles.listbox_scans.String(handles.listbox_scans.Value));
-data = load_untouch_nii(handles.listbox_scans.String(handles.listbox_scans.Value));
-img = data.img;
+if(endsWith(handles.listbox_scans.String(handles.listbox_scans.Value),'.nii.gz')==1)
+    img = niftiread(char(handles.listbox_scans.String(handles.listbox_scans.Value)));
+else
+    data = load_untouch_nii(handles.listbox_scans.String(handles.listbox_scans.Value));
+    img = data.img;
+end
 nSlices = size(img, 3);
 axes(handles.axes_image);
 imshow(img(:,:,ceil(nSlices/2)), []);
@@ -121,6 +133,7 @@ set(handles.edit_slImage, 'String', num2str(ceil(nSlices/2)));
 set(handles.sl_image, 'Value', 0.5);
 handles.img = img;
 handles.nSlices = nSlices;
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function listbox_scans_CreateFcn(hObject, eventdata, handles)
@@ -140,8 +153,10 @@ function listbox_masks_Callback(hObject, eventdata, handles)
 % hObject    handle to listbox_masks (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.txt_scanTitle, 'String', handles.listbox_scans.String(handles.listbox_scans.Value));
-data = load_untouch_nii(handles.listbox_masks.String(handles.listbox_masks.Value));
+set(handles.txt_maskTitle, 'String', handles.listbox_masks.String);
+disp(handles.listbox_masks.String);
+disp(handles.listbox_scans.String);
+data = load_untouch_nii(handles.listbox_masks.String);
 img = data.img;
 nSlices = size(img,3);
 axes(handles.axes_brainMask);
@@ -151,6 +166,7 @@ set(handles.edit_slBrainMask, 'String', num2str(ceil(nSlices/2)));
 set(handles.sl_brainMask, 'Value', 0.5);
 handles.maskImg = img;
 handles.maskSlices = nSlices;
+guidata(hObject, handles);
 
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox_masks contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox_masks
@@ -203,7 +219,7 @@ function sl_brainMask_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 sliderValue = get(handles.sl_brainMask, 'Value');
 val = ceil(sliderValue*(handles.maskSlices-1))+1;
-set(handles.edit_slbrainMask, 'String', num2str(val));
+set(handles.edit_slBrainMask, 'String', num2str(val));
 axes(handles.axes_brainMask);
 imshow(handles.maskImg(:,:,val),[]);
 set(handles.axes_brainMask, 'Visible', 'off');
