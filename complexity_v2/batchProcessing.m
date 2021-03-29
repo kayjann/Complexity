@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 03-Mar-2021 14:20:15
+% Last Modified by GUIDE v2.5 24-Mar-2021 21:42:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -1953,10 +1953,27 @@ function btn_inputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_inputDir (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-dirName = uigetdir;
-handles.inputDir = dirName;
-set(handles.edit_inputDir, 'string', handles.inputDir);
+ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
+if isempty(ipFormat)
+    msgbox('Please choose the input format: 3D or 4D');
+else
+    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+        handles.d3d4='3D';        
+    else
+        handles.d3d4='4D';
+    end
+    dirName = uigetdir;
+    handles.inputDir = dirName;
+    set(handles.edit_inputDir, 'string', handles.inputDir);
+    if (dirName==0)
+        msgbox('No image input directory selected','Error Message');
+    end
+    
+end
+
 guidata(hObject, handles);
+        
+
 % ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
 % if isempty(ipFormat)
 %     disp('Please choose the input format: 3D or 4D');
@@ -2120,6 +2137,23 @@ function btn_load_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 A = sum(strcmp(fieldnames(handles),'inputDir'));
 B = sum(strcmp(fieldnames(handles),'outputDir'));
+O = sum(strcmp(fieldnames(handles),'opFolder'));
+if A==0
+   disp('Input not selected');
+   msgbox('Input Directory was not selected','Error Message');
+   return
+end 
+if B==0
+    disp('Brain mask not selected');
+    msgbox('Brain Mask was not selected','Error Message');
+    return
+end
+
+if O==0
+    disp('Output Folder not selected');
+    msgbox('Please select an Output Directory','Error Message');
+    return
+end
 ipChk = [A B];
 clear A B;
 subjectPattern = get(handles.edit_subjectPattern, 'String');
@@ -2130,7 +2164,7 @@ file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
-if(endsWith(filePattern, '.nii')==1)
+if(handles.d3d4=='3D')
         disp('inside 3d case');
         for i=1:length(files)
              folders{i}=[files(i).folder];
@@ -2156,7 +2190,7 @@ if(endsWith(filePattern, '.nii')==1)
         handles.scans=handle;
         guidata(hObject,handles);
         disp(handles.scans);
-elseif(endsWith(filePattern, '.nii.gz')==1)
+elseif(handles.d3d4=='4D')
         disp('inside 4d case');
         opStruct = struct([]);
         files_master = {};
@@ -2211,6 +2245,11 @@ if handles.lempelZiv
     G = sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'));
     H = sum(strcmp(fieldnames(handles),'lempelZiv_scale_end'));
     ipChk = [C D E F G H];
+    if E==0
+        disp('r not selected');
+        msgbox('Please enter the value of r for Lempel-Ziv','Error Message');
+        return
+    end
     clear C D E F G H 
     set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
     set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
@@ -2218,10 +2257,16 @@ if handles.lempelZiv
     set(handles.edit_lempelZiv_r_end, 'Enable', 'off');
     set(handles.edit_lempelZiv_scale_start, 'Enable', 'off');
     set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
-        disp(handle.baseName)
-        lempel_ziv_call(handles, handles.brainMask, handles.lempelZiv_m_start, handles.lempelZiv_m_end, handles.lempelZiv_r_start, handles.lempelZiv_r_end, handles.lempelZiv_scale_start, handles.lempelZiv_scale_end);
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        %disp(handle.baseName)
+        handle.outputDir=handles.outputDir;
+        %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
+        lempel_ziv_call(handle, handles.mask,handles.lempelZiv_r_start);
+        %lempel_ziv_call(handles, handles.brainMask, handles.lempelZiv_m_start, handles.lempelZiv_m_end, handles.lempelZiv_r_start, handles.lempelZiv_r_end, handles.lempelZiv_scale_start, handles.lempelZiv_scale_end);
     end
     
 end
@@ -2234,6 +2279,18 @@ if handles.hurstExp
     G = sum(strcmp(fieldnames(handles),'hurstExp_scale_start'));
     H = sum(strcmp(fieldnames(handles),'hurstExp_scale_end'));
     ipChk = [C D E F G H];
+    if E==0
+        disp('r not selected');
+        msgbox('r not selected for Hurst Exponent');
+        return 
+    end
+    if G==0
+       handles.hurstExp_scale_start=1;
+       G=1;
+    end
+    if F==0
+        handles.hurstExp_r_end=handles.hurstExp_r_start + handles.hurstExp_scale_start/2;
+    end
     clear C D E F G H 
     set(handles.edit_hurstExp_m_start, 'Enable', 'off');
     set(handles.edit_hurstExp_m_end, 'Enable', 'off');
@@ -2241,9 +2298,15 @@ if handles.hurstExp
     set(handles.edit_hurstExp_r_end, 'Enable', 'off');
     set(handles.edit_hurstExp_scale_start, 'Enable', 'off');
     set(handles.edit_hurstExp_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
-        disp(handle.baseName)
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        handle.outputDir=handles.outputDir;
+        %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
+        %disp(handle.baseName)
+        hurst_ex_call(handle, handles.mask,handles.hurstExp_r_start,handles.hurstExp_r_end,handles.hurstExp_scale_start);
         %call or hurst
     end
 end
@@ -2262,8 +2325,13 @@ if handles.LLExp
     set(handles.edit_LLExp_r_end, 'Enable', 'off');
     set(handles.edit_LLExp_scale_start, 'Enable', 'off');
     set(handles.edit_LLExp_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        %handle.outputDir=handles.outputDir;
+        %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
         disp(handle.baseName)
         %ap_en_call(handle, handle.brainMask, 2, 3, 0.3, 0.4, 1,0.1);
         %call for llexp
@@ -2278,7 +2346,22 @@ if handles.fracDim
     H = sum(strcmp(fieldnames(handles),'fracDim_scale_end'));
     I = sum(strcmp(fieldnames(handles),'fracDim_k_start'));
     J = sum(strcmp(fieldnames(handles),'fracDim_k_end'));
-    ipChk = [C D E F G H I J];
+    K= sum(strcmp(fieldnames(handles),'fracDim_scale_start'));
+    ipChk = [A B I J K];
+    
+    if I==0
+        msgbox('Please select k for Higuchi Fractal Dimension','Error Message')
+        return
+    end
+    if K==0
+       handles.fracDim_scale_start=1;
+       K=1;
+       guidata(hObject, handles);
+    end
+    if J==0
+       handles.fracDim_k_end=handles.fracDim_scale_start+(handles.fracDim_scale_start)/2;
+       guidata(hObject, handles);
+    end
     clear C D E F G H I J
     set(handles.edit_fracDim_m_start, 'Enable', 'off');
     set(handles.edit_fracDim_m_end, 'Enable', 'off');
@@ -2288,10 +2371,15 @@ if handles.fracDim
     set(handles.edit_fracDim_scale_end, 'Enable', 'off');
     set(handles.edit_fracDim_k_start, 'Enable', 'off');
     set(handles.edit_fracDim_k_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-    handle=handles.arr(k);
-    disp(handle.baseName)
-    frac_dim_call(handles, handles.brainMask, handles.fracDim_k_start, handles.fracDim_k_end, handles.fracDim_scale_start);
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        %disp(handle.baseName)
+        handle.outputDir=handles.outputDir;
+        %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
+        frac_dim_call(handle, handles.mask, handles.fracDim_k_start, handles.fracDim_k_end, handles.fracDim_scale_start);
     end
     
 end
@@ -2311,13 +2399,13 @@ if handles.apEn
     set(handles.edit_apEn_r_end, 'Enable', 'off');
     set(handles.edit_apEn_scale_start, 'Enable', 'off');
     set(handles.edit_apEn_scale_end, 'Enable', 'off');
-    disp(length(handles.scans));
+    %disp(length(handles.scans));
     
     for i = 1:length(handles.scans)
         %<----for 3d testing--->
            handle=handles.scans(i);
            handle.outputDir=handles.outputDir;
-           disp(handles.outputDir);
+           %disp(handles.outputDir);
             if(handles.batchmask_flag==1)
                 handles.mask=load_untouch_nii(handles.mask_arr(i)).img;
             end
@@ -2353,10 +2441,15 @@ if handles.sampEn
     set(handles.edit_sampEn_r_end, 'Enable', 'off');
     set(handles.edit_sampEn_scale_start, 'Enable', 'off');
     set(handles.edit_sampEn_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
-        disp(handle.baseName)
-        samp_en_call(handles, handles.brainMask, handles.sampEn_m_start, handles.sampEn_m_end, handles.sampEn_r_start, handles.sampEn_r_end, handles.sampEn_scale_start, handles.sampEn_scale_end);
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        %disp(handle.baseName)
+        handle.outputDir=handles.outputDir;
+           %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
+        samp_en_call(handles, handles.mask, handles.sampEn_m_start, handles.sampEn_m_end, handles.sampEn_r_start, handles.sampEn_r_end, handles.sampEn_scale_start, handles.sampEn_scale_end);
     end
     
 end
@@ -2378,6 +2471,11 @@ if handles.waveletMSE
     for k=1:length(handles.arr)
         handle=handles.arr(k);
         disp(handle.baseName)
+        handle.outputDir=handles.outputDir;
+           %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
         %call for wavelength mse
     end
     
@@ -2394,6 +2492,40 @@ if handles.fuzzyEn
     K = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_start'));
     L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
     ipChk = [C D E F G H I J K L];
+    if C==0 || E==0
+        msgbox('Please select m and r for SampEn','Error Message')
+        return
+    end
+    if I==0
+        I=2;
+        handles.fuzzyEn_n_start=2;
+        guidata(hObject, handles); 
+    end
+    if K==0
+        K=1;
+        handles.fuzzyEn_tau_start=1;
+        guidata(hObject, handles); 
+    end
+    if G==0
+        G=1;
+        handles.fuzzyEn_scale_start=1;
+        guidata(hObject, handles);  
+    end
+    
+    if H==0
+        H=1;
+        handles.fuzzyEn_scale_end=1;
+        guidata(hObject, handles); 
+    end
+    
+    if D==0
+        handles.fuzzyEn_m_end=handles.fuzzyEn_m_start+(handles.fuzzyEn_scale_start/2);
+        guidata(hObject, handles);
+    end
+    if F==0
+        handles.fuzzyEn_r_end=handles.fuzzyEn_r_start+(handles.fuzzyEn_scale_end/2);
+        guidata(hObject, handles);
+    end
     clear C D E F G H I J K L
     set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
     set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
@@ -2404,7 +2536,16 @@ if handles.fuzzyEn
     set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');    
+    set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');   
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        handle.outputDir=handles.outputDir;
+           %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
+        fuzzy_en_call(handle, handles.mask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end,handles.fuzzyEn_n_start, handles.fuzzyEn_tau_start);
+    end
 end
 if handles.permEn
     C = sum(strcmp(fieldnames(handles),'permEn_m_start'));
@@ -2429,12 +2570,18 @@ if handles.permEn
     set(handles.edit_permEn_n_end, 'Enable', 'off');
     set(handles.edit_permEn_tau_start, 'Enable', 'off');
     set(handles.edit_permEn_tau_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
-        disp(handle.baseName)
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
+        %disp(handle.baseName)
+        handle.outputDir=handles.outputDir;
+           %disp(handles.outputDir);
+        if(handles.batchmask_flag==1)
+            handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
+        end
         %call for perm en
     end
 end
+
 % for k=1:length(handles.arr)
 %     handle=handles.arr(k);
 %     disp(handle.baseName)

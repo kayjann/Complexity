@@ -790,7 +790,8 @@ function edit_lempelZiv_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_m_start_Callback(hObject, eventdata, handles)
@@ -816,7 +817,8 @@ function edit_hurstExp_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_m_start_Callback(hObject, eventdata, handles)
@@ -842,7 +844,8 @@ function edit_LLExp_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_m_start_Callback(hObject, eventdata, handles)
@@ -868,7 +871,8 @@ function edit_fracDim_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_apEn_m_start_Callback(hObject, eventdata, handles)
@@ -894,7 +898,8 @@ function edit_apEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
@@ -920,7 +925,8 @@ function edit_sampEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_m_start_Callback(hObject, eventdata, handles)
@@ -946,7 +952,8 @@ function edit_waveletMSE_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_m_start_Callback(hObject, eventdata, handles)
@@ -972,7 +979,8 @@ function edit_fuzzyEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_permEn_m_start_Callback(hObject, eventdata, handles)
@@ -998,7 +1006,8 @@ function edit_permEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_m_end_Callback(hObject, eventdata, handles)
@@ -1024,7 +1033,8 @@ function edit_lempelZiv_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_m_end_Callback(hObject, eventdata, handles)
@@ -1050,7 +1060,8 @@ function edit_hurstExp_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_m_end_Callback(hObject, eventdata, handles)
@@ -1076,7 +1087,8 @@ function edit_LLExp_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_m_end_Callback(hObject, eventdata, handles)
@@ -1102,7 +1114,8 @@ function edit_fracDim_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_apEn_m_end_Callback(hObject, eventdata, handles)
@@ -1128,7 +1141,8 @@ function edit_apEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_m_end_Callback(hObject, eventdata, handles)
@@ -1154,7 +1168,8 @@ function edit_sampEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_m_end_Callback(hObject, eventdata, handles)
@@ -1180,7 +1195,8 @@ function edit_waveletMSE_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_m_end_Callback(hObject, eventdata, handles)
@@ -1206,7 +1222,8 @@ function edit_fuzzyEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_permEn_m_end_Callback(hObject, eventdata, handles)
@@ -1232,7 +1249,8 @@ function edit_permEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 1-5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_r_start_Callback(hObject, eventdata, handles)
@@ -1247,6 +1265,7 @@ r_start = str2num(r_start);
 handles.lempelZiv_r_start = r_start;
 guidata(hObject, handles);
 
+
 % --- Executes during object creation, after setting all properties.
 function edit_lempelZiv_r_start_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit_lempelZiv_r_start (see GCBO)
@@ -1258,7 +1277,8 @@ function edit_lempelZiv_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_r_start_Callback(hObject, eventdata, handles)
@@ -1284,6 +1304,8 @@ function edit_hurstExp_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 
@@ -1310,7 +1332,8 @@ function edit_LLExp_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_r_start_Callback(hObject, eventdata, handles)
@@ -1336,7 +1359,8 @@ function edit_fracDim_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_apEn_r_start_Callback(hObject, eventdata, handles)
@@ -1362,7 +1386,8 @@ function edit_apEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_r_start_Callback(hObject, eventdata, handles)
@@ -1388,7 +1413,8 @@ function edit_sampEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_r_start_Callback(hObject, eventdata, handles)
@@ -1414,7 +1440,8 @@ function edit_waveletMSE_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_r_start_Callback(hObject, eventdata, handles)
@@ -1440,7 +1467,8 @@ function edit_fuzzyEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_permEn_r_start_Callback(hObject, eventdata, handles)
@@ -1466,7 +1494,8 @@ function edit_permEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_r_end_Callback(hObject, eventdata, handles)
@@ -1492,7 +1521,8 @@ function edit_lempelZiv_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_r_end_Callback(hObject, eventdata, handles)
@@ -1518,7 +1548,8 @@ function edit_hurstExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_r_end_Callback(hObject, eventdata, handles)
@@ -1544,7 +1575,8 @@ function edit_LLExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_r_end_Callback(hObject, eventdata, handles)
@@ -1570,7 +1602,8 @@ function edit_fracDim_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_apEn_r_end_Callback(hObject, eventdata, handles)
@@ -1596,7 +1629,8 @@ function edit_apEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_r_end_Callback(hObject, eventdata, handles)
@@ -1622,7 +1656,8 @@ function edit_sampEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_r_end_Callback(hObject, eventdata, handles)
@@ -1648,7 +1683,8 @@ function edit_waveletMSE_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_r_end_Callback(hObject, eventdata, handles)
@@ -1674,7 +1710,8 @@ function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_permEn_r_end_Callback(hObject, eventdata, handles)
@@ -1700,7 +1737,8 @@ function edit_permEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','recomended value 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit37_Callback(hObject, eventdata, handles)
