@@ -40,15 +40,31 @@ disp(handles.listbox_scans.String{handles.listbox_scans.Value});
 data = load_untouch_nii(handles.listbox_scans.String{handles.listbox_scans.Value});
 img = data.img;
 nSlices = size(img,3);
+nSagittalSlices = size(img,2);
+nCoronalSlices = size(img,1);
 axes(handles.ax_display);
 imshow(img(:,:,ceil(nSlices/2)),[]);
 set(handles.ax_display,'Visible', 'off');
+axes(handles.ax_sagittal);
+imshow(reshape(img(ceil(nSagittalSlices/2),:,:),[nSagittalSlices, nSlices]),[]);
+set(handles.ax_sagittal,'Visible', 'off');
+axes(handles.ax_coronal);
+imshow(reshape(img(:,ceil(nCoronalSlices/2),:),[nCoronalSlices, nSlices]),[]);
+set(handles.ax_coronal,'Visible', 'off');
+
 set(handles.edt_slNumber,'String', num2str(ceil(nSlices/2))); 
 set(handles.sl_display,'Value',0.5);
+set(handles.edit_slSagittal,'String', num2str(ceil(nSagittalSlices/2))); 
+set(handles.sl_sagittal,'Value',0.5);
+set(handles.edit_slCoronal,'String', num2str(ceil(nCoronalSlices/2))); 
+set(handles.sl_coronal,'Value',0.5);
+
 set(handles.pb_selectROI,'visible','off'); 
 opRCSL = 0;
 handles.img = img;
 handles.nSlices = nSlices;
+handles.nSagittalSlices = nSagittalSlices;
+handles.nCoronalSlices = nCoronalSlices;
 if (length(varargin)>1)
 clBlue = [11/255 132/255 199/255];
 set(handles.pb_selectROI,'visible','on');
@@ -83,6 +99,7 @@ sliderValue = get(handles.sl_display,'Value');
 val = ceil(sliderValue*(handles.nSlices-1))+1;
 set(handles.edt_slNumber,'String', num2str(val)); 
 axes(handles.ax_display);
+disp(size(handles.img));
 imshow(handles.img(:,:,val),[]);
 set(handles.ax_display,'Visible', 'off');
 
@@ -132,15 +149,32 @@ set(handles.txt_scanTitle, 'String', handles.listbox_scans.String{handles.listbo
 data = load_untouch_nii(handles.listbox_scans.String{handles.listbox_scans.Value});
 img = data.img;
 nSlices = size(img,3);
+nSagittalSlices = size(img,2);
+nCoronalSlices = size(img,1);
 axes(handles.ax_display);
 imshow(img(:,:,ceil(nSlices/2)),[]);
 set(handles.ax_display,'Visible', 'off');
+axes(handles.ax_sagittal);
+imshow(reshape(img(ceil(nSagittalSlices/2),:,:),[nSagittalSlices, nSlices]),[]);
+set(handles.ax_sagittal,'Visible', 'off');
+axes(handles.ax_coronal);
+imshow(reshape(img(:,ceil(nCoronalSlices/2),:),[nCoronalSlices, nSlices]),[]);
+set(handles.ax_coronal,'Visible', 'off');
+
 set(handles.edt_slNumber,'String', num2str(ceil(nSlices/2))); 
 set(handles.sl_display,'Value',0.5);
+set(handles.edit_slSagittal,'String', num2str(ceil(nSagittalSlices/2))); 
+set(handles.sl_sagittal,'Value',0.5);
+set(handles.edit_slCoronal,'String', num2str(ceil(nCoronalSlices/2))); 
+set(handles.sl_coronal,'Value',0.5);
+
 set(handles.pb_selectROI,'visible','off'); 
 opRCSL = 0;
 handles.img = img;
 handles.nSlices = nSlices;
+handles.nSagittalSlices = nSagittalSlices;
+handles.nCoronalSlices = nCoronalSlices;
+
 clBlue = [11/255 132/255 199/255];
 set(handles.pb_selectROI,'visible','on');
 setbgcolor(handles.pb_selectROI,clBlue);
@@ -156,6 +190,109 @@ function listbox_scans_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function sl_sagittal_Callback(hObject, eventdata, handles)
+% hObject    handle to sl_sagittal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+sliderValue = get(handles.sl_sagittal,'Value');
+%puts the slider value into the edit text component
+val = ceil(sliderValue*(handles.nCoronalSlices-1))+1;
+set(handles.edit_slSagittal,'String', num2str(val));
+axes(handles.ax_sagittal);
+imshow(reshape(handles.img(val,:,:),[handles.nSagittalSlices, handles.nSlices]),[]);
+set(handles.ax_sagittal,'Visible', 'off');
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function sl_sagittal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sl_sagittal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function edit_slSagittal_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_slSagittal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_slSagittal as text
+%        str2double(get(hObject,'String')) returns contents of edit_slSagittal as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_slSagittal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_slSagittal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function sl_coronal_Callback(hObject, eventdata, handles)
+% hObject    handle to sl_coronal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+sliderValue = get(handles.sl_coronal,'Value');
+%puts the slider value into the edit text component
+val = ceil(sliderValue*(handles.nSagittalSlices-1))+1;
+set(handles.edit_slCoronal,'String', num2str(val));
+axes(handles.ax_coronal);
+imshow(reshape(handles.img(:,val,:),[handles.nCoronalSlices, handles.nSlices]),[]);
+set(handles.ax_coronal,'Visible', 'off');
+
+
+% --- Executes during object creation, after setting all properties.
+function sl_coronal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sl_coronal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function edit_slCoronal_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_slCoronal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_slCoronal as text
+%        str2double(get(hObject,'String')) returns contents of edit_slCoronal as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_slCoronal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_slCoronal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
