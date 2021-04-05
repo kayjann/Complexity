@@ -1,5 +1,5 @@
-function statsBatch = statsBatchProcessing(varargin)
-statsBatch=[];
+function statsBatch=statsBatchProcessing(varargin)
+
 % MASKBATCHPROCESSING MATLAB code for maskbatchProcessing.fig
 %      BATCHPROCESSING, by itself, creates a new BATCHPROCESSING or raises the existing
 %      singleton*.
@@ -74,15 +74,6 @@ varargout{1} = handles.output;
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
-
-
 % --- Executes during object creation, after setting all properties.
 function edit4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit4 (see GCBO)
@@ -94,17 +85,6 @@ function edit4_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
-function edit_inputDir_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_inputDir (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_inputDir as text
-%        str2double(get(hObject,'String')) returns contents of edit_inputDir as a double
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -131,17 +111,6 @@ set(handles.edit_inputDir, 'string', handles.inputDir);
 guidata(hObject, handles);
 
 
-
-
-function edit_subjectPattern_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_subjectPattern (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_subjectPattern as text
-%        str2double(get(hObject,'String')) returns contents of edit_subjectPattern as a double
-
-
 % --- Executes during object creation, after setting all properties.
 function edit_subjectPattern_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit_subjectPattern (see GCBO)
@@ -154,15 +123,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
-function edit_fmriPattern_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_fmriPattern (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_fmriPattern as text
-%        str2double(get(hObject,'String')) returns contents of edit_fmriPattern as a double
 
 
 % --- Executes during object creation, after setting all properties.
@@ -179,15 +139,6 @@ end
 
 
 
-function edit_filePattern_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_filePattern (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_filePattern as text
-%        str2double(get(hObject,'String')) returns contents of edit_filePattern as a double
-
-
 % --- Executes during object creation, after setting all properties.
 function edit_filePattern_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit_filePattern (see GCBO)
@@ -201,13 +152,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in btn_load.
@@ -288,17 +232,6 @@ disp(subjects)
 statsBatch=handles.files_arr;
 disp('Done reading input images');
 
-function btn_run_Callback(hObject, eventdata, handles)
-% hObject    handle to pb_run (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in btn_run.
-%function btn_run_Callback(hObject, eventdata, handles)
-% hObject    handle to btn_run (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in btn_outputDir.

@@ -113,14 +113,14 @@ classdef statisticsInput_App_exported < matlab.apps.AppBase
 
         % Button pushed function: g1BatchSelectionBtn
         function G1BatchSelectionButtonPushed(app, event)
-            handles.g1_files=[];
-            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
-            waitfor(statsBatchProcessing(handles));
             
+            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
+            waitfor(statsBatchProcessing(handles))
+            disp(handles)
             %handles.g1_files=handles.files_arr;
             handles.batchmask_flag=1;
             guidata(hObject, handles);
-            disp('in g1 batch:',handles.g1_files);
+            disp('in g1 batch:',handles.files_arr);
         end
 
         % Button pushed function: outputDirBtn
