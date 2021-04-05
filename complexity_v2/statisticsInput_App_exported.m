@@ -125,7 +125,11 @@ classdef statisticsInput_App_exported < matlab.apps.AppBase
 
         % Button pushed function: outputDirBtn
         function outputDirBtnPushed(app, event)
-            
+            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
+            dirName = uigetdir;
+            app.outputDir.Value = dirName;
+            %set(handles.outputDir, 'string', handles.outputDir);
+            guidata(hObject, handles);
         end
 
         % Button pushed function: g2ManualSelectionBtn
