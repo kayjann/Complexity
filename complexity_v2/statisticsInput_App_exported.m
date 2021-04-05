@@ -94,12 +94,33 @@ classdef statisticsInput_App_exported < matlab.apps.AppBase
        
         % Button pushed function: g1ManualSelectionBtn
         function G1ManualSelectionButtonPushed(app, event)
-            
+            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
+            [fname, pname]=uigetfile('*','Select the subject(s)','MultiSelect','on');
+            if (isempty(fname))
+                disp('No input selected');
+            else        
+                for i=1:length(fname)
+                    g1_file=strcat(pname,fname{i});
+                    %disp(g1_file)
+                    %mask_arr(i)=load_untouch_nii(mask_file);
+                    g1_files{i}=g1_file;
+                end
+                handles.g1_files=g1_files;
+                app.g1ListBox.Items=g1_files;
+                guidata(hObject, handles);
+            end
         end
 
         % Button pushed function: g1BatchSelectionBtn
         function G1BatchSelectionButtonPushed(app, event)
+            handles.g1_files=[];
+            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
+            waitfor(statsBatchProcessing(handles));
             
+            %handles.g1_files=handles.files_arr;
+            handles.batchmask_flag=1;
+            guidata(hObject, handles);
+            disp('in g1 batch:',handles.g1_files);
         end
 
         % Button pushed function: outputDirBtn
@@ -109,6 +130,21 @@ classdef statisticsInput_App_exported < matlab.apps.AppBase
 
         % Button pushed function: g2ManualSelectionBtn
         function G2ManualSelectionButton_2Pushed(app, event)
+            [hObject, eventdata, handles] = convertToGUIDECallbackArguments(app);
+            [fname, pname]=uigetfile('*','Select the subject(s)','MultiSelect','on');
+            if (isempty(fname))
+                disp('No input selected');
+            else        
+                for i=1:length(fname)
+                    g2_file=strcat(pname,fname{i});
+                    %disp(g1_file)
+                    %mask_arr(i)=load_untouch_nii(mask_file);
+                    g2_files{i}=g2_file;
+                end
+                handles.g2_files=g2_files;
+                app.g2ListBox.Items=g2_files;
+                guidata(hObject, handles);
+            end
             
         end
 
