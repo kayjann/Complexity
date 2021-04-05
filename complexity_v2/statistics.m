@@ -205,7 +205,9 @@ function checkbox6_Callback(hObject, eventdata, handles)
 
 
 % --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
+function continue_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+%statisticsInput_App();
+statisticsInput_App_exported()
