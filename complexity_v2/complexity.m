@@ -96,6 +96,7 @@ function pb_statisticAnalysis_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_statisticAnalysis (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+statistics
 
 
 % --- Executes on button press in pb_visualization.
