@@ -1472,7 +1472,7 @@ function edit_fuzzyEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1499,7 +1499,7 @@ function edit_permEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Permutation Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1526,7 +1526,7 @@ function edit_lempelZiv_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Lempel-Ziv, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1553,7 +1553,7 @@ function edit_hurstExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Hurst Exponent, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1580,7 +1580,7 @@ function edit_LLExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1607,7 +1607,7 @@ function edit_fracDim_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1634,7 +1634,7 @@ function edit_apEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Approx Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1661,7 +1661,7 @@ function edit_sampEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Sample Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1688,7 +1688,7 @@ function edit_waveletMSE_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Wavelength MSE, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1715,7 +1715,7 @@ function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
@@ -1742,7 +1742,7 @@ function edit_permEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Permutation Entropy, recomended value for r: 0.2-0.5')
+set(hObject,'TooltipString','recomended value 0.2-0.5')
 guidata(hObject,handles);
 
 
