@@ -103,47 +103,17 @@ function btnOutputDir_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 dirName = uigetdir;
 handles.outputDir = dirName;
-set(handles.editOutputDir, 'string', handles.outputDir);
+set(handles.edit_inputDir, 'string', handles.inputDir);
 guidata(hObject, handles);
-ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
-if isempty(ipFormat)
-    msgbox('Please choose the input format: 3D or 4D');
-else
-    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
-        handles.d3d4='3D';        
-    else
-        handles.d3d4='4D';
-    end
-    dirName = uigetdir;
-    handles.inputDir = dirName;
-    set(handles.edit_inputDir, 'string', handles.inputDir);
-    if (dirName==0)
-        msgbox('No image input directory selected','Error Message');
-    end
-    
-end
-
-
+app.outputDir.Value = dirName;
+set(handles.outputDir, 'string', handles.outputDir);
+guidata(hObject, handles);
 
 % --- Executes on button press in btnManualSelectionG2.
 function btnManualSelectionG2_Callback(hObject, eventdata, handles)
 % hObject    handle to btnManualSelectionG2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[fname, pname]=uigetfile('*','Select the subject(s)','MultiSelect','on');
-if (isempty(fname))
-    disp('No input selected');
-else        
-    for i=1:length(fname)
-        g2_file=strcat(pname,fname{i});
-        g2_files{i}=g2_file;
-    end
-    handles.g2_files=g2_files;
-    set(handles.listboxG2,'String',g2_files);
-    guidata(hObject, handles);
-                    
-end
-
 
 
 % --- Executes on button press in btnBatchSelectionG2.
@@ -151,28 +121,13 @@ function btnBatchSelectionG2_Callback(hObject, eventdata, handles)
 % hObject    handle to btnBatchSelectionG2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.g2_files=statsBatchProcessing(handles);
-set(handles.listboxG2,'String',handles.g2_files);
-guidata(hObject, handles);
+
 
 % --- Executes on button press in btnManualSelectionG1.
 function btnManualSelectionG1_Callback(hObject, eventdata, handles)
 % hObject    handle to btnManualSelectionG1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[fname, pname]=uigetfile('*','Select the subject(s)','MultiSelect','on');
-if (isempty(fname))
-    disp('No input selected');
-else        
-    for i=1:length(fname)
-        g1_file=strcat(pname,fname{i});
-        g1_files{i}=g1_file;
-    end
-    handles.g1_files=g1_files;
-    set(handles.listboxG1,'String',g1_files);
-    guidata(hObject, handles);
-                    
-end
 
 
 % --- Executes on button press in btnBatchSelectionG1.
@@ -180,31 +135,8 @@ function btnBatchSelectionG1_Callback(hObject, eventdata, handles)
 % hObject    handle to btnBatchSelectionG1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
-if isempty(ipFormat)
-    msgbox('Please choose the input format: 3D or 4D');
-else
-    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
-        handles.d3d4='3D';        
-    else
-        handles.d3d4='4D';
-    end
-    dirName = uigetdir;
-    handles.inputDir = dirName;
-    set(handles.edit_inputDir, 'string', handles.inputDir);
-    if (dirName==0)
-        msgbox('No image input directory selected','Error Message');
-    end
-    
-end
 
 
-statsBatchProcessing(handles);
-handles.g1_files=handles.files_arr;
-disp('g1 batch files')
-disp(handles.g1_files)
-set(handles.listboxG1,'String',handles.g1_files);
-guidata(hObject, handles);
 % --- Executes on selection change in listboxG2.
 function listboxG2_Callback(hObject, eventdata, handles)
 % hObject    handle to listboxG2 (see GCBO)

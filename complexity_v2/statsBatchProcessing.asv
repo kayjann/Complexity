@@ -106,28 +106,28 @@ function btn_inputDir_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 disp('inside stat batch')
-% ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
-% if isempty(ipFormat)
-%     msgbox('Please choose the input format: 3D or 4D');
-% else
-%     if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
-%         handles.d3d4='3D';        
-%     else
-%         handles.d3d4='4D';
-%     end
-%     dirName = uigetdir;
-%     handles.inputDir = dirName;
-%     set(handles.edit_inputDir, 'string', handles.inputDir);
-%     if (dirName==0)
-%         msgbox('No image input directory selected','Error Message');
-%     end
-%     
-% end
-% 
-guidata(hObject, handles);
-dirName = uigetdir;
-handles.inputDir = dirName;
-set(handles.edit_inputDir, 'string', handles.inputDir);
+ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
+if isempty(ipFormat)
+    msgbox('Please choose the input format: 3D or 4D');
+else
+    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+        handles.d3d4='3D';        
+    else
+        handles.d3d4='4D';
+    end
+    dirName = uigetdir;
+    handles.inputDir = dirName;
+    set(handles.edit_inputDir, 'string', handles.inputDir);
+    if (dirName==0)
+        msgbox('No image input directory selected','Error Message');
+    end
+    
+end
+
+% guidata(hObject, handles);
+% dirName = uigetdir;
+% handles.inputDir = dirName;
+% set(handles.edit_inputDir, 'string', handles.inputDir);
 guidata(hObject, handles);
 
 
@@ -212,9 +212,10 @@ if (strcmp(handles.d3d4,'3D')==1)
     for i=1:length(files)
         stat_files{i}=strcat(files(i).folder,filesep,files(i).name);
     end
- 
+        
+        
     handles.files_arr=stat_files;
-    statsBatch=handles.files_arr;
+    statsBatch=stat_files;
     guidata(hObject, handles);
 else
     disp('inside 4d case');
@@ -247,13 +248,12 @@ else
         end
    end
    handles.files_arr = opStruct;
-   statsBatch=handles.files_arr;
+   statsBatch=opStruct;
    guidata(hObject, handles);
 end    
     
 %statsBatch=handles.files_arr;
 %disp(statsBatch)
-
 guidata(hObject, handles);
 disp('Done reading input images');
 
@@ -288,6 +288,5 @@ function btn_viewOutput_Callback(hObject, eventdata, handles)
 % end
 displayImage(handles.files_arr);
 
-
-    
+if s
 
