@@ -591,7 +591,7 @@ if handles.fuzzyEn
     %L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
     ipChk = [A B C D E F G H I J K];
     if C==0 || E==0
-        msgbox('Please select m and r for SampEn','Error Message')
+        msgbox('Please select m and r for Fuzzy Entropy','Error Message')
         return
     end
     if I==0
@@ -2706,8 +2706,8 @@ function edit_fuzzyEn_n_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+guidata(hObject,handles);
 
 function edit_fuzzyEn_n_end_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_fuzzyEn_n_end (see GCBO)
@@ -2732,7 +2732,8 @@ function edit_fuzzyEn_n_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_tau_start_Callback(hObject, eventdata, handles)
@@ -2758,7 +2759,8 @@ function edit_fuzzyEn_tau_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_tau_end_Callback(hObject, eventdata, handles)
@@ -2784,7 +2786,8 @@ function edit_fuzzyEn_tau_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+guidata(hObject,handles);
 
 
 function edit_permEn_delay_start_Callback(hObject, eventdata, handles)

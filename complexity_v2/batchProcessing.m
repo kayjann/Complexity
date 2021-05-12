@@ -22,7 +22,7 @@ function varargout = batchProcessing(varargin)
 
 % Edit the above text to modify the response to help batchProcessing
 
-% Last Modified by GUIDE v2.5 24-Mar-2021 21:42:30
+% Last Modified by GUIDE v2.5 11-May-2021 19:22:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -41,6 +41,8 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
+tm = javax.swing.ToolTipManager.sharedInstance; %static method to get ToolTipManager object
+javaMethodEDT('setInitialDelay',tm,0)
 % End initialization code - DO NOT EDIT
 
 
@@ -217,8 +219,8 @@ function edit_lempelZiv_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
+set(hObject,'TooltipString','For LempelZiv, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 function edit_hurstExp_m_start_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_hurstExp_m_start (see GCBO)
@@ -244,7 +246,8 @@ function edit_hurstExp_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Hurst Exponent, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_m_start_Callback(hObject, eventdata, handles)
@@ -271,7 +274,8 @@ function edit_LLExp_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit4_Callback(hObject, eventdata, handles)
@@ -322,6 +326,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5');
+guidata(hObject,handles);
 
 
 function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
@@ -348,7 +354,8 @@ function edit_sampEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_m_start_Callback(hObject, eventdata, handles)
@@ -375,7 +382,8 @@ function edit_waveletMSE_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_m_start_Callback(hObject, eventdata, handles)
@@ -402,7 +410,8 @@ function edit_fuzzyEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_permEn_m_start_Callback(hObject, eventdata, handles)
@@ -429,7 +438,8 @@ function edit_permEn_m_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Permutation Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_m_end_Callback(hObject, eventdata, handles)
@@ -456,7 +466,8 @@ function edit_lempelZiv_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Lempel-Ziv,recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_m_end_Callback(hObject, eventdata, handles)
@@ -483,7 +494,8 @@ function edit_hurstExp_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Hurst, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_m_end_Callback(hObject, eventdata, handles)
@@ -510,6 +522,34 @@ function edit_LLExp_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
+
+function edit_fracDim_m_start_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_fracDim_m_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_fracDim_m_start as text
+%        str2double(get(hObject,'String')) returns contents of edit_fracDim_m_start as a double
+m_start = get(hObject,'String');
+m_start = str2num(m_start);
+handles.fracDim_m_start = m_start;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function edit_fracDim_m_start_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_fracDim_m_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 
@@ -537,6 +577,8 @@ function edit_fracDim_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'TooltipString','For Higuchi Fractal Diminsion,recomended value 1-5')
+guidata(hObject,handles);
 
 
 
@@ -564,7 +606,8 @@ function edit_apEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_m_end_Callback(hObject, eventdata, handles)
@@ -591,7 +634,8 @@ function edit_sampEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_m_end_Callback(hObject, eventdata, handles)
@@ -618,7 +662,8 @@ function edit_waveletMSE_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_m_end_Callback(hObject, eventdata, handles)
@@ -645,7 +690,8 @@ function edit_fuzzyEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_permEn_m_end_Callback(hObject, eventdata, handles)
@@ -672,7 +718,8 @@ function edit_permEn_m_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Permutation Entropy, recomended value for dimensionality(m): 1-5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_r_start_Callback(hObject, eventdata, handles)
@@ -699,7 +746,8 @@ function edit_lempelZiv_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_r_start_Callback(hObject, eventdata, handles)
@@ -726,7 +774,8 @@ function edit_hurstExp_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Hurst Exponent, recomended value of r: 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_r_start_Callback(hObject, eventdata, handles)
@@ -753,7 +802,8 @@ function edit_LLExp_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_r_start_Callback(hObject, eventdata, handles)
@@ -780,7 +830,8 @@ function edit_fracDim_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_apEn_r_start_Callback(hObject, eventdata, handles)
@@ -807,7 +858,8 @@ function edit_apEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_r_start_Callback(hObject, eventdata, handles)
@@ -834,7 +886,8 @@ function edit_sampEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_r_start_Callback(hObject, eventdata, handles)
@@ -861,7 +914,8 @@ function edit_waveletMSE_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r):0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_r_start_Callback(hObject, eventdata, handles)
@@ -888,7 +942,8 @@ function edit_fuzzyEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_permEn_r_start_Callback(hObject, eventdata, handles)
@@ -915,7 +970,8 @@ function edit_permEn_r_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_r_end_Callback(hObject, eventdata, handles)
@@ -942,7 +998,8 @@ function edit_lempelZiv_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_hurstExp_r_end_Callback(hObject, eventdata, handles)
@@ -969,7 +1026,8 @@ function edit_hurstExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Hurst Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_LLExp_r_end_Callback(hObject, eventdata, handles)
@@ -996,7 +1054,8 @@ function edit_LLExp_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_r_end_Callback(hObject, eventdata, handles)
@@ -1023,7 +1082,8 @@ function edit_fracDim_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_apEn_r_end_Callback(hObject, eventdata, handles)
@@ -1050,7 +1110,8 @@ function edit_apEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_waveletMSE_r_end_Callback(hObject, eventdata, handles)
@@ -1078,7 +1139,8 @@ function edit_waveletMSE_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_r_end_Callback(hObject, eventdata, handles)
@@ -1104,7 +1166,8 @@ function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_permEn_r_end_Callback(hObject, eventdata, handles)
@@ -1131,7 +1194,8 @@ function edit_permEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_lempelZiv_scale_start_Callback(hObject, eventdata, handles)
@@ -1619,7 +1683,8 @@ function edit_fracDim_k_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
+guidata(hObject,handles);
 
 
 function edit_fracDim_k_end_Callback(hObject, eventdata, handles)
@@ -1646,7 +1711,8 @@ function edit_fracDim_k_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_n_start_Callback(hObject, eventdata, handles)
@@ -1673,7 +1739,8 @@ function edit_fuzzyEn_n_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+guidata(hObject,handles)
 
 
 function edit_fuzzyEn_n_end_Callback(hObject, eventdata, handles)
@@ -1700,6 +1767,8 @@ function edit_fuzzyEn_n_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+guidata(hObject,handles)
 
 
 
@@ -1727,7 +1796,8 @@ function edit_fuzzyEn_tau_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+guidata(hObject,handles);
 
 
 function edit_fuzzyEn_tau_end_Callback(hObject, eventdata, handles)
@@ -1754,7 +1824,8 @@ function edit_fuzzyEn_tau_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+guidata(hObject,handles);
 
 
 function edit_permEn_delay_start_Callback(hObject, eventdata, handles)
@@ -1894,7 +1965,8 @@ function edit_sampEn_r_end_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+guidata(hObject,handles);
 
 
 function edit_sampEn_scale_start_Callback(hObject, eventdata, handles)
@@ -2722,4 +2794,27 @@ if(class(handles.mask_arr)=='char')
     inputViewer(handles.files_master, {{handles.mask_arr}});
 else
     inputViewer(handles.files_master, handles.mask_arr);
+end
+
+
+
+function edit71_Callback(hObject, eventdata, handles)
+% hObject    handle to edit71 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit71 as text
+%        str2double(get(hObject,'String')) returns contents of edit71 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit71_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit71 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
