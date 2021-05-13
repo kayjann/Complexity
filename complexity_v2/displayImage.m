@@ -33,10 +33,10 @@ end
 function displayImage_OpeningFcn(hObject, eventdata, handles, varargin)
 files = varargin(1);
 files = files{1};
-set(handles.listbox_scans, 'String', string(files));
+set(handles.listbox_scans, 'String', files);
 global opRCSL;
 handles.output = hObject;
-disp(handles.listbox_scans.String{handles.listbox_scans.Value});
+disp(handles.listbox_scans.String);
 data = load_untouch_nii(handles.listbox_scans.String{handles.listbox_scans.Value});
 img = data.img;
 nSlices = size(img,3);

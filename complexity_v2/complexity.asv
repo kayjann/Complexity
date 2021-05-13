@@ -134,12 +134,9 @@ function btn_viewOutput_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %dirName = uigetdir;
 %files = dir([dirName, filesep, '*.nii']);
-[filename, pathname] = uigetfile('*.nii; *.img', 'Pick image files','MultiSelect', 'on');
+[filenames, pathname] = uigetfile('*.nii; *.img', 'Pick image files','MultiSelect', 'on');
 %[filename, pathname]
-%disp(length(filenames));
-filename = cellstr(filename);
-for i=1:length(filename)
-    disp([pathname, filesep, filename{i}]);
-    final_files{i} = [pathname, filesep, filename{i}];
+for i=1:length(files)
+    final_files{i} = [files(i,1), filesep, files(i,2)];
 end
 displayImage(final_files);
