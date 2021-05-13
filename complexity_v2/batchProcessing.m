@@ -338,6 +338,7 @@ function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit_sampEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_m_start as a double
 m_start = get(hObject,'String');
+disp('entered mstart for samp');
 m_start = str2num(m_start);
 handles.sampEn_m_start = m_start;
 guidata(hObject, handles);
@@ -2036,6 +2037,7 @@ else
     end
     dirName = uigetdir;
     handles.inputDir = dirName;
+    guidata(hObject, handles);
     set(handles.edit_inputDir, 'string', handles.inputDir);
     if (dirName==0)
         msgbox('No image input directory selected','Error Message');
@@ -2128,8 +2130,7 @@ function edit_fmriPattern_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'TooltipString','For Example: enter *.nii to select all files with .nii extension in the subject folder')
-guidata(hObject,handles);
+
 
 
 function edit_filePattern_Callback(hObject, eventdata, handles)
@@ -2152,7 +2153,8 @@ function edit_filePattern_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'TooltipString','For Example: enter *.nii to select all files with .nii extension in the subject folder')
+guidata(hObject,handles);
 
 
 
@@ -2215,13 +2217,13 @@ if A==0
    msgbox('Input Directory was not selected','Error Message');
    return
 end 
-if B==0
-    disp('Brain mask not selected');
-    msgbox('Brain Mask was not selected','Error Message');
-    return
-end
+% if B==0
+%     disp('Brain mask not selected');
+%     msgbox('Brain Mask was not selected','Error Message');
+%     return
+% end
 
-if O==0
+if B==0
     disp('Output Folder not selected');
     msgbox('Please select an Output Directory','Error Message');
     return
@@ -2233,11 +2235,16 @@ fmriPattern = get(handles.edit_fmriPattern, 'String');
 filePattern = get(handles.edit_filePattern, 'String');
 subject_search = strcat(handles.inputDir,filesep,subjectPattern);
 file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern,filesep,filePattern);
+disp('file search');
+disp(file_search);
+disp('subject search');
+disp(dir(subject_search));
 subjects = dir(subject_search);
 files = dir(file_search);
 set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
 if(handles.d3d4=='3D')
         disp('inside 3d case');
+        disp(length(files));
         for i=1:length(files)
              folders{i}=[files(i).folder];
         end
@@ -2308,7 +2315,32 @@ function btn_run_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+A = sum(strcmp(fieldnames(handles),'inputDir'));
+B1 = sum(strcmp(fieldnames(handles),'brainMask'));
+B2 =sum(strcmp(fieldnames(handles),'mask'));
+O = sum(strcmp(fieldnames(handles),'outputDir'));
+if A==0
+   disp('Input not selected');
+   msgbox('Input Directory was not selected','Error Message');
+   return
+end 
+if B1==0 && B2 ==0
+    disp('Brain mask not selected');
+    msgbox('Brain Mask was not selected','Error Message');
+    return
+else
+    if B1==0
+        B=B2;
+    else
+        B=B1;
+    end
+end
 
+if O==0
+    disp('Output Folder not selected');
+    msgbox('Please select an Output Directory','Error Message');
+    return
+end
 if handles.lempelZiv
     C = sum(strcmp(fieldnames(handles),'lempelZiv_m_start'));
     D = sum(strcmp(fieldnames(handles),'lempelZiv_m_end'));
@@ -2323,12 +2355,12 @@ if handles.lempelZiv
         return
     end
     clear C D E F G H 
-    set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
-    set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
-    set(handles.edit_lempelZiv_r_start, 'Enable', 'off');
-    set(handles.edit_lempelZiv_r_end, 'Enable', 'off');
-    set(handles.edit_lempelZiv_scale_start, 'Enable', 'off');
-    set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_m_start, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_m_end, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_r_start, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_r_end, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_scale_start, 'Enable', 'off');
+%     set(handles.edit_lempelZiv_scale_end, 'Enable', 'off');
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         %disp(handle.baseName)
@@ -2350,26 +2382,22 @@ if handles.hurstExp
     F = sum(strcmp(fieldnames(handles),'hurstExp_r_end'));
     G = sum(strcmp(fieldnames(handles),'hurstExp_scale_start'));
     H = sum(strcmp(fieldnames(handles),'hurstExp_scale_end'));
-    ipChk = [C D E F G H];
+    ipChk = [A B C D E F G H];
     if E==0
         disp('r not selected');
         msgbox('r not selected for Hurst Exponent');
         return 
     end
     if G==0
-       handles.hurstExp_scale_start=1;
-       G=1;
+       handles.hurstExp_scale_start=1
+       G=1
     end
     if F==0
-        handles.hurstExp_r_end=handles.hurstExp_r_start + handles.hurstExp_scale_start/2;
+        handles.hurstExp_r_end=handles.hurstExp_r_start + handles.hurstExp_scale_start/2
     end
     clear C D E F G H 
-    set(handles.edit_hurstExp_m_start, 'Enable', 'off');
-    set(handles.edit_hurstExp_m_end, 'Enable', 'off');
-    set(handles.edit_hurstExp_r_start, 'Enable', 'off');
-    set(handles.edit_hurstExp_r_end, 'Enable', 'off');
-    set(handles.edit_hurstExp_scale_start, 'Enable', 'off');
-    set(handles.edit_hurstExp_scale_end, 'Enable', 'off');
+    
+    
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         handle.outputDir=handles.outputDir;
@@ -2463,14 +2491,40 @@ if handles.apEn
     F = sum(strcmp(fieldnames(handles),'apEn_r_end'));
     G = sum(strcmp(fieldnames(handles),'apEn_scale_start'));
     H = sum(strcmp(fieldnames(handles),'apEn_scale_end'));
-    ipChk = [C D E F G H];
+    ipChk = [A B C D E F G H];
+    if C==0 || E==0
+        msgbox('Please select m and r for ApEn','Error Message')
+        return
+    end
+    if G==0
+        G=1;
+        handles.apEn_scale_start=1;
+        guidata(hObject, handles);  
+    end
+    
+    if H==0
+        H=1;
+        handles.apEn_scale_end=1;
+        guidata(hObject, handles); 
+    end
+    
+    if D==0
+        handles.apEn_m_end=C+(handles.apEn_scale_start)/2;
+        guidata(hObject, handles);
+    end
+    if F==0
+        handles.apEn_r_end=E+(handles.apEn_scale_end)/2;
+        guidata(hObject, handles);
+    end
     clear C D E F G H 
-    set(handles.edit_apEn_m_start, 'Enable', 'off');
-    set(handles.edit_apEn_m_end, 'Enable', 'off');
-    set(handles.edit_apEn_r_start, 'Enable', 'off');
-    set(handles.edit_apEn_r_end, 'Enable', 'off');
-    set(handles.edit_apEn_scale_start, 'Enable', 'off');
-    set(handles.edit_apEn_scale_end, 'Enable', 'off');
+
+ 
+%     set(handles.edit_apEn_m_start, 'Enable', 'off');
+%     set(handles.edit_apEn_m_end, 'Enable', 'off');
+%     set(handles.edit_apEn_r_start, 'Enable', 'off');
+%     set(handles.edit_apEn_r_end, 'Enable', 'off');
+%     set(handles.edit_apEn_scale_start, 'Enable', 'off');
+%     set(handles.edit_apEn_scale_end, 'Enable', 'off');
     %disp(length(handles.scans));
     
     for i = 1:length(handles.scans)
@@ -2505,14 +2559,39 @@ if handles.sampEn
     F = sum(strcmp(fieldnames(handles),'sampEn_r_end'));
     G = sum(strcmp(fieldnames(handles),'sampEn_scale_start'));
     H = sum(strcmp(fieldnames(handles),'sampEn_scale_end'));
-    ipChk = [C D E F G H];
-    clear C D E F G H 
-    set(handles.edit_sampEn_m_start, 'Enable', 'off');
-    set(handles.edit_sampEn_m_end, 'Enable', 'off');
-    set(handles.edit_sampEn_r_start, 'Enable', 'off');
-    set(handles.edit_sampEn_r_end, 'Enable', 'off');
-    set(handles.edit_sampEn_scale_start, 'Enable', 'off');
-    set(handles.edit_sampEn_scale_end, 'Enable', 'off');
+    ipChk = [A B C D E F G H];
+    if C==0 || E==0
+        msgbox('Please select m and r for SampEn','Error Message')
+        return
+    end
+    if G==0
+        G=1;
+        handles.sampEn_scale_start=1;
+        guidata(hObject, handles);  
+    end
+    
+    if H==0
+        H=1;
+        handles.sampEn_scale_end=1;
+        guidata(hObject, handles); 
+    end
+    
+    if D==0
+        handles.sampEn_m_end=handles.sampEn_m_start+(handles.sampEn_scale_start)/2;
+        guidata(hObject, handles);
+    end
+    if F==0
+        handles.sampEn_r_end=handles.sampEn_r_start+(handles.sampEn_scale_end)/2;
+        guidata(hObject, handles);
+    end
+    clear C D E F G H
+    
+%     set(handles.edit_sampEn_m_start, 'Enable', 'off');
+%     set(handles.edit_sampEn_m_end, 'Enable', 'off');
+%     set(handles.edit_sampEn_r_start, 'Enable', 'off');
+%     set(handles.edit_sampEn_r_end, 'Enable', 'off');
+%     set(handles.edit_sampEn_scale_start, 'Enable', 'off');
+%     set(handles.edit_sampEn_scale_end, 'Enable', 'off');
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         %disp(handle.baseName)
@@ -2553,6 +2632,7 @@ if handles.waveletMSE
     
 end
 if handles.fuzzyEn
+    
     C = sum(strcmp(fieldnames(handles),'fuzzyEn_m_start'));
     D = sum(strcmp(fieldnames(handles),'fuzzyEn_m_end'));
     E = sum(strcmp(fieldnames(handles),'fuzzyEn_r_start'));
@@ -2562,10 +2642,10 @@ if handles.fuzzyEn
     I = sum(strcmp(fieldnames(handles),'fuzzyEn_n_start'));
     J = sum(strcmp(fieldnames(handles),'fuzzyEn_n_end'));
     K = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_start'));
-    L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
-    ipChk = [C D E F G H I J K L];
+    %L = sum(strcmp(fieldnames(handles),'fuzzyEn_tau_end'));
+    ipChk = [A B C D E F G H I J K];
     if C==0 || E==0
-        msgbox('Please select m and r for SampEn','Error Message')
+        msgbox('Please select m and r for Fuzzy Entropy','Error Message')
         return
     end
     if I==0
@@ -2598,17 +2678,20 @@ if handles.fuzzyEn
         handles.fuzzyEn_r_end=handles.fuzzyEn_r_start+(handles.fuzzyEn_scale_end/2);
         guidata(hObject, handles);
     end
-    clear C D E F G H I J K L
-    set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_r_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_r_end, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_scale_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_scale_end, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
-    set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');   
+    clear C D E F G H I J K
+    
+    
+    
+%     set(handles.edit_fuzzyEn_m_start, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_m_end, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_r_start, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_r_end, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_scale_start, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_scale_end, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
+%     set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');   
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         handle.outputDir=handles.outputDir;
@@ -2666,34 +2749,6 @@ end
 % hObject    handle to btn_run (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-function ap_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
-imgSize = size(mask);
-brainVox = find(mask == max(mask(:)));
-for m = m_start:m_scale:m_end
-    for r = r_start:r_scale:r_end
-        ApEn = zeros(imgSize);
-        msg = ['calculating self ApEn: m=',num2str(m),',r=',num2str(r)];
-        h = waitbar(0,msg);
-        nFail = 0;
-        for vox = 1:length(brainVox)
-            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-            TS1 = squeeze(handles.img_4D(row, col, sl, :));
-            TS2 = TS1;
-            r_val = r * std(double(TS1));
-            tmp = cross_approx_entropy(m, r_val, TS1, TS2);
-            ApEn(row, col, sl) = tmp(1);
-            nFail = nFail + tmp(2);
-            waitbar(vox/length(brainVox));
-        end
-        close(h);
-        opFname = [handles.outputDir, filesep, handles.baseName, 'ApEn_m', ...
-            num2str(m), '_r', num2str(r*100), 'per','.nii'];
-        niiStruct = make_nii(ApEn, handles.imgVoxDim, [], 64, []);
-        niiStruct.hdr.hk.data_type = 'float64';
-        save_nii(niiStruct, opFname, []);
-    end
-end
-
 % --- Executes on button press in btn_outputDir.
 function btn_outputDir_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_outputDir (see GCBO)
@@ -2818,3 +2873,198 @@ function edit71_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+function lempel_ziv_call(handles, mask, r_start)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+LempelZiv = zeros(imgSize);
+msg = ['calculating Lempel Ziv: r=', num2str(r)];
+h = waitbar(0,msg);
+nFail = 0; 
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    TS2 = TS1;
+    r_val = r * std(double(TS1));
+    tmp = lempel_ziv_complexity(TS2);
+    LempelZiv(row,col,sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.opFolder, filesep, handles.baseName, 'LempelZiv.nii']
+niiStruct = make_nii(LempelZiv, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+niiStruct.hdr.hist.originator(1:3) = handles.originator;
+save_nii(niiStruct, opFname, []);
+
+function hurst_ex_call(handles, mask,r_start,r_end,scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+
+
+for r=r_start:scale:r_end
+    Hurst_Ex = zeros(imgSize);
+    msg = ['calculating Hurst Exponent: r=', num2str(r)];
+    h = waitbar(0,msg);
+    nFail = 0; 
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        r_val = r * std(double(TS1));
+        tmp = hurst_exponent(TS2);
+        Hurst_Ex(row,col,sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
+    close(h);
+    opFname = [handles.opFolder, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
+    niiStruct = make_nii(Hurst_Ex, handles.imgVoxDim, [], 64, []);
+    niiStruct.hdr.hk.data_type = 'float64';
+    niiStruct.hdr.hist.originator(1:3) = handles.originator;
+    save_nii(niiStruct, opFname, []);
+end
+
+function frac_dim_call(handles, mask, k_start, k_end, scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+if isEmpty(k_end)
+    disp('k_end empty')
+end
+for k = k_start:scale:k_end
+    msg = ['calculating FracDim: k=', num2str(k)];
+    h = waitbar(0,msg);
+    nFail = 0;
+    FracDim = zeros(imgSize);
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        tmp = higuchi_fractal_dimension(TS2, k);
+        FracDim(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
+    close(h);
+    opFname = [handles.opFolder, filesep, handles.baseName, 'FracDim_k', ...
+        num2str(k),'.nii'];
+    niiStruct = make_nii(FracDim, handles.imgVoxDim, [], 64, []);
+    niiStruct.hdr.hk.data_type = 'float64';
+    niiStruct.hdr.hist.originator(1:3) = handles.originator;
+    save_nii(niiStruct, opFname, []);
+end
+
+
+function perm_en_call(handles, mask, ord_start, ord_end, delay_start, delay_end, ord_scale, delay_scale, normalize)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+for order = ord_start:ord_scale:ord_end
+    for delay = delay_start:delay_scale:delay_end
+        PermEn = zeros(imgSize);
+        msg = ['calculating self PermEn: order=', num2str(order), ',delay=', num2str(delay)];
+        h = waitbar(0,msg);
+        nFail = 0;
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl,:));
+            r_val = r*std(double(TS1));
+            tmp = permutation_entropy(TS1, order, delay, normalize);
+            PermEn(row, col, sl) = tmp(1);
+            nFail = nFail + tmp(2);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.opFolder, filesep, handles.baseName, 'PermEn_order', ...
+            num2str(order), '_delay', num2str(delay), '_norm', num2str(normalize), '.nii'];
+        niiStruct = make_nii(PermEn, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        niiStruct.hdr.hist.originator(1:3) = handles.originator;
+        save_nii(niiStruct, opFname, []);
+    end
+end
+
+function fuzzy_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale,n,t)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+for m = m_start:m_scale:m_end
+    for r = r_start:r_scale:r_end
+        FuzzEn = zeros(imgSize);
+        msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
+        h = waitbar(0,msg);
+        nFail = 0;
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl, :));
+            r_val = r * std(double(TS1));
+            tmp = FuzEn(TS1,m, r_val,n,t);
+            FuzzEn(row, col, sl) = tmp(1);
+            nFail = nFail + tmp(1);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.opFolder, filesep, handles.baseName, 'FuzzyEn_m', ...
+            num2str(m), '_r', num2str(r*100), 'per','.nii'];
+        niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        save_nii(niiStruct, opFname, []);
+    end
+end
+
+function samp_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+for m = m_start:m_scale:m_end
+    for r = r_start:r_scale:r_end
+        SampEn = zeros(imgSize);
+        msg = ['calculating self SampEn: m=',num2str(m),',r=',num2str(r)];
+        h = waitbar(0,msg);
+        nFail = 0;
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl, :));
+            r_val = r * std(double(TS1));
+            tmp=lyaprosenTest(TS1, 0.05);
+            %tmp = sample_entropy(m, r_val, TS1, 1);
+            SampEn(row, col, sl) = tmp(1);
+            nFail = nFail + tmp(2);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.opFolder, filesep, handles.baseName, 'SampEn_m', ...
+            num2str(m), '_r', num2str(r*100), 'per','.nii'];
+        niiStruct = make_nii(SampEn, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        save_nii(niiStruct, opFname, []);
+    end
+end
+
+
+function ap_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+for m = m_start:m_scale:m_end
+    for r = r_start:r_scale:r_end
+        ApEn = zeros(imgSize);
+        msg = ['calculating self ApEn: m=',num2str(m),',r=',num2str(r)];
+        h = waitbar(0,msg);
+        nFail = 0;
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl, :));
+            TS2 = TS1;
+            r_val = r * std(double(TS1));
+            tmp = cross_approx_entropy(m, r_val, TS1, TS2);
+            ApEn(row, col, sl) = tmp(1);
+            nFail = nFail + tmp(2);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.outputDir, filesep, handles.baseName, 'ApEn_m', ...
+            num2str(m), '_r', num2str(r*100), 'per','.nii'];
+        niiStruct = make_nii(ApEn, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        save_nii(niiStruct, opFname, []);
+    end
+end
+

@@ -546,7 +546,7 @@ if handles.sampEn
     end
     
     if D==0
-        handles.sampEn_m_end=sampEn_m_start+(handles.sampEn_scale_start)/2;
+        handles.sampEn_m_end=handles.sampEn_m_start+(handles.sampEn_scale_start)/2;
         guidata(hObject, handles);
     end
     if F==0
