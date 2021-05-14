@@ -651,7 +651,7 @@ if handles.permEn
     L = sum(strcmp(fieldnames(handles),'permEn_delay_end'));
     M = sum(strcmp(fieldnames(handles),'permEn_delay_scale'));
     N = sum(strcmp(fieldnames(handles),'permEn_ord_scale'));
-    P== sum(strcmp(fieldnames(handles),'permEn_normalize'));
+    P = sum(strcmp(fieldnames(handles),'permEn_normalize'));
     ipChk = [A B I J K L M N P];
     if I==0 || K==0
         msgbox('Please enter starting vales for order and delay for Permutation Entropy','Error Message')
@@ -671,8 +671,11 @@ if handles.permEn
     if L==0
         handles.permEn_delay_end=handles.permEn_delay_start+(handles.permEn_delay_scale/2);
     end
+    if P==0
+        handles.permEn_normalize=0;
+    end
     
-    perm_en_call(handles, handles.mask, handles.permEn_ord_start, handles.permEn_ord_end, handles.permEn_delay_start, handles.permEn_delay_end, handles.permEn_ord_scale, handles.permEn_delay_scale, normalize)
+    perm_en_call(handles, handles.brainMask, handles.permEn_ord_start, handles.permEn_ord_end, handles.permEn_delay_start, handles.permEn_delay_end, handles.permEn_ord_scale, handles.permEn_delay_scale, handles.permEn_normalize)
     clear I J K L M N P
 %     set(handles.edit_permEn_m_start, 'Enable', 'off');
 %     set(handles.edit_permEn_m_end, 'Enable', 'off');

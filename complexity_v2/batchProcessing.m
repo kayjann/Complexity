@@ -189,7 +189,7 @@ function checkbox_permEn_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_permEn
 value = get(hObject,'Value');
-handles.permEn = value;
+handles.permEn_normalize = value;
 guidata(hObject, handles);
 
 
@@ -2739,7 +2739,9 @@ if handles.permEn
     if L==0
         handles.permEn_delay_end=handles.permEn_delay_start+(handles.permEn_delay_scale/2);
     end
-    
+    if P==0
+        handles.permEn_normalize=0;
+    end
     
 
     ipChk = [C D E F G H I J K L];
@@ -2762,6 +2764,8 @@ if handles.permEn
         if(handles.batchmask_flag==1)
             handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
         end
+        
+ 
         %call for perm en
         perm_en_call(handle, handles.mask, handles.permEn_ord_start, handles.permEn_ord_end, handles.permEn_delay_start, handles.permEn_delay_end, handles.permEn_ord_scale, handles.permEn_delay_scale, handles.permEn_normalize)
     end
