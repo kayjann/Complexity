@@ -672,7 +672,7 @@ if handles.permEn
         handles.permEn_delay_end=handles.permEn_delay_start+(handles.permEn_delay_scale/2);
     end
     
-    perm_en_call(handles, handles.mask, handles.permEn_ord_start, handles.permEn_ord_end, handles.permEn_delay_start, handles.permEn_delay_end, handles.permEn_ord_scale, handles.permEn_delay_scale, normalize)
+    
     clear I J K L M N P
 %     set(handles.edit_permEn_m_start, 'Enable', 'off');
 %     set(handles.edit_permEn_m_end, 'Enable', 'off');
@@ -684,7 +684,7 @@ if handles.permEn
 %     set(handles.edit_permEn_n_end, 'Enable', 'off');
 %     set(handles.edit_permEn_tau_start, 'Enable', 'off');
 %     set(handles.edit_permEn_tau_end, 'Enable', 'off');
-    
+
     
 end
 % --- Executes on button press in checkbox_lempelZiv.

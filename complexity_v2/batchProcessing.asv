@@ -2703,12 +2703,12 @@ if handles.fuzzyEn
     end
 end
 if handles.permEn
-%     C = sum(strcmp(fieldnames(handles),'permEn_m_start'));
-%     D = sum(strcmp(fieldnames(handles),'permEn_m_end'));
-%     E = sum(strcmp(fieldnames(handles),'permEn_r_start'));
-%     F = sum(strcmp(fieldnames(handles),'permEn_r_end'));
-%     G = sum(strcmp(fieldnames(handles),'permEn_scale_start'));
-%     H = sum(strcmp(fieldnames(handles),'permEn_scale_end'));
+    C = sum(strcmp(fieldnames(handles),'permEn_m_start'));
+    D = sum(strcmp(fieldnames(handles),'permEn_m_end'));
+    E = sum(strcmp(fieldnames(handles),'permEn_r_start'));
+    F = sum(strcmp(fieldnames(handles),'permEn_r_end'));
+    G = sum(strcmp(fieldnames(handles),'permEn_scale_start'));
+    H = sum(strcmp(fieldnames(handles),'permEn_scale_end'));
     I = sum(strcmp(fieldnames(handles),'permEn_ord_start'));
     J = sum(strcmp(fieldnames(handles),'permEn_ord_end'));
     K = sum(strcmp(fieldnames(handles),'permEn_delay_start'));
@@ -2719,7 +2719,7 @@ if handles.permEn
     L = sum(strcmp(fieldnames(handles),'permEn_delay_end'));
     M = sum(strcmp(fieldnames(handles),'permEn_delay_scale'));
     N = sum(strcmp(fieldnames(handles),'permEn_ord_scale'));
-    P = sum(strcmp(fieldnames(handles),'permEn_normalize'));
+    P== sum(strcmp(fieldnames(handles),'permEn_normalize'));
     ipChk = [A B I J K L M N P];
     if I==0 || K==0
         msgbox('Please enter starting vales for order and delay for Permutation Entropy','Error Message')
@@ -2740,20 +2740,21 @@ if handles.permEn
         handles.permEn_delay_end=handles.permEn_delay_start+(handles.permEn_delay_scale/2);
     end
     
-    
+    perm_en_call(handles, handles.mask, handles.permEn_ord_start, handles.permEn_ord_end, handles.permEn_delay_start, handles.permEn_delay_end, handles.permEn_ord_scale, handles.permEn_delay_scale, normalize)
+    clear I J K L M N P
 
     ipChk = [C D E F G H I J K L];
     clear C D E F G H I J K L
-%     set(handles.edit_permEn_m_start, 'Enable', 'off');
-%     set(handles.edit_permEn_m_end, 'Enable', 'off');
-%     set(handles.edit_permEn_r_start, 'Enable', 'off');
-%     set(handles.edit_permEn_r_end, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_start, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_end, 'Enable', 'off');
-%     set(handles.edit_permEn_n_start, 'Enable', 'off');
-%     set(handles.edit_permEn_n_end, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_start, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_end, 'Enable', 'off');
+    set(handles.edit_permEn_m_start, 'Enable', 'off');
+    set(handles.edit_permEn_m_end, 'Enable', 'off');
+    set(handles.edit_permEn_r_start, 'Enable', 'off');
+    set(handles.edit_permEn_r_end, 'Enable', 'off');
+    set(handles.edit_permEn_scale_start, 'Enable', 'off');
+    set(handles.edit_permEn_scale_end, 'Enable', 'off');
+    set(handles.edit_permEn_n_start, 'Enable', 'off');
+    set(handles.edit_permEn_n_end, 'Enable', 'off');
+    set(handles.edit_permEn_tau_start, 'Enable', 'off');
+    set(handles.edit_permEn_tau_end, 'Enable', 'off');
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         %disp(handle.baseName)
