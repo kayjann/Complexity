@@ -1942,9 +1942,9 @@ function checkbox_normalize_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_normalize
-normalize = get(hObject,'Value');
-normalize = str2num(normalize);
-handles.permEn_normalize = normalize;
+ord_start = get(hObject,'String');
+ord_start = str2num(ord_start);
+handles.permEn_ord_start = ord_start;
 guidata(hObject, handles);
 
 

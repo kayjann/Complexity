@@ -2900,7 +2900,10 @@ function edit_permEn_ord_end_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_permEn_ord_end as text
 %        str2double(get(hObject,'String')) returns contents of edit_permEn_ord_end as a double
-
+ord_end = get(hObject,'String');
+ord_end = str2num(ord_end);
+handles.permEn_ord_end = ord_end;
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit_permEn_ord_end_CreateFcn(hObject, eventdata, handles)
