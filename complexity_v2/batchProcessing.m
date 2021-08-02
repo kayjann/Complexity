@@ -2625,8 +2625,8 @@ if handles.waveletMSE
     set(handles.edit_waveletMSE_r_end, 'Enable', 'off');
     set(handles.edit_waveletMSE_scale_start, 'Enable', 'off');
     set(handles.edit_waveletMSE_scale_end, 'Enable', 'off');
-    for k=1:length(handles.arr)
-        handle=handles.arr(k);
+    for k=1:length(handles.scans)
+        handle=handles.scans(k);
         disp(handle.baseName)
         handle.outputDir=handles.outputDir;
            %disp(handles.outputDir);
