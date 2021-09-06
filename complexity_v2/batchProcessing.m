@@ -2215,39 +2215,54 @@ function btn_load_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_load (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-A = sum(strcmp(fieldnames(handles),'inputDir'));
-B = sum(strcmp(fieldnames(handles),'outputDir'));
-O = sum(strcmp(fieldnames(handles),'opFolder'));
-if A==0
+file_search = '';
+if (get(handles.edit_inputDir, 'String')=="")
    disp('Input not selected');
    msgbox('Input Directory was not selected','Error Message');
    return
+else
+    handles.inputDir = get(handles.edit_inputDir,'String');
+    file_search = strcat(file_search, handles.inputDir);
 end 
-% if B==0
-%     disp('Brain mask not selected');
-%     msgbox('Brain Mask was not selected','Error Message');
-%     return
-% end
 
-if B==0
+if (get(handles.edit_outputDir, 'String')=="")
     disp('Output Folder not selected');
     msgbox('Please select an Output Directory','Error Message');
     return
+else
+    handles.outputDir = get(handles.edit_outputDir, 'String');
 end
-ipChk = [A B];
-clear A B;
-subjectPattern = get(handles.edit_subjectPattern, 'String');
-fmriPattern = get(handles.edit_fmriPattern, 'String');
-filePattern = get(handles.edit_filePattern, 'String');
-subject_search = strcat(handles.inputDir,filesep,subjectPattern);
-file_search = strcat(handles.inputDir,filesep,subjectPattern,filesep,fmriPattern,filesep,filePattern);
-disp('file search');
-disp(file_search);
-disp('subject search');
-disp(dir(subject_search));
-subjects = dir(subject_search);
-files = dir(file_search);
-set(handles.text_dataInfo,'string',([num2str(length(subjects)), ' subjects, ', num2str(length(files)), ' scans loaded']));
+
+if (get(handles.edit_subjectPattern, 'String')=="")
+    disp('Subject pattern not specified, skipping.');
+    num_subjects = 1;
+else
+    subjectPattern = get(handles.edit_subjectPattern, 'String');
+    subject_search = strcat(handles.inputDir,filesep,subjectPattern);
+    subjects = dir(subject_search);
+    num_subjects = length(subjects);
+    file_search = strcat(file_search, filesep, subjectPattern);
+end
+
+if (get(handles.edit_fmriPattern, 'String')=="")
+    disp('fMRI pattern not specified, skipping.');
+    fmriPattern = "";
+else
+    fmriPattern = get(handles.edit_fmriPattern, 'String');
+    file_search = strcat(file_search, filesep, fmriPattern);
+end
+
+if (get(handles.edit_filePattern, 'String')=="")
+    filePattern = "";
+    disp('File pattern must be specified.');
+else
+    filePattern = get(handles.edit_filePattern, 'String');
+    file_search = strcat(file_search, filesep, filePattern);
+    files = dir(file_search);
+    num_files = length(files);
+end
+
+set(handles.text_dataInfo,'string',([num2str(num_subjects), ' subjects, ', num2str(num_files), ' scans loaded']));
 if(handles.d3d4=='3D')
         disp('inside 3d case');
         disp(length(files));
