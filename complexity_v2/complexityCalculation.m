@@ -166,29 +166,35 @@ mask = verifyImgOri(handles.img_4D(:,:,:,1),handles.brainMask);
 handles.brainMask = mask;
 guidata(hObject,handles);
 
-function lempel_ziv_call(handles, mask, r_start)
-imgSize = size(mask);
-brainVox = find(mask == max(mask(:)));
-LempelZiv = zeros(imgSize);
-msg = ['calculating Lempel Ziv: r=', num2str(r)];
-h = waitbar(0,msg);
-nFail = 0; 
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    TS2 = TS1;
-    r_val = r * std(double(TS1));
-    tmp = lempel_ziv_complexity(TS2);
-    LempelZiv(row,col,sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
-end
-close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'LempelZiv.nii']
-niiStruct = make_nii(LempelZiv, handles.imgVoxDim, [], 64, []);
-niiStruct.hdr.hk.data_type = 'float64';
-niiStruct.hdr.hist.originator(1:3) = handles.originator;
-save_nii(niiStruct, opFname, []);
+% Function for Lempel Ziv Complexity call
+function lempel_ziv_call(handles, mask, r_start, r_end, scale)
+    imgSize = size(mask);
+    brainVox = find(mask == max(mask(:)));
+    loopValues = r_start:scale:r_end;
+    parfor idx = 1:numel(loopValues)
+        r = loopValues(idx);
+        lempelZivResult = zeros(imgSize);
+        msg = ['calculating Lempel Ziv: r=', num2str(r)];
+        disp(msg);
+        h = waitbar(0,msg);
+        nFail = 0; 
+        for vox = 1:length(brainVox)
+            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+            TS1 = squeeze(handles.img_4D(row, col, sl, :));
+            TS2 = TS1;
+            r_val = r * std(double(TS1));
+            tmp = lempel_ziv_complexity(TS2);
+            lempelZivResult(row,col,sl) = tmp(1);
+            nFail = nFail + tmp(2);
+            waitbar(vox/length(brainVox));
+        end
+        close(h);
+        opFname = [handles.opFolder, filesep, handles.baseName, 'LempelZiv','_r',num2str(r),'.nii']
+        niiStruct = make_nii(lempelZivResult, handles.imgVoxDim, [], 64, []);
+        niiStruct.hdr.hk.data_type = 'float64';
+        niiStruct.hdr.hist.originator(1:3) = handles.originator;
+        save_nii(niiStruct, opFname, []);        
+    end
 
 function hurst_ex_call(handles, mask,r_start,r_end,scale)
 imgSize = size(mask);
