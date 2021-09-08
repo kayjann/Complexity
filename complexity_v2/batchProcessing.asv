@@ -338,6 +338,7 @@ function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit_sampEn_m_start as text
 %        str2double(get(hObject,'String')) returns contents of edit_sampEn_m_start as a double
 m_start = get(hObject,'String');
+disp('entered mstart for samp');
 m_start = str2num(m_start);
 handles.sampEn_m_start = m_start;
 guidata(hObject, handles);
@@ -2261,7 +2262,8 @@ else
     files = dir(file_search);
     num_files = length(files);
 end
-
+disp('file_search')
+disp(file_search)
 files = dir(file_search);
 num_files = length(files);
 set(handles.text_dataInfo,'string',([num2str(num_subjects), ' subjects, ', num2str(num_files), ' scans loaded']));
@@ -2350,7 +2352,7 @@ B1 = sum(strcmp(fieldnames(handles),'brainMask'));
 B2 =sum(strcmp(fieldnames(handles),'mask'));
 O = sum(strcmp(fieldnames(handles),'outputDir'));
 
-disp('entered run')
+disp('enet')
 if A==0
    disp('Input not selected');
    msgbox('Input Directory was not selected','Error Message');
@@ -2373,7 +2375,6 @@ if O==0
     msgbox('Please select an Output Directory','Error Message');
     return
 end
-
 if handles.lempelZiv
     C = sum(strcmp(fieldnames(handles),'lempelZiv_m_start'));
     D = sum(strcmp(fieldnames(handles),'lempelZiv_m_end'));
