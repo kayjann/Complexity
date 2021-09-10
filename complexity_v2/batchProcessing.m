@@ -2290,6 +2290,7 @@ if(handles.d3d4=='3D')
             handle(k).baseName = imgStruct.bName;
             handle(k).imgVoxDim = imgStruct.voxDim;
             handle(k).size=length(subFolders);   
+            handle(k).originator = imgStruct.originator;
             if(handles.batchmask_flag==0)
                 handle(k).brainMask=handles.mask;
                 
@@ -2351,6 +2352,7 @@ B2 =sum(strcmp(fieldnames(handles),'mask'));
 O = sum(strcmp(fieldnames(handles),'outputDir'));
 
 disp('entered run')
+disp(handles.outputDir)
 if A==0
    disp('Input not selected');
    msgbox('Input Directory was not selected','Error Message');
@@ -2398,10 +2400,12 @@ if handles.lempelZiv
         handle=handles.scans(k);
         %disp(handle.baseName)
         handle.outputDir=handles.outputDir;
+       
         %disp(handles.outputDir);
         if(handles.batchmask_flag==1)
             handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
         end
+        disp('inside lempelZiv loop')
         lempel_ziv_call(handle, handles.mask, handles.lempelZiv_r_start);
         %lempel_ziv_call(handles, handles.brainMask, handles.lempelZiv_m_start, handles.lempelZiv_m_end, handles.lempelZiv_r_start, handles.lempelZiv_r_end, handles.lempelZiv_scale_start, handles.lempelZiv_scale_end);
     end
@@ -2826,6 +2830,7 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
 % guidata(hObject, handles);
 dirName = uigetdir;
 handles.outputDir = dirName;
+handles.opFolder = dirName;
 set(handles.edit_outputDir, 'string', handles.outputDir);
 mkdir([handles.outputDir,filesep,'tmp']);
 guidata(hObject, handles);
@@ -2943,6 +2948,7 @@ end
 
 
 function lempel_ziv_call(handles, mask, r)
+disp(handles)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 LempelZiv = zeros(imgSize);
@@ -2960,7 +2966,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'LempelZiv.nii']
+opFname = [handles.outputDir, filesep, handles.baseName, 'LempelZiv.nii']
 niiStruct = make_nii(LempelZiv, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
 niiStruct.hdr.hist.originator(1:3) = handles.originator;
