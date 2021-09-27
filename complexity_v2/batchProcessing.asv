@@ -143,6 +143,8 @@ function checkbox_apEn_Callback(hObject, eventdata, handles)
 value = get(hObject,'Value');
 handles.apEn = value;
 guidata(hObject, handles);
+disp('entered checkbox for ap en');
+disp(handles.apEn);
 
 
 % --- Executes on button press in checkbox_sampEn.
@@ -2290,7 +2292,7 @@ if(handles.d3d4=='3D')
             handle(k).baseName = imgStruct.bName;
             handle(k).imgVoxDim = imgStruct.voxDim;
             handle(k).size=length(subFolders);   
-            handle(k).originator = handles.originator = imgStruct.originator;
+            handle(k).originator = imgStruct.originator;
             if(handles.batchmask_flag==0)
                 handle(k).brainMask=handles.mask;
                 
@@ -2400,7 +2402,7 @@ if handles.lempelZiv
         handle=handles.scans(k);
         %disp(handle.baseName)
         handle.outputDir=handles.outputDir;
-        handle.originator=handles.originator;
+       
         %disp(handles.outputDir);
         if(handles.batchmask_flag==1)
             handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
@@ -2475,31 +2477,25 @@ if handles.LLExp
     end
 end
 if handles.fracDim
-    C = sum(strcmp(fieldnames(handles),'fracDim_m_start'));
-    D = sum(strcmp(fieldnames(handles),'fracDim_m_end'));
-    E = sum(strcmp(fieldnames(handles),'fracDim_r_start'));
-    F = sum(strcmp(fieldnames(handles),'fracDim_r_end'));
     G = sum(strcmp(fieldnames(handles),'fracDim_scale_start'));
-    H = sum(strcmp(fieldnames(handles),'fracDim_scale_end'));
     I = sum(strcmp(fieldnames(handles),'fracDim_k_start'));
     J = sum(strcmp(fieldnames(handles),'fracDim_k_end'));
-    K= sum(strcmp(fieldnames(handles),'fracDim_scale_start'));
-    ipChk = [A B I J K];
+   
+    ipChk = [A B I J G];
     
     if I==0
         msgbox('Please select k for Higuchi Fractal Dimension','Error Message')
         return
     end
-    if K==0
+    if G==0
        handles.fracDim_scale_start=1;
-       K=1;
        guidata(hObject, handles);
     end
     if J==0
-       handles.fracDim_k_end=handles.fracDim_scale_start+(handles.fracDim_scale_start)/2;
+       handles.fracDim_k_end=handles.fracDim_k_start+((handles.fracDim_scale_start)/2);
        guidata(hObject, handles);
     end
-    clear C D E F G H I J
+    clear G I J
 %     set(handles.edit_fracDim_m_start, 'Enable', 'off');
 %     set(handles.edit_fracDim_m_end, 'Enable', 'off');
 %     set(handles.edit_fracDim_r_start, 'Enable', 'off');
@@ -2546,15 +2542,15 @@ if handles.apEn
     end
     
     if D==0
-        handles.apEn_m_end=C+(handles.apEn_scale_start)/2;
+        disp('hereeeeeee')
+        handles.apEn_m_end=handles.apEn_m_start+(handles.apEn_scale_start)/2;
         guidata(hObject, handles);
     end
     if F==0
-        handles.apEn_r_end=E+(handles.apEn_scale_end)/2;
+        handles.apEn_r_end=handles.apEn_r_start+(handles.apEn_scale_end)/2;
         guidata(hObject, handles);
     end
     clear C D E F G H 
-
  
 %     set(handles.edit_apEn_m_start, 'Enable', 'off');
 %     set(handles.edit_apEn_m_end, 'Enable', 'off');
@@ -2637,7 +2633,7 @@ if handles.sampEn
         if(handles.batchmask_flag==1)
             handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
         end
-        samp_en_call(handles, handles.mask, handles.sampEn_m_start, handles.sampEn_m_end, handles.sampEn_r_start, handles.sampEn_r_end, handles.sampEn_scale_start, handles.sampEn_scale_end);
+        samp_en_call(handle, handles.mask, handles.sampEn_m_start, handles.sampEn_m_end, handles.sampEn_r_start, handles.sampEn_r_end, handles.sampEn_scale_start, handles.sampEn_scale_end);
     end
     
 end
@@ -2728,7 +2724,9 @@ if handles.fuzzyEn
 %     set(handles.edit_fuzzyEn_n_start, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
-%     set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');   
+%     set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');  
+disp(handles.)
+fprintf('mstart = %f, mend = %f\n rstart = %f, rend = %f\n scalestart = %f, sacleend = %f\n n = %f, tau = %f\n',handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end,handles.fuzzyEn_n_start, handles.fuzzyEn_tau_start)
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         handle.outputDir=handles.outputDir;
@@ -2736,6 +2734,7 @@ if handles.fuzzyEn
         if(handles.batchmask_flag==1)
             handles.mask=load_untouch_nii(handles.mask_arr(k)).img;
         end
+        
         fuzzy_en_call(handle, handles.mask, handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end,handles.fuzzyEn_n_start, handles.fuzzyEn_tau_start);
     end
 end
@@ -3001,10 +3000,13 @@ for r=r_start:scale:r_end
 end
 
 function frac_dim_call(handles, mask, k_start, k_end, scale)
+disp(k_start);
+disp(k_end);
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
-if isEmpty(k_end)
-    disp('k_end empty')
+if k_end < k_start
+    disp('k_end invalid')
+    
 end
 for k = k_start:scale:k_end
     msg = ['calculating FracDim: k=', num2str(k)];
@@ -3021,7 +3023,7 @@ for k = k_start:scale:k_end
         waitbar(vox/length(brainVox));
     end
     close(h);
-    opFname = [handles.opFolder, filesep, handles.baseName, 'FracDim_k', ...
+    opFname = [handles.outputDir, filesep, handles.baseName, 'FracDim_k', ...
         num2str(k),'.nii'];
     niiStruct = make_nii(FracDim, handles.imgVoxDim, [], 64, []);
     niiStruct.hdr.hk.data_type = 'float64';
@@ -3115,6 +3117,13 @@ end
 
 
 function ap_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
+disp('inside ap en')
+fprintf('mstart = %f, rstart = %f\n',m_start,r_start)
+fprintf('mend = %f, rend = %f\n',m_end,r_end)
+fprintf('mscale = %f, rscale = %f\n',m_scale,r_scale)
+disp(handles)
+
+
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 for m = m_start:m_scale:m_end
