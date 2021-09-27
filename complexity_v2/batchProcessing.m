@@ -2727,8 +2727,6 @@ if handles.fuzzyEn
 %     set(handles.edit_fuzzyEn_n_end, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_tau_start, 'Enable', 'off');
 %     set(handles.edit_fuzzyEn_tau_end, 'Enable', 'off');  
-disp(handles.fuzzyEn_r_end)
-fprintf('mstart = %f, mend = %f\n rstart = %f, rend = %f\n scalestart = %f, sacleend = %f\n n = %f, tau = %f\n',handles.fuzzyEn_m_start, handles.fuzzyEn_m_end, handles.fuzzyEn_r_start, handles.fuzzyEn_r_end, handles.fuzzyEn_scale_start, handles.fuzzyEn_scale_end,handles.fuzzyEn_n_start, handles.fuzzyEn_tau_start)
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         handle.opFolder=handles.outputDir;
@@ -2784,17 +2782,7 @@ if handles.permEn
     guidata(hObject, handles);
     ipChk = [ I J K L];
     clear I J K L
-%     set(handles.edit_permEn_m_start, 'Enable', 'off');
-%     set(handles.edit_permEn_m_end, 'Enable', 'off');
-%     set(handles.edit_permEn_r_start, 'Enable', 'off');
-%     set(handles.edit_permEn_r_end, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_start, 'Enable', 'off');
-%     set(handles.edit_permEn_scale_end, 'Enable', 'off');
-%     set(handles.edit_permEn_n_start, 'Enable', 'off');
-%     set(handles.edit_permEn_n_end, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_start, 'Enable', 'off');
-%     set(handles.edit_permEn_tau_end, 'Enable', 'off');
-disp(handles)
+
     for k=1:length(handles.scans)
         handle=handles.scans(k);
         %disp(handle.baseName)
@@ -2885,7 +2873,7 @@ else
            disp(handles.mask_arr);
     end
    
-    
+msgbox('Brain Mask/s uploaded','Info'); 
 end
 
 
@@ -2950,7 +2938,6 @@ end
 
 
 function lempel_ziv_call(handles, mask, r)
-disp(handles)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 LempelZiv = zeros(imgSize);
@@ -3123,12 +3110,6 @@ end
 
 
 function ap_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_scale)
-disp('inside ap en')
-fprintf('mstart = %f, rstart = %f\n',m_start,r_start)
-fprintf('mend = %f, rend = %f\n',m_end,r_end)
-fprintf('mscale = %f, rscale = %f\n',m_scale,r_scale)
-disp(handles)
-
 
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
