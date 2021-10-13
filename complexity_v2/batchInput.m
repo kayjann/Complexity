@@ -55,9 +55,11 @@ function batchInput_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to batchInput (see VARARGIN)
 
 % Choose default command line output for batchInput
-handles.output = hObject;
 
 % Update handles structure
+handles.maskFilePath = "";
+handles.output = hObject;
+handles.files_master = {};
 guidata(hObject, handles);
 
 % UIWAIT makes batchInput wait for user response (see UIRESUME)
@@ -213,10 +215,19 @@ guidata(hObject, handles);
 % ********************      MASKS    ************************************
 % --- Executes on button press in btnSelectMask.
 function btnSelectMask_Callback(hObject, eventdata, handles)
-% hObject    handle to btnSelectMask (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+% select mask for the subjects
+[fname, pname] = uigetfile('*.*','Select the brain mask');
+if (fname==0 & pname==0)
+    disp('Brain mask not selected');
+    msgbox('Brain Mask not selected','Info');
+    return
+else
+    mask_file = [pname, fname];
+    handles.maskFilePath = mask_file;
+    guidata(hObject, handles);
+    msgbox('Brain Mask/s uploaded','Info');
+end
+    
 % ********************      MASKS END   ************************************
 
 
@@ -271,7 +282,7 @@ files_master = {};
 
 for i = 1:length(files)
     fullpath = [files(i).folder, filesep, files(i).name]; 
-    files_master{i} = struct('fullpath',{fullpath},'is3D4D',handles.is3D4D,'subjectFolder',files(i).folder);
+    files_master{i} = struct('fullpath',{fullpath},'is3D4D',handles.is3D4D,'subjectFolder',files(i).folder, 'mask_filePath',handles.maskFilePath);
     disp(files_master{i});
 end
 handles.files_master = files_master;
@@ -293,5 +304,10 @@ function inputValidation = validateInput(hObject, handles)
         msgbox('Please select an Output Directory','Error Message');
         invalidate = 1;  
     end
+    if (handles.maskFilePath=="")
+        disp('Brain Mask not selected');
+        msgbox('Please select a brain mask','Error Message');
+        invalidate = 1;
+    end    
     inputValidation = invalidate;
    
