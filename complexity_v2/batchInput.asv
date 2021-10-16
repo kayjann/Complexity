@@ -61,7 +61,6 @@ handles.maskFilePath = "";
 handles.output = hObject;
 handles.files_master = struct([]);
 handles.filePaths =[];
-handles.outputDir="";
 guidata(hObject, handles);
 
 % UIWAIT makes batchInput wait for user response (see UIRESUME)
@@ -284,17 +283,13 @@ files_master = {};
 if(handles.is3D4D == "4D")
     for i = 1:length(files)
         fullpath = [files(i).folder, filesep, files(i).name]; 
-        files_master{i} = struct('fullpath',{fullpath},'is3D4D',handles.is3D4D,'subjectFolder',files(i).folder, 'mask_filePath',handles.maskFilePath,'numSubjects',length(files),'outputDir',handles.outputDir);
+        files_master{i} = struct('fullpath',{fullpath},'is3D4D',handles.is3D4D,'subjectFolder',files(i).folder, 'mask_filePath',handles.maskFilePath);
         handles.filePaths{i}=fullpath;
         disp(files_master{i});
     end
 else
     for i = 1:length(subjects)
-        subject=[subjects(i).folder, filesep, subjects(i).name];
-        disp(subject);
-        files_master{i}=struct('fullpath',subject, 'is3D4D', handles.is3D4D,'subjectFolder', subject, 'mask_filePath', handles.maskFilePath, 'numSubjects',length(subjects), 'outputDir',handles.outputDir);
-        handles.filePaths{i} = subject;
-        disp(files_master{i})
+        files_master{i}=struct('fullpath',subjects(i), 'is3D')
     end
 end
 handles.files_master = files_master;
