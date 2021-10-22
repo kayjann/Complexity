@@ -91,80 +91,34 @@ function btnRun_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRun (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-loadMetrics(hObject, handles);
+loadMetrics(handles)
 for i = 1:length(handles.files_master)
     handle = formImgStruct(handles.files_master{i});
     %lempel_ziv_call(handle,0.2,0.3,0.1)
 end
  
-function loadMetrics(hObject, handles)
-index = 1;
+function loadMetrics(handles)
+handles.metrics_master
+index = 0;
 if handles.lempelZiv
-    if ~(isfield(handles,'lempelZiv_rMin'))
-        handles.lempelZiv_rMin=0;
-    end
-    if ~(isfield(handles,'lempelZiv_rMax'))
-        handles.lempelZiv_rMax=0;
-    end
-    if ~(isfield(handles,'lempelZiv_rStep'))
-        handles.lempelZiv_rStep=0;
-    end
-    guidata(hObject, handles);
     rList = metricListFunc(handles.lempelZiv_rMin, handles.lempelZiv_rMax, handles.lempelZiv_rStep);
     metrics_master{index} = struct('metric','lempelZiv','r',rList);
     index = index+1;
 end
 
 if handles.hurst
-    if ~(isfield(handles,'hurst_rMin'))
-        handles.hurst_rMin=0;
-    end
-    if ~(isfield(handles,'hurst_rMax'))
-        handles.hurst_rMax=0;
-    end
-    if ~(isfield(handles,'hurst_rStep'))
-        handles.hurst_rStep=0;
-    end
     rList = metricListFunc(handles.hurst_rMin, handles.hurst_rMax, handles.hurst_rStep);
     metrics_master{index} = struct('metric','hurst','r',rList);
     index = index+1;
 end
 
 if handles.higuchi
-    if ~(isfield(handles,'higuchi_kMin'))
-        handles.higuchi_kMin=0;
-    end
-    if ~(isfield(handles,'higuchi_kMax'))
-        handles.higuchi_kMax=0;
-    end
-    if ~(isfield(handles,'higuchi_kStep'))
-        handles.higuchi_kStep=0;
-    end
     kList = metricListFunc(handles.higuchi_kMin, handles.higuchi_kMax, handles.higuchi_kStep);
     metrics_master{index} = struct('metric','higuchi','k',kList);
     index = index+1;
 end
 
 if handles.approx
-    
-    if ~(isfield(handles,'approx_rMin'))
-        handles.approx_rMin=0;
-    end
-    if ~(isfield(handles,'approx_rMax'))
-        handles.approx_rMax=0;
-    end
-    if ~(isfield(handles,'approx_rStep'))
-        handles.approx_rStep=0;
-    end
-    if ~(isfield(handles,'approx_mMin'))
-        handles.approx_mMin=0;
-    end
-    if ~(isfield(handles,'approx_mMax'))
-        handles.approx_mMax=0;
-    end
-    if ~(isfield(handles,'approx_mStep'))
-        handles.approx_mStep=0;
-    end
     rList = metricListFunc(handles.approx_rMin, handles.approx_rMax, handles.approx_rStep);
     mList = metricListFunc(handles.approx_mMin, handles.approx_mMax, handles.approx_mStep);
     metrics_master{index} = struct('metric','approx','r',rList, 'm', mList);
@@ -172,24 +126,6 @@ if handles.approx
 end
 
 if handles.sample
-    if ~(isfield(handles,'sample_rMin'))
-        handles.sample_rMin=0;
-    end
-    if ~(isfield(handles,'sample_rMax'))
-        handles.sample_rMax=0;
-    end
-    if ~(isfield(handles,'sample_rStep'))
-        handles.sample_rStep=0;
-    end
-    if ~(isfield(handles,'sample_mMin'))
-        handles.sample_mMin=0;
-    end
-    if ~(isfield(handles,'sample_mMax'))
-        handles.sample_mMax=0;
-    end
-    if ~(isfield(handles,'sample_mStep'))
-        handles.sample_mStep=0;
-    end
     rList = metricListFunc(handles.sample_rMin, handles.sample_rMax, handles.sample_rStep);
     mList = metricListFunc(handles.sample_mMin, handles.sample_mMax, handles.sample_mStep);
     metrics_master{index} = struct('metric','sample','r',rList, 'm', mList);
@@ -197,41 +133,17 @@ if handles.sample
 end
 
 if handles.fuzzy
-    if ~(isfield(handles,'fuzzy_rMin'))
-        handles.fuzzy_rMin=0;
-    end
-    if ~(isfield(handles,'fuzzy_rMax'))
-        handles.fuzzy_rMax=0;
-    end
-    if ~(isfield(handles,'fuzzy_rStep'))
-        handles.fuzzy_rStep=0;
-    end
-    if ~(isfield(handles,'fuzzy_mMin'))
-        handles.fuzzy_mMin=0;
-    end
-    if ~(isfield(handles,'fuzzy_mMax'))
-        handles.fuzzy_mMax=0;
-    end
-    if ~(isfield(handles,'fuzzy_mStep'))
-        handles.fuzzy_mStep=0;
-    end
-    if ~(isfield(handles,'fuzzy_n'))
-        handles.fuzzy_n=2;
-    end
-    if ~(isfield(handles,'fuzzy_tau'))
-        handles.fuzzy_tau=1;
-    end
     rList = metricListFunc(handles.fuzzy_rMin, handles.fuzzy_rMax, handles.fuzzy_rStep);
     mList = metricListFunc(handles.fuzzy_mMin, handles.fuzzy_mMax, handles.fuzzy_mStep);
     metrics_master{index} = struct('metric','fuzzy','r',rList, 'm', mList, 'n', handles.fuzzy_n, 'tau', handles.fuzzy_tau);
     index = index+1;
 end
-handles.metrics_master = metrics_master;
+handles.metrics_master = metrics_master
 disp(metrics_master);
 guidata(hObject, handles);
 
 function metricList = metricListFunc(min, max, step)
-index = 1;
+index = 0;
 list = [];
 if min
     list(index) = min;
@@ -248,7 +160,6 @@ if min
                 list(index) = min + step;
                 min = min+step;
                 index = index+1;
-                
             end    
         
         end 
@@ -258,7 +169,6 @@ else
     msgbox('Minimum values for metrics is required','Info');
 end
 metricList = list;
-
 
 %***************************LEMPEL ZIV*********************************
 %*************************************************************************
@@ -376,8 +286,8 @@ function rMaxHurst_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of rMaxHurst as text
 %        str2double(get(hObject,'String')) returns contents of rMaxHurst as a double
 rMax = get(hObject,'String');
-rMax = str2num(rMax);
-handles.hurst_rMax = rMax;
+rMax = str2num(mMax);
+handles.hurst_mMax = mMax;
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -456,7 +366,7 @@ function kStepHiguchi_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of kStepHiguchi as text
 %        str2double(get(hObject,'String')) returns contents of kStepHiguchi as a double
 kStep = get(hObject,'String');
-kStep = str2num(kStep);
+kStep = str2num(rStep);
 handles.higuchi_kStep = kStep;
 guidata(hObject, handles);
 
