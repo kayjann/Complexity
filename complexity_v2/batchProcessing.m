@@ -24,76 +24,70 @@ function varargout = batchProcessing(varargin)
 % --- Executes just before batchProcessing is made visible.
 function batchProcessing_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
-    handles.lempelZiv = 0;
-    handles.hurstExp = 0;
-    handles.LLExp = 0;
-    handles.fracDim = 0;
-    handles.apEn = 0;
-    handles.sampEn = 0;
-    handles.waveletMSE = 0; 
-    handles.fuzzyEn = 0;
-    handles.permEn = 0;
     guidata(hObject, handles);
-
-
 
 function varargout = batchProcessing_OutputFcn(hObject, eventdata, handles) 
     varargout{1} = handles.output;
 
+function algosList = getSelectedAlgorithms(hObject, eventdata, handles)
+    algosList = [];
+    if get(handles.checkbox_lempelZiv, 'Value')
+        algosList = [algosList, "lempel_ziv"];
+    end
+    if get(handles.checkbox_hurstExp, 'Value')
+        algosList = [algosList, "hurstExp"];
+    end
+    if get(handles.checkbox_LLExp, 'Value')
+        algosList = [algosList, "LLExp"];
+    end
+    if get(handles.checkbox_fracDim, 'Value')
+        algosList = [algosList, "fracDim"];
+    end
+    if get(handles.checkbox_apEn)
+        algosList = [algosList, "apEn"];
+    end
+    if get(handles.checkbox_sampEn)
+        algosList = [algosList, "sampEn"];
+    end
+    if get(handles.checkbox_waveletMSE)
+        algosList = [algosList, "waveletMSE"];
+    end
+    if get(handles.checkbox_fuzzyEn)
+        algosList = [algosList, "fuzzyEn"];
+    end
+    if get(handles.checkbox_permEn)
+        algosList = [algosList, "permEn"];
+    end
+    disp('Complexity algorithms selected: ');
+    disp(algosList);
 
+        
 function checkbox_lempelZiv_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.lempelZiv = value;
     guidata(hObject, handles);
-
 
 function checkbox_hurstExp_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.hurstExp = value;
     guidata(hObject, handles);
-
 
 function checkbox_LLExp_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.LLExp = value;
     guidata(hObject, handles);
-
 
 function checkbox_fracDim_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.fracDim = value;
     guidata(hObject, handles);
-
 
 function checkbox_apEn_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.apEn = value;
     guidata(hObject, handles);
-
 
 function checkbox_sampEn_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.sampEn = value;
     guidata(hObject, handles);
-
 
 function checkbox_waveletMSE_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.waveletMSE = value;
     guidata(hObject, handles);
-
 
 function checkbox_fuzzyEn_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.fuzzyEn = value;
     guidata(hObject, handles);
-
 
 function checkbox_permEn_Callback(hObject, eventdata, handles)
-    value = get(hObject,'Value');
-    handles.permEn_normalize = value;
-    guidata(hObject, handles);
-
+    guidata(hObject, handles);    
 
 function edit_lempelZiv_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
@@ -101,28 +95,11 @@ function edit_lempelZiv_m_start_Callback(hObject, eventdata, handles)
     handles.lempelZiv_m_start = m_start;
     guidata(hObject, handles);
 
-
-function edit_lempelZiv_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For LempelZiv, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 function edit_hurstExp_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
     m_start = str2num(m_start);
     handles.hurstExp_m_start = m_start;
     guidata(hObject, handles);
-
-
-function edit_hurstExp_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Hurst Exponent, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_LLExp_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
@@ -130,58 +107,17 @@ function edit_LLExp_m_start_Callback(hObject, eventdata, handles)
     handles.LLExp_m_start = m_start;
     guidata(hObject, handles);
 
-
-function edit_LLExp_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
-
-% function edit4_Callback(hObject, eventdata, handles)
-
-
-
-% function edit4_CreateFcn(hObject, eventdata, handles)
-
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-
-
-
 function edit_apEn_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
     m_start = str2num(m_start);
     handles.apEn_m_start = m_start;
     guidata(hObject, handles);
 
-
-function edit_apEn_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-    set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5');
-    guidata(hObject,handles);
-
-
 function edit_sampEn_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
-    disp('entered mstart for samp');
     m_start = str2num(m_start);
     handles.sampEn_m_start = m_start;
     guidata(hObject, handles);
-
-
-function edit_sampEn_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_waveletMSE_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
@@ -189,29 +125,11 @@ function edit_waveletMSE_m_start_Callback(hObject, eventdata, handles)
     handles.waveletMSE_m_start = m_start;
     guidata(hObject, handles);
 
-
-function edit_waveletMSE_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
-
 function edit_fuzzyEn_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
     m_start = str2num(m_start);
     handles.fuzzyEn_m_start = m_start;
     guidata(hObject, handles);
-
-
-function edit_fuzzyEn_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_lempelZiv_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
@@ -219,29 +137,11 @@ function edit_lempelZiv_m_end_Callback(hObject, eventdata, handles)
     handles.lempelZiv_m_end = m_end;
     guidata(hObject, handles);
 
-
-function edit_lempelZiv_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Lempel-Ziv,recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
-
 function edit_hurstExp_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
     m_end = str2num(m_end);
     handles.hurstExp_m_end = m_end;
     guidata(hObject, handles);
-
-
-function edit_hurstExp_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Hurst, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_LLExp_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
@@ -249,26 +149,11 @@ function edit_LLExp_m_end_Callback(hObject, eventdata, handles)
     handles.LLExp_m_end = m_end;
     guidata(hObject, handles);
 
-
-function edit_LLExp_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 function edit_fracDim_m_start_Callback(hObject, eventdata, handles)
     m_start = get(hObject,'String');
     m_start = str2num(m_start);
     handles.fracDim_m_start = m_start;
     guidata(hObject, handles);
-
-function edit_fracDim_m_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
 
 function edit_fracDim_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
@@ -276,25 +161,11 @@ function edit_fracDim_m_end_Callback(hObject, eventdata, handles)
     handles.fracDim_m_end = m_end;
     guidata(hObject, handles);
 
-function edit_fracDim_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Diminsion,recomended value 1-5')
-    guidata(hObject,handles);
-
 function edit_apEn_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
     m_end = str2num(m_end);
     handles.apEn_m_end = m_end;
     guidata(hObject, handles);
-
-function edit_apEn_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
 
 function edit_sampEn_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
@@ -302,27 +173,11 @@ function edit_sampEn_m_end_Callback(hObject, eventdata, handles)
     handles.sampEn_m_end = m_end;
     guidata(hObject, handles);
 
-function edit_sampEn_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 function edit_waveletMSE_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
     m_end = str2num(m_end);
     handles.waveletMSE_m_end = m_end;
     guidata(hObject, handles);
-
-
-function edit_waveletMSE_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_fuzzyEn_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
@@ -330,29 +185,11 @@ function edit_fuzzyEn_m_end_Callback(hObject, eventdata, handles)
     handles.fuzzyEn_m_end = m_end;
     guidata(hObject, handles);
 
-
-function edit_fuzzyEn_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
-
 function edit_permEn_m_end_Callback(hObject, eventdata, handles)
     m_end = get(hObject,'String');
     m_end = str2num(m_end);
     handles.permEn_m_end = m_end;
     guidata(hObject, handles);
-
-
-function edit_permEn_m_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Permutation Entropy, recomended value for dimensionality(m): 1-5')
-    guidata(hObject,handles);
-
 
 function edit_lempelZiv_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
@@ -360,29 +197,11 @@ function edit_lempelZiv_r_start_Callback(hObject, eventdata, handles)
     handles.lempelZiv_r_start = r_start;
     guidata(hObject, handles);
 
-
-function edit_lempelZiv_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_hurstExp_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
     r_start = str2num(r_start);
     handles.hurstExp_r_start = r_start;
     guidata(hObject, handles);
-
-
-function edit_hurstExp_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Hurst Exponent, recomended value of r: 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_LLExp_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
@@ -390,29 +209,11 @@ function edit_LLExp_r_start_Callback(hObject, eventdata, handles)
     handles.LLExp_r_start = r_start;
     guidata(hObject, handles);
 
-
-function edit_LLExp_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_fracDim_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
     r_start = str2num(r_start);
     handles.fracDim_r_start = r_start;
     guidata(hObject, handles);
-
-
-function edit_fracDim_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_apEn_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
@@ -420,29 +221,11 @@ function edit_apEn_r_start_Callback(hObject, eventdata, handles)
     handles.apEn_r_start = r_start;
     guidata(hObject, handles);
 
-
-function edit_apEn_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_sampEn_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
     r_start = str2num(r_start);
     handles.sampEn_r_start = r_start;
     guidata(hObject, handles);
-
-
-function edit_sampEn_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_waveletMSE_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
@@ -450,29 +233,11 @@ function edit_waveletMSE_r_start_Callback(hObject, eventdata, handles)
     handles.waveletMSE_r_start = r_start;
     guidata(hObject, handles);
 
-
-function edit_waveletMSE_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r):0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_fuzzyEn_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
     r_start = str2num(r_start);
     handles.fuzzyEn_r_start = r_start;
     guidata(hObject, handles);
-
-
-function edit_fuzzyEn_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_permEn_r_start_Callback(hObject, eventdata, handles)
     r_start = get(hObject,'String');
@@ -480,29 +245,11 @@ function edit_permEn_r_start_Callback(hObject, eventdata, handles)
     handles.permEn_r_start = r_start;
     guidata(hObject, handles);
 
-
-function edit_permEn_r_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_lempelZiv_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
     r_end = str2num(r_end);
     handles.lempelZiv_r_end = r_end;
     guidata(hObject, handles);
-
-
-function edit_lempelZiv_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_hurstExp_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
@@ -510,29 +257,11 @@ function edit_hurstExp_r_end_Callback(hObject, eventdata, handles)
     handles.hurstExp_r_end = r_end;
     guidata(hObject, handles);
 
-
-function edit_hurstExp_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Hurst Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_LLExp_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
     r_end = str2num(r_end);
     handles.LLExp_r_end = r_end;
     guidata(hObject, handles);
-
-
-function edit_LLExp_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_fracDim_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
@@ -540,29 +269,11 @@ function edit_fracDim_r_end_Callback(hObject, eventdata, handles)
     handles.fracDim_r_end = r_end;
     guidata(hObject, handles);
 
-
-function edit_fracDim_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_apEn_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
     r_end = str2num(r_end);
     handles.apEn_r_end = r_end;
     guidata(hObject, handles);
-
-
-function edit_apEn_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_waveletMSE_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
@@ -570,28 +281,11 @@ function edit_waveletMSE_r_end_Callback(hObject, eventdata, handles)
     handles.waveletMSE_r_end = r_end;
     guidata(hObject, handles);
 
-
-function edit_waveletMSE_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_fuzzyEn_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
     r_end = str2num(r_end);
     handles.fuzzyEn_r_end = r_end;
     guidata(hObject, handles);
-
-function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_permEn_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
@@ -599,28 +293,11 @@ function edit_permEn_r_end_Callback(hObject, eventdata, handles)
     handles.permEn_r_end = r_end;
     guidata(hObject, handles);
 
-
-function edit_permEn_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
-
 function edit_lempelZiv_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
     scale_start = str2num(scale_start);
     handles.lempelZiv_scale_start = scale_start;
     guidata(hObject, handles);
-
-
-function edit_lempelZiv_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_hurstExp_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
@@ -628,27 +305,11 @@ function edit_hurstExp_scale_start_Callback(hObject, eventdata, handles)
     handles.hurstExp_scale_start = scale_start;
     guidata(hObject, handles);
 
-
-function edit_hurstExp_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_LLExp_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
     scale_start = str2num(scale_start);
     handles.LLExp_scale_start = scale_start;
     guidata(hObject, handles);
-
-
-function edit_LLExp_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_fracDim_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
@@ -656,27 +317,11 @@ function edit_fracDim_scale_start_Callback(hObject, eventdata, handles)
     handles.fracDim_scale_start = scale_start;
     guidata(hObject, handles);
 
-
-function edit_fracDim_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_apEn_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
     scale_start = str2num(scale_start);
     handles.apEn_scale_start = scale_start;
     guidata(hObject, handles);
-
-
-function edit_apEn_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_waveletMSE_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
@@ -684,27 +329,11 @@ function edit_waveletMSE_scale_start_Callback(hObject, eventdata, handles)
     handles.waveletMSE_scale_start = scale_start;
     guidata(hObject, handles);
 
-
-function edit_waveletMSE_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_fuzzyEn_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
     scale_start = str2num(scale_start);
     handles.fuzzyEn_scale_start = scale_start;
     guidata(hObject, handles);
-
-
-function edit_fuzzyEn_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_permEn_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
@@ -712,27 +341,11 @@ function edit_permEn_scale_start_Callback(hObject, eventdata, handles)
     handles.permEn_scale_start = scale_start;
     guidata(hObject, handles);
 
-
-function edit_permEn_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_lempelZiv_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
     scale_end = str2num(scale_end);
     handles.lempelZiv_scale_end = scale_end;
     guidata(hObject, handles);
-
-
-function edit_lempelZiv_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_hurstExp_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
@@ -740,27 +353,11 @@ function edit_hurstExp_scale_end_Callback(hObject, eventdata, handles)
     handles.hurstExp_scale_end = scale_end;
     guidata(hObject, handles);
 
-
-function edit_hurstExp_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_LLExp_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
     scale_end = str2num(scale_end);
     handles.LLExp_scale_end = scale_end;
     guidata(hObject, handles);
-
-
-function edit_LLExp_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_fracDim_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
@@ -768,28 +365,11 @@ function edit_fracDim_scale_end_Callback(hObject, eventdata, handles)
     handles.fracDim_scale_end = scale_end;
     guidata(hObject, handles);
 
-
-function edit_fracDim_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_apEn_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
     scale_end = str2num(scale_end);
     handles.apEn_scale_end = scale_end;
     guidata(hObject, handles);
-
-
-
-function edit_apEn_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_sampEn_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
@@ -797,28 +377,11 @@ function edit_sampEn_scale_end_Callback(hObject, eventdata, handles)
     handles.sampEn_scale_end = scale_end;
     guidata(hObject, handles);
 
-
-
-function edit_sampEn_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_waveletMSE_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
     scale_end = str2num(scale_end);
     handles.waveletMSE_scale_end = scale_end;
     guidata(hObject, handles);
-
-
-function edit_waveletMSE_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_fuzzyEn_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
@@ -826,27 +389,11 @@ function edit_fuzzyEn_scale_end_Callback(hObject, eventdata, handles)
     handles.fuzzyEn_scale_end = scale_end;
     guidata(hObject, handles);
 
-
-function edit_fuzzyEn_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_permEn_scale_end_Callback(hObject, eventdata, handles)
     scale_end = get(hObject,'String');
     scale_end = str2num(scale_end);
     handles.permEn_scale_end = scale_end;
     guidata(hObject, handles);
-
-
-function edit_permEn_scale_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_fracDim_k_start_Callback(hObject, eventdata, handles)
     k_start = get(hObject,'String');
@@ -854,29 +401,11 @@ function edit_fracDim_k_start_Callback(hObject, eventdata, handles)
     handles.fracDim_k_start = k_start;
     guidata(hObject, handles);
 
-
-function edit_fracDim_k_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
-    guidata(hObject,handles);
-
-
 function edit_fracDim_k_end_Callback(hObject, eventdata, handles)
     k_end = get(hObject,'String');
     k_end = str2num(k_end);
     handles.fracDim_k_end = k_end;
     guidata(hObject, handles);
-
-
-function edit_fracDim_k_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
-    guidata(hObject,handles);
-
 
 function edit_fuzzyEn_n_start_Callback(hObject, eventdata, handles)
     n_start = get(hObject,'String');
@@ -884,30 +413,11 @@ function edit_fuzzyEn_n_start_Callback(hObject, eventdata, handles)
     handles.fuzzyEn_n_start = n_start;
     guidata(hObject, handles);
 
-
-function edit_fuzzyEn_n_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
-    guidata(hObject,handles)
-
-
 function edit_fuzzyEn_n_end_Callback(hObject, eventdata, handles)
     n_end = get(hObject,'String');
     n_end = str2num(n_end);
     handles.fuzzyEn_n_end = n_end;
     guidata(hObject, handles);
-
-
-function edit_fuzzyEn_n_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
-    guidata(hObject,handles)
-
-
 
 function edit_fuzzyEn_tau_start_Callback(hObject, eventdata, handles)
     tau_start = get(hObject,'String');
@@ -915,29 +425,11 @@ function edit_fuzzyEn_tau_start_Callback(hObject, eventdata, handles)
     handles.fuzzyEn_tau_start = tau_start;
     guidata(hObject, handles);
 
-
-function edit_fuzzyEn_tau_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
-    guidata(hObject,handles);
-
-
 function edit_fuzzyEn_tau_end_Callback(hObject, eventdata, handles)
     tau_end = get(hObject,'String');
     tau_end = str2num(tau_end);
     handles.fuzzyEn_tau_end = tau_end;
     guidata(hObject, handles);
-
-
-function edit_fuzzyEn_tau_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
-    guidata(hObject,handles);
-
 
 function edit_permEn_delay_start_Callback(hObject, eventdata, handles)
     delay_start = get(hObject,'String');
@@ -945,27 +437,11 @@ function edit_permEn_delay_start_Callback(hObject, eventdata, handles)
     handles.permEn_delay_start = delay_start;
     guidata(hObject, handles);
 
-
-function edit_permEn_delay_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_permEn_delay_end_Callback(hObject, eventdata, handles)
     delay_end = get(hObject,'String');
     delay_end = str2num(delay_end);
     handles.permEn_delay_end = delay_end;
     guidata(hObject, handles);
-
-
-function edit_permEn_delay_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
 
 function edit_permEn_ord_start_Callback(hObject, eventdata, handles)
     ord_start = get(hObject,'String');
@@ -973,25 +449,11 @@ function edit_permEn_ord_start_Callback(hObject, eventdata, handles)
     handles.permEn_ord_start = ord_start;
     guidata(hObject, handles);
 
-
-function edit_permEn_ord_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_permEn_ord_end_Callback(hObject, eventdata, handles)
     ord_end = get(hObject,'String');
     ord_end = str2num(ord_end);
     handles.permEn_ord_end = ord_end;
     guidata(hObject, handles);
-
-function edit_permEn_ord_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
 
 function checkbox_normalize_Callback(hObject, eventdata, handles)
     normalize = get(hObject,'Value');
@@ -999,21 +461,11 @@ function checkbox_normalize_Callback(hObject, eventdata, handles)
     handles.permEn_normalize = normalize;
     guidata(hObject, handles);
 
-
 function edit_sampEn_r_end_Callback(hObject, eventdata, handles)
     r_end = get(hObject,'String');
     r_end = str2num(r_end);
     handles.sampEn_r_end = r_end;
     guidata(hObject, handles);
-
-
-function edit_sampEn_r_end_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
-    guidata(hObject,handles);
-
 
 function edit_sampEn_scale_start_Callback(hObject, eventdata, handles)
     scale_start = get(hObject,'String');
@@ -1021,115 +473,58 @@ function edit_sampEn_scale_start_Callback(hObject, eventdata, handles)
     handles.sampEn_scale_start = scale_start;
     guidata(hObject, handles);
 
-
-
-function edit_sampEn_scale_start_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_inputDir_Callback(hObject, eventdata, handles)
 % #TODO: Include input dir handles updation with direct text input
 
-function edit_inputDir_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
+% Input directory selection
 function btn_inputDir_Callback(hObject, eventdata, handles)
     ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
     if isempty(ipFormat)
         msgbox('Please choose the input format: 3D or 4D');
     else
         if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
-            handles.d3d4='3D';        
+            handles.inputFileDimension='3D';        
         else
-            handles.d3d4='4D';
+            handles.inputFileDimension='4D';
         end
+
+        % Select input directory 
         dirName = uigetdir;
         handles.inputDir = dirName;
+        
+        %Update handles and edit text field
         guidata(hObject, handles);
         set(handles.edit_inputDir, 'string', handles.inputDir);
         if (dirName==0)
             msgbox('No image input directory selected','Error Message');
         end
-        
     end
-
     guidata(hObject, handles);
         
 
 function edit_subjectPattern_Callback(hObject, eventdata, handles)
 % #TODO: Include subject pattern handles updation with direct text input
 
-function edit_subjectPattern_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Example: enter btest*/ for selecting test case folders starting with the phrase btest')
-    guidata(hObject,handles);
-
 function edit_fmriPattern_Callback(hObject, eventdata, handles)
 % #TODO: Include fmri pattern handles updation with direct text input
 
-function edit_fmriPattern_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
-
 function edit_filePattern_Callback(hObject, eventdata, handles)
 % #TODO: Include file pattern handles updation with direct text input
-
-function edit_filePattern_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-    set(hObject,'TooltipString','For Example: enter *.nii to select all files with .nii extension in the subject folder')
-    guidata(hObject,handles);
-
-
 
 
 function edit_outputDir_Callback(hObject, eventdata, handles)
 % #TODO: Include output dir handles updation with direct text input
 
-
-function edit_outputDir_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-
-
+% #TODO: Find what is this button for?
 function pushbutton2_Callback(hObject, eventdata, handles)
 
-function ans=select_brain_mask(hObject,handles,imgStruct)
-    [fname, pname] = uigetfile('*.*','Select the brain mask');
-        
-    if (fname==0 & pname==0)
-        disp('Brain mask not selected');
-    else
-        mask_file = [pname, fname];
-        mask = load_nii(mask_file);
-        if (size(mask.img) ~= size(imgStruct.img_4D(:,:,:,1)))
-            msgbox('Mask and Input image dimensions do not match');
-        else
-            handles.brainMask = mask.img;
-            guidata(hObject, handles);
-        end
-    end
-    ans=mask.img;
-
+% Load button functionality
 function btn_load_Callback(hObject, eventdata, handles)
     file_search = '';
     if (get(handles.edit_inputDir, 'String')=="")
-    disp('Input not selected');
-    msgbox('Input Directory was not selected','Error Message');
-    return
+        disp('Input not selected');
+        msgbox('Input Directory was not selected','Error Message');
+        return
     else
         handles.inputDir = get(handles.edit_inputDir,'String');
         file_search = strcat(file_search, handles.inputDir);
@@ -1173,109 +568,53 @@ function btn_load_Callback(hObject, eventdata, handles)
     end
 
     set(handles.text_dataInfo,'string',([num2str(num_subjects), ' subjects, ', num2str(num_files), ' scans loaded']));
-    if(handles.d3d4=='3D')
-            disp('inside 3d case');
-            disp(length(files));
-            for i=1:length(files)
-                folders{i}=[files(i).folder];
-            end
-
-            temp = unique(folders,'stable');
-            subFolders=temp;
-            disp(subFolders); 
-            imgStruct = readImages4D(subFolders{1});
-            for k = 1 :  length(subFolders)
-                thisSubFolder = subFolders{k};
-                fprintf('Found sub: %s.\n', thisSubFolder);
-                imgStruct = readImages4D(thisSubFolder);
-                handle(k).img_4D = imgStruct.img_4D;
-                handle(k).baseName = imgStruct.bName;
-                handle(k).imgVoxDim = imgStruct.voxDim;
-                handle(k).size=length(subFolders);   
-                if(handles.batchmask_flag==0)
-                    handle(k).brainMask=handles.mask;
-                end
-            end
-            handles.scans=handle;
-            guidata(hObject,handles);
-            disp(handles.scans);
-    elseif(handles.d3d4=='4D')
-            disp('inside 4d case');
-            opStruct = struct([]);
-            files_master = {};
-            for i=1:length(files)
-                fullpath = [files(i).folder,filesep,files(i).name];
-                disp(fullpath);
-                files_master{i} = {fullpath};
-                imgStruct = niftiread(fullpath);
-                opStruct(i).img_4D = imgStruct;
-                [p,f,e] = fileparts(files(i).name);
-                [p,f,e] = fileparts(f);
-                opStruct(i).bName = f;
-                folder = [handles.outputDir,filesep,'tmp'];
-                gunzip(fullpath,folder);
-                tmp_files = dir(folder);
-                for j=1:length(tmp_files)
-                    if strcmp(tmp_files(j).name,'.')
-                        continue
-                    elseif strcmp(tmp_files(j).name,'..')
-                        continue
-                    end
-                    disp('Loading nii');
-                    imgStruct = load_nii_hdr([folder, filesep, tmp_files(j).name]);
-                    delete([folder, filesep, tmp_files(j).name]);
-                    opStruct(i).originator = imgStruct.hist.originator(1:3);
-                    opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
-                end
-            end
-            handles.scans = opStruct;
-            handles.files_master = files_master;
-            guidata(hObject, handles);
-            
-    end
+    
+    handles.subjects = subjects;
+    handles.files = files;
+    guidata(hObject, handles);
     disp('Done reading input images');
 
 function btn_run_Callback(hObject, eventdata, handles)
-    A = sum(strcmp(fieldnames(handles),'inputDir'));
-    B1 = sum(strcmp(fieldnames(handles),'brainMask'));
-    B2 =sum(strcmp(fieldnames(handles),'mask'));
-    O = sum(strcmp(fieldnames(handles),'outputDir'));
-    if A==0
-    disp('Input not selected');
-    msgbox('Input Directory was not selected','Error Message');
-    return
+    if sum(strcmp(fieldnames(handles),'inputDir'))==0
+        disp('Input not selected');
+        msgbox('Input Directory was not selected','Error Message');
+        return
     end 
-    if B1==0 && B2 ==0
+
+    if sum(strcmp(fieldnames(handles),'brainMask'))==0 && sum(strcmp(fieldnames(handles),'mask_arr')) ==0
         disp('Brain mask not selected');
         msgbox('Brain Mask was not selected','Error Message');
         return
-    else
-        if B1==0
-            B=B2;
-        else
-            B=B1;
-        end
     end
 
-    if O==0
+    if sum(strcmp(fieldnames(handles),'outputDir'))==0
         disp('Output Folder not selected');
         msgbox('Please select an Output Directory','Error Message');
         return
     end
-    if handles.lempelZiv
-        C = sum(strcmp(fieldnames(handles),'lempelZiv_m_start'));
-        D = sum(strcmp(fieldnames(handles),'lempelZiv_m_end'));
-        E = sum(strcmp(fieldnames(handles),'lempelZiv_r_start'));
-        F = sum(strcmp(fieldnames(handles),'lempelZiv_r_end'));
-        G = sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'));
-        H = sum(strcmp(fieldnames(handles),'lempelZiv_scale_end'));
-        ipChk = [C D E F G H];
-        if E==0
-            disp('r not selected');
-            msgbox('Please enter the value of r for Lempel-Ziv','Error Message');
+
+    computeGrid = [];
+    selectedAlgorithms = getSelectedAlgorithms(hObject, eventdata, handles);
+    subjects = handles.subjects;
+
+    if any(strcmp(selectedAlgorithms,'lempel_ziv'))
+        if sum(strcmp(fieldnames(handles),'lempelZiv_r_start'))==0 
+            disp('LempelZiv: r_start not selected');
+            msgbox('Please enter the value of r_start for Lempel-Ziv','Error Message');
             return
         end
-        clear C D E F G H 
+        if sum(strcmp(fieldnames(handles),'lempelZiv_r_end'))==0 
+            disp('LempelZiv: r_end not selected');
+            msgbox('Please enter the value of r_end for Lempel-Ziv','Error Message');
+            return
+        end
+        if sum(strcmp(fieldnames(handles),'lempelZiv_scale_start'))==0 
+            disp('LempelZiv: scale_start not selected');
+            msgbox('Please enter the value of scale_start for Lempel-Ziv','Error Message');
+            return
+        end
+       
+
         for k=1:length(handles.scans)
             handle=handles.scans(k);
             handle.outputDir=handles.outputDir;
@@ -1608,7 +947,6 @@ function btn_outputDir_Callback(hObject, eventdata, handles)
     mkdir([handles.outputDir,filesep,'tmp']);
     guidata(hObject, handles);
 
-
 function pb_brainMask_Callback(hObject, eventdata, handles)
     ipFormat = questdlg('How many brain mask would you like to select?', ...
         'Brain Mask Selection','Single','Manual','Batch','Single');
@@ -1616,11 +954,11 @@ function pb_brainMask_Callback(hObject, eventdata, handles)
         disp('Please choose brain mask/s');
     else
         if (strcmp(ipFormat,'Single')==1)  
-            [fname, pname] = uigetfile('*.*','Select the brain mask');
-            if (fname==0 & pname==0)
+            [fileName, pathName] = uigetfile('*.*','Select the brain mask');
+            if (fileName==0 & pathName==0)
                 disp('Brain mask not selected');
             else
-                mask_file = [pname, fname];
+                mask_file = [pathName, fileName];
                 mask = load_untouch_nii(mask_file);
                 handles.mask = mask.img;
                 handles.mask_arr = [mask_file];
@@ -1628,14 +966,12 @@ function pb_brainMask_Callback(hObject, eventdata, handles)
                 guidata(hObject, handles);
             end
         elseif((strcmp(ipFormat,'Manual')==1))
-            
-                    [fname, pname]=uigetfile('*','Select the Masks(s)','MultiSelect','on');
-                    if (length(fname)==0)
+                    [fileName, pathName]=uigetfile('*','Select the Masks(s)','MultiSelect','on');
+                    if (length(fileName)==0)
                         disp('No image input selected');
                     else
-                        
-                        for i=1:length(fname)
-                            mask_file=strcat(pname,fname{i});
+                        for i=1:length(fileName)
+                            mask_file=strcat(pathName,fileName{i});
                             disp(mask_file)
                             mask_arr(i)=mask_file;
                         end
@@ -1643,7 +979,6 @@ function pb_brainMask_Callback(hObject, eventdata, handles)
                         handles.batchmask_flag=1;
                         guidata(hObject, handles);
                     end
-        
         elseif(strcmp(ipFormat,'Batch')==1)
             handles.mask_arr=maskbatchProcessing(handles);
             handles.batchmask_flag=1;
@@ -1677,13 +1012,58 @@ function btn_viewInput_Callback(hObject, eventdata, handles)
 % #TODO: Not sure what this is, cant find in GUIDE
 function edit71_Callback(hObject, eventdata, handles)
 
-function edit71_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+
+function imgStruct = load_file(file, inputFileDimension)
+    if (strcmp(inputFileDimension,'3D')==1 | strcmp(inputFileDimension,'3d')==1)
+        
+        imgStruct = readImages4D(file);
+        for k = 1 :  length(subFolders)
+            thisSubFolder = subFolders{k};
+            fprintf('Found sub: %s.\n', thisSubFolder);
+            imgStruct = readImages4D(thisSubFolder);
+            handle(k).img_4D = imgStruct.img_4D; 
+            handle(k).baseName = imgStruct.bName;
+            handle(k).imgVoxDim = imgStruct.voxDim;
+            handle(k).size=length(subFolders);   
+            if(handles.batchmask_flag==0)
+                handle(k).brainMask=handles.mask;
+            end
+        end
+        handles.scans=handle;
+        guidata(hObject,handles);
+    elseif (strcmp(handles.inputFileDimension,'4D')==1 | strcmp(handles.inputFileDimension,'4d')==1)
+        disp('Loading 4d input files');
+        opStruct = struct([]);
+        files_master = {};
+        for i=1:length(files)
+            fullpath = [files(i).folder,filesep,files(i).name];
+            files_master{i} = {fullpath};
+            imgStruct = niftiread(fullpath);
+            opStruct(i).img_4D = imgStruct;
+            [p,f,e] = fileparts(files(i).name);
+            [p,f,e] = fileparts(f);
+            opStruct(i).bName = f;
+            folder = [handles.outputDir,filesep,'tmp'];
+            gunzip(fullpath,folder);
+            tmp_files = dir(folder);
+            for j=1:length(tmp_files)
+                if strcmp(tmp_files(j).name,'.')
+                    continue
+                elseif strcmp(tmp_files(j).name,'..')
+                    continue
+                end
+                imgStruct = load_nii_hdr([folder, filesep, tmp_files(j).name]);
+                delete([folder, filesep, tmp_files(j).name]);
+                opStruct(i).originator = imgStruct.hist.originator(1:3);
+                opStruct(i).voxDim = imgStruct.dime.pixdim(2:4);
+            end
+        end
+        handles.scans = opStruct;
+        guidata(hObject, handles);
     end
 
-
-function lempel_ziv_call(handles, mask, r_start)
+function lempel_ziv_call(file, inputDimension, mask, r)
+    imgStruct = load_file(file, inputDimension);
     imgSize = size(mask);
     brainVox = find(mask == max(mask(:)));
     LempelZiv = zeros(imgSize);
@@ -1692,7 +1072,7 @@ function lempel_ziv_call(handles, mask, r_start)
     nFail = 0; 
     for vox = 1:length(brainVox)
         [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS1 = squeeze(imgStruct.img_4D(row, col, sl, :));
         TS2 = TS1;
         r_val = r * std(double(TS1));
         tmp = lempel_ziv_complexity(TS2);
@@ -1710,7 +1090,6 @@ function lempel_ziv_call(handles, mask, r_start)
 function hurst_ex_call(handles, mask,r_start,r_end,scale)
     imgSize = size(mask);
     brainVox = find(mask == max(mask(:)));
-
 
     for r=r_start:scale:r_end
         Hurst_Ex = zeros(imgSize);
@@ -1877,38 +1256,445 @@ function ap_en_call(handles, mask, m_start, m_end, r_start, r_end, m_scale, r_sc
         end
     end
 
+function edit_subjectPattern_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Example: enter btest*/ for selecting test case folders starting with the phrase btest')
+    guidata(hObject,handles);
 
-function checkbox_lempelZiv_Callback(hObject, eventdata, handles)
+function edit_fmriPattern_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+function edit_filePattern_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Example: enter *.nii to select all files with .nii extension in the subject folder')
+    guidata(hObject,handles);
+
+function edit_outputDir_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit71_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_lempelZiv_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For LempelZiv, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+
+function edit_hurstExp_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Hurst Exponent, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+
+function edit_LLExp_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+
+function edit_apEn_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+    set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5');
+    guidata(hObject,handles);
 
 
+function edit_sampEn_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
-function checkbox_hurstExp_Callback(hObject, eventdata, handles)
+function edit_waveletMSE_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
+function edit_fuzzyEn_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
+function edit_lempelZiv_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Lempel-Ziv,recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
-function checkbox_LLExp_Callback(hObject, eventdata, handles)
+function edit_hurstExp_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Hurst, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
+function edit_LLExp_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
+function edit_fracDim_m_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
-function checkbox_fracDim_Callback(hObject, eventdata, handles)
+function edit_fracDim_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Diminsion,recomended value 1-5')
+    guidata(hObject,handles);
 
+function edit_apEn_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Approx Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+    
+function edit_sampEn_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Sample Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+    
+function edit_waveletMSE_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Wavelength MSE, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
+    
+function edit_fuzzyEn_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
 
-function checkbox_apEn_Callback(hObject, eventdata, handles)
+    
+function edit_permEn_m_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Permutation Entropy, recomended value for dimensionality(m): 1-5')
+    guidata(hObject,handles);
+    
+    
+function edit_lempelZiv_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_hurstExp_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Hurst Exponent, recomended value of r: 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_LLExp_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_fracDim_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_apEn_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
 
+function edit_sampEn_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_waveletMSE_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r):0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_fuzzyEn_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_permEn_r_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_lempelZiv_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Lempel-Ziv, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_hurstExp_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Hurst Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
 
+function edit_LLExp_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Largest Lyapunov Exponent, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_fracDim_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Dimension, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_apEn_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Approx Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_waveletMSE_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Wavelength MSE, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_fuzzyEn_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_permEn_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Permutation Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
+    
+function edit_lempelZiv_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+function edit_hurstExp_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+function edit_LLExp_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
 
-function checkbox_sampEn_Callback(hObject, eventdata, handles)
+function edit_fracDim_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_apEn_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
+    
+function edit_waveletMSE_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
+    
+function edit_fuzzyEn_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
-function checkbox_waveletMSE_Callback(hObject, eventdata, handles)
+    
+function edit_permEn_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
+    
+function edit_lempelZiv_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_hurstExp_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
+    
+function edit_LLExp_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
-function checkbox_fuzzyEn_Callback(hObject, eventdata, handles)
+function edit_fracDim_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_apEn_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_sampEn_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_waveletMSE_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_fuzzyEn_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_permEn_scale_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_fracDim_k_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
+    guidata(hObject,handles);
+    
+function edit_fracDim_k_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Higuchi Fractal Dimenton,recomended value for k:3-5')
+    guidata(hObject,handles);
+    
+function edit_fuzzyEn_n_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+    guidata(hObject,handles)
+    
+function edit_fuzzyEn_n_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power(n):2')
+    guidata(hObject,handles)
+    
+function edit_fuzzyEn_tau_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+    guidata(hObject,handles);
+    
+function edit_fuzzyEn_tau_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Fuzzy Entropy,recomended value for fuzzy power time lag(t):1')
+    guidata(hObject,handles);
+    
+function edit_permEn_delay_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_permEn_delay_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_permEn_ord_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_permEn_ord_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    
+function edit_sampEn_r_end_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    set(hObject,'TooltipString','For Sample Entropy, recomended value for sensitivity threshold(r): 0.2-0.5')
+    guidata(hObject,handles);
 
+    
+function edit_sampEn_scale_start_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 
-
-function checkbox_permEn_Callback(hObject, eventdata, handles)
-
+function edit_inputDir_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
