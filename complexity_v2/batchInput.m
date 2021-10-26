@@ -278,7 +278,6 @@ end
 disp(file_search);
 files = dir(file_search);
 disp(length(files));
-disp(length(subjects));
 files_master = {};
 
 if(handles.is3D4D == "4D")
@@ -362,6 +361,5 @@ function btnNext_Callback(hObject, eventdata, handles)
 % hObject    handle to btnNext (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp(handles.files_master{1});
 disp('calling batchMetrics');
 batchMetrics(handles.files_master)

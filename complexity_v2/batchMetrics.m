@@ -62,28 +62,26 @@ if (fileStruct.is3D4D == "3D")
     temp.imgVoxDim = img.voxDim;
     temp.size = fileStruct.numSubjects;
     temp.originator = img.originator;
-    temp.brainMask = load_untouch_nii(fileStruct.mask_filePath).img;
-   
 else
-    
-    img = niftiread(fileStruct.fullpath)
-    temp.img_4D = img; 
-    temp.originator = img.hdr.hist.originator(1:3);
-    temp.imgVoxDim = img.hdr.dime.pixdim(2:4);
+    imgStruct = load_nii(fileStruct.fullpath);
+    temp.img_4D = imgStruct.img; 
+    temp.originator = imgStruct.hdr.hist.originator(1:3);
+    temp.imgVoxDim = imgStruct.hdr.dime.pixdim(2:4);
     [p,f,e] = fileparts(fileStruct.fullpath);
     [p,f,e] = fileparts(f);
     temp.baseName = f;
-    
+    folder = [fileStruct.outputDir,filesep,'tmp'];
     if endsWith(e,".gz")
         gunzip(fileStruct.fullpath, folder);
         tmp_files = dir(folder);
     else
-        tmp_files = dir(fileStruct.folder);
+        tmp_files = dir(fileStruct.fullpath);
     end
-    
 end
- temp.outputDir = fileStruct.outputDir;
- imgStruct = temp;
+temp.brainMask = load_untouch_nii(fileStruct.mask_filePath).img;
+temp.outputDir = fileStruct.outputDir;
+imgStruct = temp;
+disp(imgStruct);
 
 
 % --- Executes on button press in btnRun.
@@ -92,9 +90,28 @@ function btnRun_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 loadMetrics(hObject, handles);
+disp(handles.metrics_master);
+run_configurations = struct([]);
+index = 1;
 for i = 1:length(handles.files_master)
     handle = formImgStruct(handles.files_master{i});
-    %lempel_ziv_call(handle,0.2,0.3,0.1)
+    disp(length(handles.metrics_master));
+    parfor j = 1:length(handles.metrics_master)
+       if handles.metrics_master{j}.metric=='lempelZiv'
+           lempel_ziv(handle, handle.brainMask, handles.metrics_master{j}.r);
+       elseif handles.metrics_master{j}.metric=='hurst'
+           hurst_ex_call(handle, handle.brainMask, handles.metrics_master{j}.r);
+       elseif handles.metrics_master{j}.metric=='higuchi'
+           frac_dim_call(handle, handle.brainMask, handles.metrics_master{j}.k);
+       elseif handles.metrics_master{j}.metric=='approx'
+           ap_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
+       elseif handles.metrics_master{j}.metric=='sample'
+           samp_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
+       elseif handles.metrics_master{j}.metric=='fuzzy'
+           fuzzy_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.n, handles.metrics_master{j}.tau);
+       end
+       
+    end
 end
  
 function loadMetrics(hObject, handles)
@@ -111,8 +128,10 @@ if handles.lempelZiv
     end
     guidata(hObject, handles);
     rList = metricListFunc(handles.lempelZiv_rMin, handles.lempelZiv_rMax, handles.lempelZiv_rStep);
-    metrics_master{index} = struct('metric','lempelZiv','r',rList);
-    index = index+1;
+    for idx = 1:length(rList)        
+        metrics_master{index} = struct('metric','lempelZiv','r',rList(idx));
+        index = index+1;
+    end
 end
 
 if handles.hurst
@@ -126,8 +145,10 @@ if handles.hurst
         handles.hurst_rStep=0;
     end
     rList = metricListFunc(handles.hurst_rMin, handles.hurst_rMax, handles.hurst_rStep);
-    metrics_master{index} = struct('metric','hurst','r',rList);
-    index = index+1;
+    for idx = 1:length(rList)        
+        metrics_master{index} = struct('metric','hurst','r',rList(idx));
+        index = index+1;
+    end
 end
 
 if handles.higuchi
@@ -141,12 +162,13 @@ if handles.higuchi
         handles.higuchi_kStep=0;
     end
     kList = metricListFunc(handles.higuchi_kMin, handles.higuchi_kMax, handles.higuchi_kStep);
-    metrics_master{index} = struct('metric','higuchi','k',kList);
-    index = index+1;
+    for idx = 1:length(kList)        
+        metrics_master{index} = struct('metric','hurst','k',kList(idx));
+        index = index+1;
+    end
 end
 
 if handles.approx
-    
     if ~(isfield(handles,'approx_rMin'))
         handles.approx_rMin=0;
     end
@@ -167,8 +189,12 @@ if handles.approx
     end
     rList = metricListFunc(handles.approx_rMin, handles.approx_rMax, handles.approx_rStep);
     mList = metricListFunc(handles.approx_mMin, handles.approx_mMax, handles.approx_mStep);
-    metrics_master{index} = struct('metric','approx','r',rList, 'm', mList);
-    index = index+1;
+    for idx = 1:length(rList) 
+        for jdx = 1:length(mList)
+            metrics_master{index} = struct('metric','approx','r',rList(idx), 'm', mList(idx));
+            index = index+1;
+        end 
+    end
 end
 
 if handles.sample
@@ -192,8 +218,12 @@ if handles.sample
     end
     rList = metricListFunc(handles.sample_rMin, handles.sample_rMax, handles.sample_rStep);
     mList = metricListFunc(handles.sample_mMin, handles.sample_mMax, handles.sample_mStep);
-    metrics_master{index} = struct('metric','sample','r',rList, 'm', mList);
-    index = index+1;
+    for idx = 1:length(rList) 
+        for jdx = 1:length(mList)
+            metrics_master{index} = struct('metric','sample','r',rList(idx), 'm', mList(idx));
+            index = index+1;
+        end 
+    end
 end
 
 if handles.fuzzy
@@ -223,11 +253,14 @@ if handles.fuzzy
     end
     rList = metricListFunc(handles.fuzzy_rMin, handles.fuzzy_rMax, handles.fuzzy_rStep);
     mList = metricListFunc(handles.fuzzy_mMin, handles.fuzzy_mMax, handles.fuzzy_mStep);
-    metrics_master{index} = struct('metric','fuzzy','r',rList, 'm', mList, 'n', handles.fuzzy_n, 'tau', handles.fuzzy_tau);
-    index = index+1;
+    for idx = 1:length(rList) 
+        for jdx = 1:length(mList)
+            metrics_master{index} = struct('metric','fuzzy','r',rList(idx), 'm', mList(idx), 'n', handles.fuzzy_n, 'tau', handles.fuzzy_tau);
+            index = index+1;
+        end 
+    end
 end
 handles.metrics_master = metrics_master;
-disp(metrics_master);
 guidata(hObject, handles);
 
 function metricList = metricListFunc(min, max, step)
@@ -289,6 +322,7 @@ rMax = get(hObject,'String');
 rMax = str2num(rMax);
 handles.lempelZiv_rMax = rMax;
 guidata(hObject, handles);
+
 % --- Executes during object creation, after setting all properties.
 function rMaxLempelZiv_CreateFcn(hObject, eventdata, handles)
 % Hint: edit controls usually have a white background on Windows.
@@ -313,41 +347,63 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-% Function for Lempel Ziv Complexity call
-function lempel_ziv_call(handles, r_start, r_end, scale)
-    mask = handles.brainMask;
-    imgSize = size(mask);
-    brainVox = find(mask == max(mask(:)));
-    loopValues = r_start:scale:r_end;
-    parfor idx = 1:numel(loopValues)
-        r = loopValues(idx);
-        lempelZivResult = zeros(imgSize);
-        msg = ['calculating Lempel Ziv: r=', num2str(r)];
-        disp(msg);
-        h = waitbar(0,msg);
-        nFail = 0; 
-        for vox = 1:length(brainVox)
-            [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-            TS1 = squeeze(handles.img_4D(row, col, sl, :));
-            TS2 = TS1;
-            r_val = r * std(double(TS1));
-            tmp = lempel_ziv_complexity(TS2);
-            lempelZivResult(row,col,sl) = tmp(1);
-            nFail = nFail + tmp(2);
-            waitbar(vox/length(brainVox));
-        end
-        close(h);
-        opFname = [handles.outputDir, filesep, handles.baseName, 'LempelZiv','_r',num2str(r),'.nii']
-        niiStruct = make_nii(lempelZivResult, handles.imgVoxDim, [], 64, []);
-        niiStruct.hdr.hk.data_type = 'float64';
-        niiStruct.hdr.hist.originator(1:3) = handles.originator;
-        save_nii(niiStruct, opFname, []);        
-    end
+function lempel_ziv_call(handles, mask, r)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+LempelZiv = zeros(imgSize);
+msg = ['calculating Lempel Ziv: r=', num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0; 
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    TS2 = TS1;
+    r_val = r * std(double(TS1));
+    tmp = lempel_ziv_complexity(TS2);
+    LempelZiv(row,col,sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'LempelZiv.nii']
+niiStruct = make_nii(LempelZiv, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+niiStruct.hdr.hist.originator(1:3) = handles.originator;
+save_nii(niiStruct, opFname, []);
+
+
 %***********************LEMPEL ZIV END************************************
 %*************************************************************************
 
 %*************************************************************************
 %******************************HURST START**************************************
+
+function hurst_ex_call(handles, mask, r)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+Hurst_Ex = zeros(imgSize);
+msg = ['calculating Hurst Exponent: r=', num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0; 
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    TS2 = TS1;
+    r_val = r * std(double(TS1));
+    tmp = hurst_exponent(TS2);
+    Hurst_Ex(row,col,sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.opFolder, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
+niiStruct = make_nii(Hurst_Ex, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+niiStruct.hdr.hist.originator(1:3) = handles.originator;
+save_nii(niiStruct, opFname, []);
+
 
 % --- Executes on button press in checkboxHurst.
 function checkboxHurst_Callback(hObject, eventdata, handles)
@@ -413,6 +469,33 @@ end
 %*************************************************************************
 %**********************HIGUCHI START ***************************************
 
+function frac_dim_call(handles, mask, k)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+
+msg = ['calculating FracDim: k=', num2str(k)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+FracDim = zeros(imgSize);
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    TS2 = TS1;
+    tmp = higuchi_fractal_dimension(TS2, k);
+    FracDim(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'FracDim_k', ...
+    num2str(k),'.nii'];
+niiStruct = make_nii(FracDim, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+niiStruct.hdr.hist.originator(1:3) = handles.originator;
+save_nii(niiStruct, opFname, []);
+
+
 % --- Executes on button press in checkboxHiguchi.
 function checkboxHiguchi_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkboxHiguchi
@@ -475,6 +558,31 @@ end
 
 %*************************************************************************
 %**********************APPROX EN START ***************************************
+
+function ap_en_call(handles, mask, m, r)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+ApEn = zeros(imgSize);
+msg = ['calculating self ApEn: m=',num2str(m),',r=',num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    TS2 = TS1;
+    r_val = r * std(double(TS1));
+    tmp = cross_approx_entropy(m, r_val, TS1, TS2);
+    ApEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'ApEn_m', ...
+    num2str(m), '_r', num2str(r*100), 'per','.nii'];
+niiStruct = make_nii(ApEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+save_nii(niiStruct, opFname, []);
 
 % --- Executes on button press in checkboxApprox.
 function checkboxApprox_Callback(hObject, eventdata, handles)
@@ -587,6 +695,33 @@ end
 
 %*************************************************************************
 %**********************SAMPLE EN START ***************************************
+
+function samp_en_call(handles, mask, m, r)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+SampEn = zeros(imgSize);
+msg = ['calculating self SampEn: m=',num2str(m),',r=',num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    r_val = r * std(double(TS1));
+    tmp=lyaprosenTest(TS1, 0.05);
+    %tmp = sample_entropy(m, r_val, TS1, 1);
+    SampEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.opFolder, filesep, handles.baseName, 'SampEn_m', ...
+    num2str(m), '_r', num2str(r*100), 'per','.nii'];
+niiStruct = make_nii(SampEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+save_nii(niiStruct, opFname, []);
+
+
 % --- Executes on button press in checkboxSample.
 function checkboxSample_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkboxSample
@@ -696,6 +831,30 @@ end
 
 %*************************************************************************
 %**********************FUZZY EN START ***************************************
+function fuzzy_en_call(handles, mask, m, r, n, t)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+FuzzEn = zeros(imgSize);
+msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    r_val = r * std(double(TS1));
+    tmp = FuzEn(TS1,m, r_val,n,t);
+    FuzzEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(1);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.opFolder, filesep, handles.baseName, 'FuzzyEn_m', ...
+    num2str(m), '_r', num2str(r*100), 'per','.nii'];
+niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+save_nii(niiStruct, opFname, []);
+
 % --- Executes on button press in checkboxFuzzy.
 function checkboxFuzzy_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkboxFuzzy
