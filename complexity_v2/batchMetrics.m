@@ -404,7 +404,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
+opFname = [handles.outputDir, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
 niiStruct = make_nii(Hurst_Ex, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
 niiStruct.hdr.hist.originator(1:3) = handles.originator;
@@ -721,7 +721,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'SampEn_m', ...
+opFname = [handles.outputDir, filesep, handles.baseName, 'SampEn_m', ...
     num2str(m), '_r', num2str(r*100), 'per','.nii'];
 niiStruct = make_nii(SampEn, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
@@ -855,7 +855,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'FuzzyEn_m', ...
+opFname = [handles.outputDir, filesep, handles.baseName, 'FuzzyEn_m', ...
     num2str(m), '_r', num2str(r*100), 'per','.nii'];
 niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
