@@ -54,6 +54,7 @@ varargout{1} = handles.output;
 
 
 function imgStruct = formImgStruct(fileStruct)
+disp(fileStruct);
 temp= struct();
 if (fileStruct.is3D4D == "3D")
     img = readImages4D(fileStruct.fullpath);   
@@ -81,7 +82,7 @@ end
 temp.brainMask = load_untouch_nii(fileStruct.mask_filePath).img;
 temp.outputDir = fileStruct.outputDir;
 imgStruct = temp;
-disp('Loaded scan');
+disp(imgStruct);
 
 
 % --- Executes on button press in btnRun.
@@ -95,25 +96,21 @@ disp('Loaded metric configurations...');
 run_configurations = struct([]);
 index = 1;
 for i = 1:length(handles.files_master)
-    disp('Loading file details:');
-    disp(handles.files_master{i});
+    disp(['Loading ', handles.files_master{i}]);
     handle = formImgStruct(handles.files_master{i});
-    disp('Configurations generated: ');
     disp(length(handles.metrics_master));
-    parfor j = 1:length(handles.metrics_master)
-       disp('Calling computation function for ');
-       disp(handles.metrics_master{j});
-       if strcmp(handles.metrics_master{j}.metric,'lempelZiv')
+    for j = 1:length(handles.metrics_master)
+       if handles.metrics_master{j}.metric=='lempelZiv'
            lempel_ziv_call(handle, handle.brainMask, handles.metrics_master{j}.r);
-       elseif strcmp(handles.metrics_master{j}.metric,'hurst')
+       elseif handles.metrics_master{j}.metric=='hurst'
            hurst_ex_call(handle, handle.brainMask, handles.metrics_master{j}.r);
-       elseif strcmp(handles.metrics_master{j}.metric,'higuchi')
+       elseif handles.metrics_master{j}.metric=='higuchi'
            frac_dim_call(handle, handle.brainMask, handles.metrics_master{j}.k);
-       elseif strcmp(handles.metrics_master{j}.metric,'approx')
+       elseif handles.metrics_master{j}.metric=='approx'
            ap_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
-       elseif strcmp(handles.metrics_master{j}.metric,'sample')
+       elseif handles.metrics_master{j}.metric=='sample'
            samp_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
-       elseif strcmp(handles.metrics_master{j}.metric,'fuzzy')
+       elseif handles.metrics_master{j}.metric=='fuzzy'
            fuzzy_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.n, handles.metrics_master{j}.tau);
        end
     end
@@ -168,7 +165,7 @@ if handles.higuchi
     end
     kList = metricListFunc(handles.higuchi_kMin, handles.higuchi_kMax, handles.higuchi_kStep);
     for idx = 1:length(kList)        
-        metrics_master{index} = struct('metric','higuchi','k',kList(idx));
+        metrics_master{index} = struct('metric','hurst','k',kList(idx));
         index = index+1;
     end
 end
@@ -265,7 +262,6 @@ if handles.fuzzy
         end 
     end
 end
-disp(metrics_master);
 handles.metrics_master = metrics_master;
 guidata(hObject, handles);
 
