@@ -237,6 +237,15 @@ function btnSaveSubjects_Callback(hObject, eventdata, handles)
 % hObject    handle to btnSaveSubjects (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+files_master = handles.files_master;
+fileName = string(inputdlg('Enter the file name', 'File Name'));
+if isempty(fileName)
+    msgbox('Please enter a file name');
+else
+    save(fileName+'.mat', 'files_master');
+    disp('files saved in '+fileName);
+    msgbox('Subjects saved','Info');
+end
 
 
 % --- Executes on button press in btnLoadSubjects.
@@ -244,7 +253,19 @@ function btnLoadSubjects_Callback(hObject, eventdata, handles)
 % hObject    handle to btnLoadSubjects (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+fileName = uigetfile('*.mat','Select the file');
+files = load(fileName, 'files_master');
+f=files.files_master;
+%handles.files_master = f.files_master;
 
+for i = 1:length(f)
+    handles.files_master{i} = f{1,i};
+    handles.filePaths{i}=f{1,i}.fullpath;
+end
+guidata(hObject,handles);
+disp(handles.filePaths);
+loadListBox(hObject, handles)
+msgbox('Subjects loaded','Info');
 
 % --- Executes on button press in loadSubjectFiles.
 function loadSubjectFiles_Callback(hObject, eventdata, handles)
