@@ -36,6 +36,7 @@ handles.higuchi = 0;
 handles.approx = 0;
 handles.sample = 0;
 handles.fuzzy = 0;
+handles.mse = 0;
 handles.perm = 0;
 
 handles.files_master = varargin{1};
@@ -54,7 +55,6 @@ varargout{1} = handles.output;
 
 
 function imgStruct = formImgStruct(fileStruct)
-disp(fileStruct);
 temp= struct();
 if (fileStruct.is3D4D == "3D")
     img = readImages4D(fileStruct.fullpath);   
@@ -82,7 +82,7 @@ end
 temp.brainMask = load_untouch_nii(fileStruct.mask_filePath).img;
 temp.outputDir = fileStruct.outputDir;
 imgStruct = temp;
-disp(imgStruct);
+disp('Loaded scan');
 
 
 % --- Executes on button press in btnRun.
@@ -91,32 +91,43 @@ function btnRun_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 disp('Initializing metrics to be run...');
-loadMetrics(hObject, handles);
+temp = loadMetrics(hObject, handles);
 disp('Loaded metric configurations...');
+handles.metrics_master=temp;
+guidata(hObject, handles);
 run_configurations = struct([]);
+disp(length(handles.files_master))
 index = 1;
 for i = 1:length(handles.files_master)
-    disp(['Loading ', handles.files_master{i}]);
+    disp('Loading file details:');
+    disp(handles.files_master{i});
     handle = formImgStruct(handles.files_master{i});
+    disp('Configurations generated: ');
     disp(length(handles.metrics_master));
     for j = 1:length(handles.metrics_master)
-       if handles.metrics_master{j}.metric=='lempelZiv'
+       disp('Calling computation function for ');
+       disp(handles.metrics_master{j});
+       if strcmp(handles.metrics_master{j}.metric,'lempelZiv')
            lempel_ziv_call(handle, handle.brainMask, handles.metrics_master{j}.r);
-       elseif handles.metrics_master{j}.metric=='hurst'
+       elseif strcmp(handles.metrics_master{j}.metric,'hurst')
            hurst_ex_call(handle, handle.brainMask, handles.metrics_master{j}.r);
-       elseif handles.metrics_master{j}.metric=='higuchi'
+       elseif strcmp(handles.metrics_master{j}.metric,'higuchi')
            frac_dim_call(handle, handle.brainMask, handles.metrics_master{j}.k);
-       elseif handles.metrics_master{j}.metric=='approx'
+       elseif strcmp(handles.metrics_master{j}.metric,'approx')
            ap_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
-       elseif handles.metrics_master{j}.metric=='sample'
+       elseif strcmp(handles.metrics_master{j}.metric,'sample')
            samp_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
-       elseif handles.metrics_master{j}.metric=='fuzzy'
-           fuzzy_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.n, handles.metrics_master{j}.tau);
+       elseif strcmp(handles.metrics_master{j}.metric,'fuzzy')
+           fuzzy_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r, handles.metrics_master{j}.n, handles.metrics_master{j}.tau);
+       elseif strcmp(handles.metrics_master{j}.metric,'mse')
+           mse_en_call(handle, handle.brainMask, handles.metrics_master{j}.m, handles.metrics_master{j}.r);
+       elseif strcmp(handles.metrics_master{j}.metric,'perm')
+           perm_en_call(handle, handle.brainMask, handles.metrics_master{j}.o, handles.metrics_master{j}.tau, handles.metrics_master{j}.norm);
        end
     end
 end
  
-function loadMetrics(hObject, handles)
+function result = loadMetrics(hObject, handles)
 index = 1;
 if handles.lempelZiv
     if ~(isfield(handles,'lempelZiv_rMin'))
@@ -165,7 +176,7 @@ if handles.higuchi
     end
     kList = metricListFunc(handles.higuchi_kMin, handles.higuchi_kMax, handles.higuchi_kStep);
     for idx = 1:length(kList)        
-        metrics_master{index} = struct('metric','hurst','k',kList(idx));
+        metrics_master{index} = struct('metric','higuchi','k',kList(idx));
         index = index+1;
     end
 end
@@ -262,8 +273,73 @@ if handles.fuzzy
         end 
     end
 end
+if handles.mse
+    if ~(isfield(handles,'mse_rMin'))
+        handles.mse_rMin=0;
+    end
+    if ~(isfield(handles,'mse_rMax'))
+        handles.mse_rMax=0;
+    end
+    if ~(isfield(handles,'mse_rStep'))
+        handles.mse_rStep=0;
+    end
+    if ~(isfield(handles,'mse_mMin'))
+        handles.mse_mMin=0;
+    end
+    if ~(isfield(handles,'mse_mMax'))
+        handles.mse_mMax=0;
+    end
+    if ~(isfield(handles,'mse_mStep'))
+        handles.mse_mStep=0;
+    end
+    if ~(isfield(handles,'mse_a'))
+        handles.mse_a=1;
+    end
+    rList = metricListFunc(handles.mse_rMin, handles.mse_rMax, handles.mse_rStep);
+    mList = metricListFunc(handles.mse_mMin, handles.mse_mMax, handles.mse_mStep);
+    for idx = 1:length(rList) 
+        for jdx = 1:length(mList)
+            metrics_master{index} = struct('metric','mse','r',rList(idx), 'm', mList(idx),'a',handles.mse_a);
+            index = index+1;
+        end 
+    end
+end
+if handles.perm
+    if ~(isfield(handles,'perm_oMin'))
+        handles.perm_oMin=0;
+    end
+    if ~(isfield(handles,'perm_oMax'))
+        handles.perm_oMax=0;
+    end
+    if ~(isfield(handles,'perm_oStep'))
+        handles.perm_oStep=0;
+    end
+    if ~(isfield(handles,'perm_tauMin'))
+        handles.perm_tauMin=0;
+    end
+    if ~(isfield(handles,'perm_tauMax'))
+        handles.perm_tauMax=0;
+    end
+    if ~(isfield(handles,'perm_tauStep'))
+        handles.perm_tauStep=0;
+    end
+    if ~(isfield(handles,'perm_norm'))
+        handles.perm_norm=0;
+    end
+    
+    oList = metricListFunc(handles.perm_oMin, handles.perm_oMax, handles.perm_oStep);
+    tauList = metricListFunc(handles.perm_tauMin, handles.perm_tauMax, handles.perm_tauStep);
+    for idx = 1:length(oList) 
+        for jdx = 1:length(tauList)
+            metrics_master{index} = struct('metric','perm','o',oList(idx), 'tau', tauList(idx), 'norm', handles.perm_norm);
+            index = index+1;
+        end 
+    end
+end
+disp(metrics_master);
 handles.metrics_master = metrics_master;
 guidata(hObject, handles);
+result = metrics_master;
 
 function metricList = metricListFunc(min, max, step)
 index = 1;
@@ -400,7 +476,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
+opFname = [handles.outputDir, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
 niiStruct = make_nii(Hurst_Ex, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
 niiStruct.hdr.hist.originator(1:3) = handles.originator;
@@ -717,7 +793,7 @@ for vox = 1:length(brainVox)
     waitbar(vox/length(brainVox));
 end
 close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'SampEn_m', ...
+opFname = [handles.outputDir, filesep, handles.baseName, 'SampEn_m', ...
     num2str(m), '_r', num2str(r*100), 'per','.nii'];
 niiStruct = make_nii(SampEn, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
@@ -833,29 +909,7 @@ end
 
 %*************************************************************************
 %**********************FUZZY EN START ***************************************
-function fuzzy_en_call(handles, mask, m, r, n, t)
-imgSize = size(mask);
-brainVox = find(mask == max(mask(:)));
-FuzzEn = zeros(imgSize);
-msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
-disp(msg);
-h = waitbar(0,msg);
-nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    r_val = r * std(double(TS1));
-    tmp = FuzEn(TS1,m, r_val,n,t);
-    FuzzEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(1);
-    waitbar(vox/length(brainVox));
-end
-close(h);
-opFname = [handles.opFolder, filesep, handles.baseName, 'FuzzyEn_m', ...
-    num2str(m), '_r', num2str(r*100), 'per','.nii'];
-niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
-niiStruct.hdr.hk.data_type = 'float64';
-save_nii(niiStruct, opFname, []);
+
 
 % --- Executes on button press in checkboxFuzzy.
 function checkboxFuzzy_Callback(hObject, eventdata, handles)
@@ -991,8 +1045,354 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function fuzzy_en_call(handles, mask, m, r, n, t)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+FuzzEn = zeros(imgSize);
+msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    r_val = r * std(double(TS1));
+    tmp = FuzEn(TS1,m, r_val,n,t);
+    FuzzEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(1);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'FuzzyEn_m', ...
+    num2str(m), '_r', num2str(r*100), 'per','.nii'];
+niiStruct = make_nii(FuzzEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+save_nii(niiStruct, opFname, []);
 %**********************FUZZY EN END ***************************************
 %*************************************************************************
+
+%*************************************************************************
+%**********************PERM EN START ***************************************
+
+function perm_en_call(handles, mask, order, delay, normalize)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+PermEn = zeros(imgSize);
+msg = ['calculating self PermEn: order=', num2str(order), ',delay=', num2str(delay)];
+disp(msg)
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl,:));
+    %r_val = r*std(double(TS1));
+    tmp = permutation_entropy(TS1, order, delay, normalize);
+    PermEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'PermEn_order', ...
+num2str(order), '_delay', num2str(delay), '_norm', num2str(normalize), '.nii'];
+niiStruct = make_nii(PermEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+niiStruct.hdr.hist.originator(1:3) = handles.originator;
+save_nii(niiStruct, opFname, []);
+      
+% --- Executes on button press in checkboxPerm.
+function checkboxPerm_Callback(hObject, eventdata, handles)
+% Hint: get(hObject,'Value') returns toggle state of checkboxPerm
+value = get(hObject,'Value');
+handles.perm = value;
+guidata(hObject, handles);
+
+
+function oStepPerm_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of oStepPerm as text
+%        str2double(get(hObject,'String')) returns contents of oStepPerm as a double
+oStep = get(hObject,'String');
+oStep = str2num(oStep);
+handles.perm_oStep = oStep;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function oStepPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function tauStepPerm_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of tauStepPerm as text
+%        str2double(get(hObject,'String')) returns contents of tauStepPerm as a double
+tauStep = get(hObject,'String');
+tauStep = str2num(tauStep);
+handles.perm_tauStep = tauStep;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function tauStepPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function tauMinPerm_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of tauMinPerm as text
+%        str2double(get(hObject,'String')) returns contents of tauMinPerm as a double
+tauMin = get(hObject,'String');
+tauMin = str2num(tauMin);
+handles.perm_tauMin = tauMin;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function tauMinPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function tauMaxPerm_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of tauMaxPerm as text
+%        str2double(get(hObject,'String')) returns contents of tauMaxPerm as a double
+tauMax = get(hObject,'String');
+tauMax = str2num(tauMax);
+handles.perm_tauMax = tauMax;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function tauMaxPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function oMinPerm_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of oMinPerm as text
+%        str2double(get(hObject,'String')) returns contents of oMinPerm as a double
+oMin = get(hObject,'String');
+oMin = str2num(oMin);
+handles.perm_oMin = oMin;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function oMinPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function oMaxPerm_Callback(hObject, eventdata, handles)
+% hObject    handle to oMaxPerm (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of oMaxPerm as text
+%        str2double(get(hObject,'String')) returns contents of oMaxPerm as a double
+oMax = get(hObject,'String');
+oMax = str2num(oMax);
+handles.perm_oMax = oMax;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function oMaxPerm_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on button press in checkboxNormPerm.
+function checkboxNormPerm_Callback(hObject, eventdata, handles)
+% Hint: get(hObject,'Value') returns toggle state of checkboxNormPerm
+value = get(hObject,'Value');
+handles.perm_norm = value;
+guidata(hObject, handles);
+
+%**********************PERM EN END ***************************************
+%*************************************************************************
+
+%*************************************************************************
+%**********************MSE EN START ***************************************
+function mse_en_call(handles, mask, m, r,a)
+imgSize = size(mask);
+brainVox = find(mask == max(mask(:)));
+SampEn = zeros(imgSize);
+msg = ['calculating self SampEn: m=',num2str(m),',r=',num2str(r)];
+disp(msg);
+h = waitbar(0,msg);
+nFail = 0;
+for vox = 1:length(brainVox)
+    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+    TS1 = squeeze(handles.img_4D(row, col, sl, :));
+    r_val = r * std(double(TS1));
+    tmp=lyaprosenTest(TS1, 0.05);
+    %tmp = sample_entropy(m, r_val, TS1, 1);
+    SampEn(row, col, sl) = tmp(1);
+    nFail = nFail + tmp(2);
+    waitbar(vox/length(brainVox));
+end
+close(h);
+opFname = [handles.outputDir, filesep, handles.baseName, 'SampEn_m', ...
+    num2str(m), '_r', num2str(r*100), 'per','.nii'];
+niiStruct = make_nii(SampEn, handles.imgVoxDim, [], 64, []);
+niiStruct.hdr.hk.data_type = 'float64';
+save_nii(niiStruct, opFname, []);
+
+% --- Executes on button press in checkboxMSE.
+function checkboxMSE_Callback(hObject, eventdata, handles)
+% Hint: get(hObject,'Value') returns toggle state of checkboxMSE
+value = get(hObject,'Value');
+handles.mse = value;
+guidata(hObject, handles);
+
+
+function mMinMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of mMinMSE as text
+%        str2double(get(hObject,'String')) returns contents of mMinMSE as a double
+mMin = get(hObject,'String');
+mMin = str2num(mMin);
+handles.mse_mMin = mMin;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function mMinMSE_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function mMaxMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of mMaxMSE as text
+%        str2double(get(hObject,'String')) returns contents of mMaxMSE as a double
+mMax = get(hObject,'String');
+mMax = str2num(mMax);
+handles.mse_mMax = mMax;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function mMaxMSE_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function rMinMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of rMinMSE as text
+%        str2double(get(hObject,'String')) returns contents of rMinMSE as a double
+rMin = get(hObject,'String');
+rMin = str2num(rMin);
+handles.mse_rMin = rMin;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function rMinMSE_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function rStepMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of rStepMSE as text
+%        str2double(get(hObject,'String')) returns contents of rStepMSE as a double
+rStep = get(hObject,'String');
+rStep = str2num(rStep);
+handles.mse_rStep = rStep;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function rStepMSE_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function rMaxMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of rMaxMSE as text
+%        str2double(get(hObject,'String')) returns contents of rMaxMSE as a double
+rMax = get(hObject,'String');
+rMax = str2num(rMax);
+handles.mse_rMax = rMax;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function rMaxMSE_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function mStepMSE_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of mStepMSE as text
+%        str2double(get(hObject,'String')) returns contents of mStepMSE as a double
+mStep = get(hObject,'String');
+mStep = str2num(mStep);
+handles.mse_mStep = mStep;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function mStepMSE_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function a_mse_Callback(hObject, eventdata, handles)
+% Hints: get(hObject,'String') returns contents of a_mse as text
+%        str2double(get(hObject,'String')) returns contents of a_mse as a double
+a = get(hObject,'String');
+a = str2num(a);
+handles.mse_a = a;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function a_mse_CreateFcn(hObject, eventdata, handles)
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+%**********************MSE EN END ***************************************
+%*************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function edit38_Callback(hObject, eventdata, handles)
 % hObject    handle to edit38 (see GCBO)
@@ -1014,6 +1414,13 @@ function edit38_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+
+
+
+
 
 
 
