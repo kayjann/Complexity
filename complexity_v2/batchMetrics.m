@@ -41,7 +41,7 @@ handles.perm = 0;
 
 handles.files_master = varargin{1};
 handles.metrics_master = struct([]);
-
+handles.debug = 0;
 guidata(hObject, handles);
 
 % UIWAIT makes batchMetrics wait for user response (see UIRESUME)
@@ -94,6 +94,7 @@ disp('Initializing metrics to be run...');
 temp = loadMetrics(hObject, handles);
 disp('Loaded metric configurations...');
 handles.metrics_master=temp;
+handles.debug = 0;
 guidata(hObject, handles);
 run_configurations = struct([]);
 disp(length(handles.files_master))
@@ -204,7 +205,7 @@ if handles.approx
     mList = metricListFunc(handles.approx_mMin, handles.approx_mMax, handles.approx_mStep);
     for idx = 1:length(rList) 
         for jdx = 1:length(mList)
-            metrics_master{index} = struct('metric','approx','r',rList(idx), 'm', mList(idx));
+            metrics_master{index} = struct('metric','approx','r',rList(idx), 'm', mList(jdx));
             index = index+1;
         end 
     end
@@ -233,7 +234,7 @@ if handles.sample
     mList = metricListFunc(handles.sample_mMin, handles.sample_mMax, handles.sample_mStep);
     for idx = 1:length(rList) 
         for jdx = 1:length(mList)
-            metrics_master{index} = struct('metric','sample','r',rList(idx), 'm', mList(idx));
+            metrics_master{index} = struct('metric','sample','r',rList(idx), 'm', mList(jdx));
             index = index+1;
         end 
     end
@@ -268,7 +269,7 @@ if handles.fuzzy
     mList = metricListFunc(handles.fuzzy_mMin, handles.fuzzy_mMax, handles.fuzzy_mStep);
     for idx = 1:length(rList) 
         for jdx = 1:length(mList)
-            metrics_master{index} = struct('metric','fuzzy','r',rList(idx), 'm', mList(idx), 'n', handles.fuzzy_n, 'tau', handles.fuzzy_tau);
+            metrics_master{index} = struct('metric','fuzzy','r',rList(idx), 'm', mList(jdx), 'n', handles.fuzzy_n, 'tau', handles.fuzzy_tau);
             index = index+1;
         end 
     end
@@ -299,7 +300,7 @@ if handles.mse
     mList = metricListFunc(handles.mse_mMin, handles.mse_mMax, handles.mse_mStep);
     for idx = 1:length(rList) 
         for jdx = 1:length(mList)
-            metrics_master{index} = struct('metric','mse','r',rList(idx), 'm', mList(idx),'a',handles.mse_a);
+            metrics_master{index} = struct('metric','mse','r',rList(idx), 'm', mList(jdx),'a',handles.mse_a);
             index = index+1;
         end 
     end
@@ -331,7 +332,7 @@ if handles.perm
     tauList = metricListFunc(handles.perm_tauMin, handles.perm_tauMax, handles.perm_tauStep);
     for idx = 1:length(oList) 
         for jdx = 1:length(tauList)
-            metrics_master{index} = struct('metric','perm','o',oList(idx), 'tau', tauList(idx), 'norm', handles.perm_norm);
+            metrics_master{index} = struct('metric','perm','o',oList(idx), 'tau', tauList(jdx), 'norm', handles.perm_norm);
             index = index+1;
         end 
     end
@@ -433,18 +434,21 @@ msg = ['calculating Lempel Ziv: r=', num2str(r)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0; 
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    TS2 = TS1;
-    r_val = r * std(double(TS1));
-    tmp = lempel_ziv_complexity(TS2);
-    LempelZiv(row,col,sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        r_val = r * std(double(TS1));
+        tmp = lempel_ziv_complexity(TS2);
+        LempelZiv(row,col,sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
-opFname = [handles.outputDir, filesep, handles.baseName, 'LempelZiv.nii']
+opFname = [handles.outputDir, filesep, handles.baseName, 'LempelZiv','_r',num2str(r),'.nii']
 niiStruct = make_nii(LempelZiv, handles.imgVoxDim, [], 64, []);
 niiStruct.hdr.hk.data_type = 'float64';
 niiStruct.hdr.hist.originator(1:3) = handles.originator;
@@ -465,15 +469,18 @@ msg = ['calculating Hurst Exponent: r=', num2str(r)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0; 
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    TS2 = TS1;
-    r_val = r * std(double(TS1));
-    tmp = hurst_exponent(TS2);
-    Hurst_Ex(row,col,sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        r_val = r * std(double(TS1));
+        tmp = hurst_exponent(TS2);
+        Hurst_Ex(row,col,sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'Hurst_Ex','_r',num2str(r),'.nii']
@@ -556,14 +563,17 @@ disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
 FracDim = zeros(imgSize);
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    TS2 = TS1;
-    tmp = higuchi_fractal_dimension(TS2, k);
-    FracDim(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        tmp = higuchi_fractal_dimension(TS2, k);
+        FracDim(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'FracDim_k', ...
@@ -645,15 +655,18 @@ msg = ['calculating self ApEn: m=',num2str(m),',r=',num2str(r)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    TS2 = TS1;
-    r_val = r * std(double(TS1));
-    tmp = cross_approx_entropy(m, r_val, TS1, TS2);
-    ApEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        TS2 = TS1;
+        r_val = r * std(double(TS1));
+        tmp = cross_approx_entropy(m, r_val, TS1, TS2);
+        ApEn(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'ApEn_m', ...
@@ -782,15 +795,18 @@ msg = ['calculating self SampEn: m=',num2str(m),',r=',num2str(r)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    r_val = r * std(double(TS1));
-    tmp=lyaprosenTest(TS1, 0.05);
-    %tmp = sample_entropy(m, r_val, TS1, 1);
-    SampEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        r_val = r * std(double(TS1));
+        tmp=lyaprosenTest(TS1, 0.05);
+        %tmp = sample_entropy(m, r_val, TS1, 1);
+        SampEn(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'SampEn_m', ...
@@ -1053,14 +1069,17 @@ msg = ['calculating FuzzyEn: m=',num2str(m),',r=',num2str(r)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    r_val = r * std(double(TS1));
-    tmp = FuzEn(TS1,m, r_val,n,t);
-    FuzzEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(1);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        r_val = r * std(double(TS1));
+        tmp = FuzEn(TS1,m, r_val,n,t);
+        FuzzEn(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(1);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'FuzzyEn_m', ...
@@ -1082,14 +1101,17 @@ msg = ['calculating self PermEn: order=', num2str(order), ',delay=', num2str(del
 disp(msg)
 h = waitbar(0,msg);
 nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl,:));
-    %r_val = r*std(double(TS1));
-    tmp = permutation_entropy(TS1, order, delay, normalize);
-    PermEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl,:));
+        %r_val = r*std(double(TS1));
+        tmp = permutation_entropy(TS1, order, delay, normalize);
+        PermEn(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'PermEn_order', ...
@@ -1230,15 +1252,18 @@ msg = ['calculating self Wavelength MSE: m=',num2str(m),',r=',num2str(r),' ,a=',
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
-for vox = 1:length(brainVox)
-    [row, col, sl] = ind2sub(imgSize, brainVox(vox));
-    TS1 = squeeze(handles.img_4D(row, col, sl, :));
-    r_val = r * std(double(TS1));
-    %tmp=lyaprosenTest(TS1, 0.05);
-    tmp = mse_entropy(m, r_val, TS1, a);
-    MseEn(row, col, sl) = tmp(1);
-    nFail = nFail + tmp(2);
-    waitbar(vox/length(brainVox));
+handles.debug = 0;
+if (handles.debug==0)
+    for vox = 1:length(brainVox)
+        [row, col, sl] = ind2sub(imgSize, brainVox(vox));
+        TS1 = squeeze(handles.img_4D(row, col, sl, :));
+        r_val = r * std(double(TS1));
+        %tmp=lyaprosenTest(TS1, 0.05);
+        tmp = mse_entropy(m, r_val, TS1, a);
+        MseEn(row, col, sl) = tmp(1);
+        nFail = nFail + tmp(2);
+        waitbar(vox/length(brainVox));
+    end
 end
 close(h);
 opFname = [handles.outputDir, filesep, handles.baseName, 'MseEn_m', ...
