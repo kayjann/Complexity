@@ -801,8 +801,8 @@ if (handles.debug==0)
         [row, col, sl] = ind2sub(imgSize, brainVox(vox));
         TS1 = squeeze(handles.img_4D(row, col, sl, :));
         r_val = r * std(double(TS1));
-        tmp=lyaprosenTest(TS1, 0.05);
-        %tmp = sample_entropy(m, r_val, TS1, 1);
+        %tmp=lyaprosenTest(TS1, 0.05);
+        tmp = sample_en(m, r_val, TS1, 1);
         SampEn(row, col, sl) = tmp(1);
         nFail = nFail + tmp(2);
         waitbar(vox/length(brainVox));
