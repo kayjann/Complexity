@@ -299,11 +299,10 @@ if handles.mse
     rList = metricListFunc(handles.mse_rMin, handles.mse_rMax, handles.mse_rStep);
     mList = metricListFunc(handles.mse_mMin, handles.mse_mMax, handles.mse_mStep);
     aList = metricListFunc(1,handles.mse_a,1);
-    disp(aList)
     for idx = 1:length(rList) 
         for jdx = 1:length(mList)
             for adx = 1:length(aList)
-                metrics_master{index} = struct('metric','mse','r',rList(idx), 'm', mList(jdx),'a',aList(adx));
+                metrics_master{index} = struct('metric','mse','r',rList(idx), 'm', mList(jdx),'a',handles.mse_a);
                 index = index+1;
             end
         end 
