@@ -1252,7 +1252,7 @@ function mse_en_call(handles, mask, m, r, a)
 imgSize = size(mask);
 brainVox = find(mask == max(mask(:)));
 MseEn = zeros(imgSize);
-msg = ['calculating self Wavelength MSE: m=',num2str(m),',r=',num2str(r),' ,a=',num2str(a)];
+msg = ['calculating MSE: m=',num2str(m),',r=',num2str(r),' ,a=',num2str(a)];
 disp(msg);
 h = waitbar(0,msg);
 nFail = 0;
