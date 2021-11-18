@@ -22,7 +22,7 @@ function varargout = batchInput(varargin)
 
 % Edit the above text to modify the response to help batchInput
 
-% Last Modified by GUIDE v2.5 17-Nov-2021 16:53:01
+% Last Modified by GUIDE v2.5 17-Nov-2021 15:44:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,6 @@ handles.maskFilePath = "";
 handles.output = hObject;
 handles.files_master = struct([]);
 handles.filePaths =[];
-handles.is3D4D="";
 handles.outputDir="";
 guidata(hObject, handles);
 
@@ -103,14 +102,16 @@ function editInputDir_Callback(hObject, eventdata, handles)
 
 function btnInputDir_Callback(hObject, eventdata, handles)
 % sets flag is3D4D and editInputDir and saves in handles
-is4D = get(handles.is4D,'Value');
-is3D = get(handles.is3D, 'Value');
-if (strcmp(handles.is3D4D,'')==1 || (is3D==0 && is4D==0))
-    handles.is3D4D="";
-    msgbox('Please choose the input format/dimension: 3D or 4D');
-    guidata(hObject, handles);
-    return
+ipFormat = cell2mat(inputdlg('Input 3D or 4D', 'Input selection'));
+if isempty(ipFormat)
+    msgbox('Please choose the input format: 3D or 4D');
 else
+    if (strcmp(ipFormat,'3D')==1 | strcmp(ipFormat,'3d')==1)
+        handles.is3D4D='3D';        
+    else
+        handles.is3D4D='4D';
+    end
+    
     dirName = uigetdir;
     handles.inputDir = dirName;
     guidata(hObject, handles);
@@ -395,11 +396,7 @@ function is3D_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of is3D
-is3D = get(hObject,'Value');
-if is3D == 1
-    set(handles.is4D,'value',0)
-    handles.is3D4D = '3D';
-end
+handles.is3D4D = '3D';
 guidata(hObject,handles);
 
 % --- Executes on button press in is4D.
@@ -411,7 +408,5 @@ function is4D_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of is4D
 is4D = get(hObject,'Value');
 if is4D == 1
-    set(handles.is3D,'value',0)
-    handles.is3D4D = '4D';
-end
+handles.is3D4D = '4D';
 guidata(hObject,handles);
