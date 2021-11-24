@@ -105,7 +105,7 @@ for i = 1:length(handles.files_master)
     handle = formImgStruct(handles.files_master{i});
     disp('Configurations generated: ');
     disp(length(handles.metrics_master));
-    for j = 1:length(handles.metrics_master)
+    parfor j = 1:length(handles.metrics_master)
        disp('Calling computation function for ');
        disp(handles.metrics_master{j});
        if strcmp(handles.metrics_master{j}.metric,'lempelZiv')
